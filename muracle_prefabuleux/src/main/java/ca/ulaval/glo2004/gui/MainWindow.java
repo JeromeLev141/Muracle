@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 
 
 /**
@@ -336,7 +337,7 @@ public class MainWindow extends JFrame {
 				undoButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				undoButton.setRequestFocusEnabled(false);
 				try {
-					Image image = ImageIO.read(new File("src/main/java/ca/ulaval/glo2004/gui/resource/undo.png"));
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/undo.png")));
 					image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
 					undoButton.setIcon(new ImageIcon(image));
 				} catch (Exception except) {
@@ -351,7 +352,7 @@ public class MainWindow extends JFrame {
 				redoButton.setRequestFocusEnabled(false);
 				redoButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				try {
-					Image image = ImageIO.read(new File("src/main/java/ca/ulaval/glo2004/gui/resource/redo.png"));
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/redo.png")));
 					image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
 					redoButton.setIcon(new ImageIcon(image));
 				} catch (Exception except) {
