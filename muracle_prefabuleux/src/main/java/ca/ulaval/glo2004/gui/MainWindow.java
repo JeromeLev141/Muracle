@@ -111,21 +111,21 @@ public class MainWindow extends JFrame {
 		JLabel configurationLabel = new JLabel();
 		JPanel configurationPlanPanel = new JPanel();
 
-		JLabel configuration1Label = new JLabel();
-		JTextField configuration1TextField = new JTextField();
-		JLabel configuration1endLabel = new JLabel();
+		JLabel longPlisLabel = new JLabel();
+		JTextField longPlisTextField = new JTextField();
+		JLabel longPlisEndLabel = new JLabel();
 
-		JLabel configuration2Label = new JLabel();
-		JTextField configuration2TextField = new JTextField();
-		JLabel configuration2endLabel = new JLabel();
+		JLabel margeEpLabel = new JLabel();
+		JTextField margeEpTextField = new JTextField();
+		JLabel margeEpEndLabel = new JLabel();
 
-		JLabel configuration3Label = new JLabel();
-		JTextField configuration3TextField = new JTextField();
-		JLabel configuration3endLabel = new JLabel();
+		JLabel margeLargLabel = new JLabel();
+		JTextField margeLargTextField = new JTextField();
+		JLabel margeLargEndLabel = new JLabel();
 
-		JLabel configuration4Label = new JLabel();
-		JTextField configuration4TextField = new JTextField();
-		JLabel configuration4endLabel = new JLabel();
+		JLabel anglePlisLabel = new JLabel();
+		JTextField anglePlisTextField = new JTextField();
+		JLabel anglePlisEndLabel = new JLabel();
 
 		JSeparator sepConfig = new JSeparator();
 
@@ -734,91 +734,91 @@ public class MainWindow extends JFrame {
 							((GridBagLayout) configurationPlanPanel.getLayout()).columnWeights = new double[] {0.01, 0.01, 0.01, 1.0E-4};
 							((GridBagLayout) configurationPlanPanel.getLayout()).rowWeights = new double[] {0.01, 0.01, 0.01, 0.01, 1.0E-4};
 
-							//---- configuration1Label ----
-							configuration1Label.setText("Longueur des plis");
-							configurationPlanPanel.add(configuration1Label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+							//---- longPlisLabel ----
+							longPlisLabel.setText("Longueur des plis");
+							configurationPlanPanel.add(longPlisLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 								GridBagConstraints.WEST, GridBagConstraints.NONE,
 								new Insets(0, 0, 10, 10), 0, 0));
 
-							//---- configuration1TextField ----
-							configuration1TextField.setColumns(5);
-							configurationPlanPanel.add(configuration1TextField, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+							//---- longPlisTextField ----
+							longPlisTextField.setColumns(5);
+							configurationPlanPanel.add(longPlisTextField, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
-							configuration1TextField.addActionListener(e -> {
-								if (!configuration1TextField.getText().isEmpty())
-									System.out.println(configuration1Label.getText() + " update à " + configuration1TextField.getText() + " " + configuration1endLabel.getText());
+							longPlisTextField.addActionListener(e -> {
+								if (!longPlisTextField.getText().isEmpty())
+									System.out.println(longPlisLabel.getText() + " update à " + longPlisTextField.getText() + " " + longPlisEndLabel.getText());
 							});
 
-							//---- configuration1endLabel ----
-							configuration1endLabel.setText("po");
-							configurationPlanPanel.add(configuration1endLabel, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+							//---- longPlisEndLabel ----
+							longPlisEndLabel.setText("po");
+							configurationPlanPanel.add(longPlisEndLabel, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.NONE,
 								new Insets(0, 0, 10, 0), 0, 0));
 
-							//---- configuration2Label ----
-							configuration2Label.setText("Marge \u00e9paisseur des mat\u00e9riaux  ");
-							configurationPlanPanel.add(configuration2Label, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+							//---- margeEpLabel ----
+							margeEpLabel.setText("Marge \u00e9paisseur des mat\u00e9riaux  ");
+							configurationPlanPanel.add(margeEpLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
 								GridBagConstraints.WEST, GridBagConstraints.NONE,
 								new Insets(0, 0, 10, 10), 0, 0));
 
-							//---- configuration2TextField ----
-							configuration2TextField.setColumns(5);
-							configurationPlanPanel.add(configuration2TextField, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+							//---- margeEpTextField ----
+							margeEpTextField.setColumns(5);
+							configurationPlanPanel.add(margeEpTextField, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
-							configuration2TextField.addActionListener(e -> {
-								if (!configuration2TextField.getText().isEmpty())
-									System.out.println(configuration2Label.getText() + " update à " + configuration2TextField.getText() + " " + configuration2endLabel.getText());
+							margeEpTextField.addActionListener(e -> {
+								if (!margeEpTextField.getText().isEmpty())
+									System.out.println(margeEpLabel.getText() + " update à " + margeEpTextField.getText() + " " + margeEpEndLabel.getText());
 							});
 
-							//---- configuration2endLabel ----
-							configuration2endLabel.setText("po");
-							configurationPlanPanel.add(configuration2endLabel, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+							//---- margeEpEndLabel ----
+							margeEpEndLabel.setText("po");
+							configurationPlanPanel.add(margeEpEndLabel, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.NONE,
 								new Insets(0, 0, 10, 0), 0, 0));
 
-							//---- configuration3Label ----
-							configuration3Label.setText("Marge largeur des replis");
-							configurationPlanPanel.add(configuration3Label, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
+							//---- margeLargLabel ----
+							margeLargLabel.setText("Marge largeur des replis");
+							configurationPlanPanel.add(margeLargLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
 								GridBagConstraints.WEST, GridBagConstraints.NONE,
 								new Insets(0, 0, 10, 10), 0, 0));
 
-							//---- configuration3TextField ----
-							configuration3TextField.setColumns(5);
-							configurationPlanPanel.add(configuration3TextField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
+							//---- margeLargTextField ----
+							margeLargTextField.setColumns(5);
+							configurationPlanPanel.add(margeLargTextField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
-							configuration3TextField.addActionListener(e -> {
-								if (!configuration3TextField.getText().isEmpty())
-									System.out.println(configuration3Label.getText() + " update à " + configuration3TextField.getText() + " " + configuration3endLabel.getText());
+							margeLargTextField.addActionListener(e -> {
+								if (!margeLargTextField.getText().isEmpty())
+									System.out.println(margeLargLabel.getText() + " update à " + margeLargTextField.getText() + " " + margeLargEndLabel.getText());
 							});
 
-							//---- configuration3endLabel ----
-							configuration3endLabel.setText("po");
-							configurationPlanPanel.add(configuration3endLabel, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
+							//---- margeLargEndLabel ----
+							margeLargEndLabel.setText("po");
+							configurationPlanPanel.add(margeLargEndLabel, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.NONE,
 								new Insets(0, 0, 10, 0), 0, 0));
 
-							//---- configuration4Label ----
-							configuration4Label.setText("Angle des plis");
-							configurationPlanPanel.add(configuration4Label, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
+							//---- anglePlisLabel ----
+							anglePlisLabel.setText("Angle des plis");
+							configurationPlanPanel.add(anglePlisLabel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
 								GridBagConstraints.WEST, GridBagConstraints.NONE,
 								new Insets(0, 0, 0, 10), 0, 0));
 
-							//---- configuration4TextField ----
-							configuration4TextField.setColumns(5);
-							configurationPlanPanel.add(configuration4TextField, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+							//---- anglePlisTextField ----
+							anglePlisTextField.setColumns(5);
+							configurationPlanPanel.add(anglePlisTextField, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 10), 0, 0));
-							configuration4TextField.addActionListener(e -> {
-								if (!configuration4TextField.getText().isEmpty())
-									System.out.println(configuration4Label.getText() + " update à " + configuration4TextField.getText() + " " + configuration4endLabel.getText());
+							anglePlisTextField.addActionListener(e -> {
+								if (!anglePlisTextField.getText().isEmpty())
+									System.out.println(anglePlisLabel.getText() + " update à " + anglePlisTextField.getText() + " " + anglePlisEndLabel.getText());
 							});
 
-							//---- configuration4endLabel ----
-							configuration4endLabel.setText("deg");
-							configurationPlanPanel.add(configuration4endLabel, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
+							//---- anglePlisEndLabel ----
+							anglePlisEndLabel.setText("deg");
+							configurationPlanPanel.add(anglePlisEndLabel, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.NONE,
 								new Insets(0, 0, 0, 0), 0, 0));
 
