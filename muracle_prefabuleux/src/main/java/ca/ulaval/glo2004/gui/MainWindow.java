@@ -37,7 +37,8 @@ public class MainWindow extends JFrame {
 		JButton saveProjectButton = new JButton();
 		JButton exportButton = new JButton();
 		JToggleButton showGrilleButton = new JToggleButton();
-		JButton addAccessoireButton = new JButton();
+		JToggleButton addAccessoireButton = new JToggleButton();
+		JComboBox<String> selectionAccessoireComboBox = new JComboBox<>(new String[] {"Fenêtre", "Porte", "Prise électrique", "Retour d'air"});
 		JButton retourVueHautButton = new JButton();
 		JToggleButton changeVueButton = new JToggleButton();
 		JPopupMenu.Separator menuSeparator = new JPopupMenu.Separator();
@@ -278,8 +279,24 @@ public class MainWindow extends JFrame {
 				addAccessoireButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				addAccessoireButton.setRequestFocusEnabled(false);
 				addAccessoireButton.setVisible(false);
-				addAccessoireButton.addActionListener(e -> System.out.println("Pas implenté pour la démo"));
+				addAccessoireButton.addActionListener(e -> {
+					if (!addAccessoireButton.isSelected()) {
+						addAccessoireButton.setSelected(false);
+						selectionAccessoireComboBox.setVisible(false);
+					}
+					else {
+						addAccessoireButton.setSelected(true);
+						selectionAccessoireComboBox.setVisible(true);
+					}
+				});
 				menuBar.add(addAccessoireButton);
+
+				//---- choix du type d'accessoire ----
+				selectionAccessoireComboBox.setMaximumSize(new Dimension(100, 32767));
+				selectionAccessoireComboBox.setPreferredSize(new Dimension(140, 22));
+				selectionAccessoireComboBox.setRequestFocusEnabled(false);
+				selectionAccessoireComboBox.setVisible(false);
+				menuBar.add(selectionAccessoireComboBox);
 
 				//---- changer vue ----
 				changeVueButton.setText("Changer de vue");
@@ -321,6 +338,8 @@ public class MainWindow extends JFrame {
 						accessoireButton.doClick();
 					if (voirPlanButton.isSelected())
 						splitPaneH.setLeftComponent(drawingPanel);
+					if (addAccessoireButton.isSelected())
+						addAccessoireButton.doClick();
 
 					coteButton.setVisible(true);
 					for (int i = 0; i < 22; i++)
@@ -853,7 +872,7 @@ public class MainWindow extends JFrame {
 				splitPaneH.setRightComponent(splitPaneV);
 			}
 			this.getContentPane().add(splitPaneH);
-			this.setSize(1200, 800);
+			this.setSize(1400, 800);
 			this.setLocationRelativeTo(this.getOwner());
 		}
 	}
