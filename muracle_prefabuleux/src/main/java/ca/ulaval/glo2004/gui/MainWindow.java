@@ -41,7 +41,6 @@ public class MainWindow extends JFrame {
 		JComboBox<String> selectionAccessoireComboBox = new JComboBox<>(new String[] {"Fenêtre", "Porte", "Prise électrique", "Retour d'air"});
 		JButton retourVueHautButton = new JButton();
 		JToggleButton changeVueButton = new JToggleButton();
-		JPopupMenu.Separator menuSeparator = new JPopupMenu.Separator();
 		JButton undoButton = new JButton();
 		JButton redoButton = new JButton();
 
@@ -348,7 +347,7 @@ public class MainWindow extends JFrame {
 				});
 				menuBar.add(retourVueHautButton);
 
-				menuBar.add(menuSeparator);
+				menuBar.add(Box.createHorizontalGlue());
 
 				//---- undo ----
 				undoButton.setPreferredSize(new Dimension(60, 22));
@@ -356,7 +355,7 @@ public class MainWindow extends JFrame {
 				undoButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				undoButton.setRequestFocusEnabled(false);
 				try {
-					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/undo.png")));
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/undoRev.png")));
 					image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
 					undoButton.setIcon(new ImageIcon(image));
 				} catch (Exception except) {
@@ -371,7 +370,7 @@ public class MainWindow extends JFrame {
 				redoButton.setRequestFocusEnabled(false);
 				redoButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				try {
-					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/redo.png")));
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/redoRev.png")));
 					image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
 					redoButton.setIcon(new ImageIcon(image));
 				} catch (Exception except) {
@@ -466,16 +465,16 @@ public class MainWindow extends JFrame {
 				{
 					splitPaneV.setOrientation(JSplitPane.VERTICAL_SPLIT);
 					splitPaneV.setDividerSize(20);
-					splitPaneV.setMinimumSize(new Dimension(300, 500));
-					splitPaneV.setDividerLocation(400);
-					splitPaneV.setMaximumSize(new Dimension(300, 2147483647));
+					splitPaneV.setMinimumSize(new Dimension(340, 500));
+					splitPaneV.setDividerLocation(440);
+					splitPaneV.setMaximumSize(new Dimension(340, 2147483647));
 
 					//======== panneau des paramètres ========
 					{
 						parametresPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-						parametresPanel.setMinimumSize(new Dimension(300, 400));
+						parametresPanel.setMinimumSize(new Dimension(300, 440));
 						parametresPanel.setMaximumSize(new Dimension(300, 32767));
-						parametresPanel.setPreferredSize(new Dimension(300, 300));
+						parametresPanel.setPreferredSize(new Dimension(300, 440));
 						parametresPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 20));
 
 						//---- parametreLabel ----
@@ -872,7 +871,7 @@ public class MainWindow extends JFrame {
 				splitPaneH.setRightComponent(splitPaneV);
 			}
 			this.getContentPane().add(splitPaneH);
-			this.setSize(1400, 800);
+			this.setSize(1600, 900);
 			this.setLocationRelativeTo(this.getOwner());
 		}
 	}
