@@ -1,4 +1,4 @@
-package ca.ulaval.glo2004.gui;
+package muracle.vue;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

@@ -1,8 +1,8 @@
-package ca.ulaval.glo2004;
+package muracle;
 
 
-import ca.ulaval.glo2004.gui.MainWindow;
 import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
+import muracle.vue.MainWindow;
 
 import javax.swing.*;
 

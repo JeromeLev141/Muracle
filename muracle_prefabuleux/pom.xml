@@ -70,7 +70,7 @@
           <configuration>
             <archive>
               <manifest>
-                <mainClass>ca.ulaval.glo2004.App</mainClass>
+                <mainClass>muracle.App</mainClass>
               </manifest>
             </archive>
           </configuration>
@@ -91,7 +91,7 @@
             </execution>
           </executions>
           <configuration>
-            <mainClass>ca.ulaval.glo2004.App</mainClass>
+            <mainClass>muracle.App</mainClass>
           </configuration>
         </plugin>
       </plugins>

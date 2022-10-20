@@ -1,10 +1,10 @@
-package ca.ulaval.glo2004;
+package muracle;
+
+import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
 
 /**
  * Exemple de test unitaire utilisant JUnit et Google Truth. Vous n'avez pas a faire des tests dans le cadre de votre
