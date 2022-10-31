@@ -10,6 +10,7 @@ import javax.swing.*;
 public class App {
 
     public static void main(String[] args) {
+
         MainWindow mainWindow = new MainWindow();
         try {
             UIManager.setLookAndFeel(new FlatNordIJTheme());
