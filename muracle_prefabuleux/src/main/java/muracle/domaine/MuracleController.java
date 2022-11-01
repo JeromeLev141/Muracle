@@ -142,7 +142,7 @@ public class MuracleController {
 
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {}
 
-    public void setPositionAccessoire(CoordPouce positionPost) {}à
+    public void setPositionAccessoire(CoordPouce positionPost) {}
 
     private void selectSeparateur (int index) {
         separateurSelected = index;
