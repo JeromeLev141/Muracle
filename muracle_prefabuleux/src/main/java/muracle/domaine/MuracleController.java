@@ -20,11 +20,12 @@ public class MuracleController {
     private int AccessoireSelected = -1;
     private int separateurSelected = -1;
     private boolean isVueExterieur = true;
-    private Pouce distLigneGrille = new Pouce(1, 0, 1);
-    private Stack undoPile;
-    private Stack redoPile;
+    private Pouce distLigneGrille = new Pouce("1");
+    private GenerateurPlan generateurPlan = new GenerateurPlan();
+    private Stack<Object> undoPile = new Stack<>();
+    private Stack<Object> redoPile = new Stack<>();
 
-    public MuracleController() throws FractionError {
+    public MuracleController() throws FractionError, PouceError {
     }
 
     public void creerProjet() {}

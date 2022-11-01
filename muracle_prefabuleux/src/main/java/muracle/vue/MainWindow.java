@@ -2,6 +2,7 @@ package muracle.vue;
 
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.FractionError;
+import muracle.utilitaire.PouceError;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -25,7 +26,7 @@ public class MainWindow extends JFrame {
 
 	private MuracleController controller = new MuracleController();
 
-	public MainWindow() throws FractionError {
+	public MainWindow() throws FractionError, PouceError {
 		initComponents();
 	}
 

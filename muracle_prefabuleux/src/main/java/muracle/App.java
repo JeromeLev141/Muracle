@@ -3,6 +3,7 @@ package muracle;
 
 import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
 import muracle.utilitaire.FractionError;
+import muracle.utilitaire.PouceError;
 import muracle.vue.MainWindow;
 
 import javax.swing.*;
@@ -10,7 +11,7 @@ import javax.swing.*;
 
 public class App {
 
-    public static void main(String[] args) throws FractionError {
+    public static void main(String[] args) throws FractionError, PouceError {
 
         MainWindow mainWindow = new MainWindow();
         try {
