@@ -1,18 +1,16 @@
 package muracle.vue;
 
+import muracle.domaine.MuracleController;
+import muracle.utilitaire.FractionError;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Objects;
 
 
@@ -21,12 +19,13 @@ import java.util.Objects;
  */
 public class MainWindow extends JFrame {
 
-	private double distLigneGrille = 1;
 	private char coteSelected = ' ';
 	private int murSelected = -1;
 	private Point accessoireSelected = null;
 
-	public MainWindow(){
+	private MuracleController controller = new MuracleController();
+
+	public MainWindow() throws FractionError {
 		initComponents();
 	}
 
@@ -196,59 +195,9 @@ public class MainWindow extends JFrame {
 					int returnValue = fileChooser.showSaveDialog(this);
 					if (returnValue == JFileChooser.APPROVE_OPTION) {
 						File fichier = fileChooser.getSelectedFile();
-						if(!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".svg"))
+						if (!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".svg"))
 							fichier = new File(fileChooser.getSelectedFile() + ".svg");
-
-						//a faire
-						try {
-							XMLOutputFactory factory = XMLOutputFactory.newInstance();
-							XMLStreamWriter writer = factory.createXMLStreamWriter(new FileOutputStream(fichier));
-							writer.writeStartDocument();
-
-							writer.writeStartElement("svg");
-							writer.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
-							writer.writeAttribute("width", "600");
-							writer.writeAttribute("height", "400");
-
-							//example du plan d'un mur
-
-							//plan
-							writer.writeEmptyElement("path");
-							writer.writeAttribute("d", "M 400 100 L 400 300 L 500 300 L 500 100 z" +
-									"M 100 100 L 100 300 L 200 300 L 200 100 z");
-							writer.writeAttribute("fill", "white");
-							writer.writeAttribute("stroke", "black");
-							writer.writeAttribute("stroke-width", "1");
-
-							//plis
-							writer.writeEmptyElement("path");
-							writer.writeAttribute("d", "M 410 100 L 410 90 L 490 90 L 490 100 z" +
-									"M 410 300 L 410 310 L 490 310 L 490 300 z" +
-									"M 100 110 L 90 110 L 90 290 L 100 290 z" +
-									"M 200 110 L 210 110 L 210 290 L 200 290 z");
-							writer.writeAttribute("fill", "white");
-							writer.writeAttribute("stroke", "orange");
-							writer.writeAttribute("stroke-width", "1");
-
-							//replis
-							writer.writeEmptyElement("path");
-							writer.writeAttribute("d", "M 410 90 L 430 80 L 470 80 L 490 90 z" +
-									"M 410 310 L 430 320 L 470 320 L 490 310 z" +
-									"M 90 110 L 80 120 L 80 280 L 90 290 z" +
-									"M 210 110 L 220 120 L 220 280 L 210 290 z");
-							writer.writeAttribute("fill", "white");
-							writer.writeAttribute("stroke", "blue");
-							writer.writeAttribute("stroke-width", "1");
-
-							writer.writeEndDocument();
-
-							writer.close();
-
-						} catch (IOException | XMLStreamException ex) {
-							throw new RuntimeException(ex);
-						}
-
-						System.out.println("Exportation des plans au fichier : " + fichier.getAbsolutePath());
+						controller.exporterPlan(fichier);
 					}
 				});
 				menuBar.add(exportButton);
