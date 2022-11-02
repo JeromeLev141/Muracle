@@ -197,6 +197,11 @@ public class Pouce {
 
     @Override
     public String toString() {
-        return entier + " " + fraction.toString();
+        if (fraction.toDouble() == 0)
+            return entier + "";
+        else if(entier == 0)
+            return  fraction.toString();
+        else
+            return entier + " " + fraction.toString();
     }
 }
