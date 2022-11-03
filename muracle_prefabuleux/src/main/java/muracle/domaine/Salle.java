@@ -1,6 +1,5 @@
 package muracle.domaine;
 
-import com.sun.tools.javac.comp.Todo;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
 import muracle.utilitaire.PouceError;
