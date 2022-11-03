@@ -17,7 +17,7 @@ public class App {
         try {
             UIManager.setLookAndFeel(new FlatNordIJTheme());
             SwingUtilities.updateComponentTreeUI(mainWindow);
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         mainWindow.setVisible(true);
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

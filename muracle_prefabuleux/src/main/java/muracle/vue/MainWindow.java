@@ -10,6 +10,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Objects;
@@ -146,16 +148,7 @@ public class MainWindow extends JFrame {
 				openProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				openProjectButton.setRequestFocusEnabled(false);
 				openProjectButton.setFocusPainted(false);
-				openProjectButton.addActionListener(e -> {
-					JFileChooser fileChooser = new JFileChooser();
-					fileChooser.setDialogTitle("Ouverture de Projet");
-					fileChooser.setFileFilter(new FileNameExtensionFilter("*.txt", "txt"));
-					int returnValue = fileChooser.showOpenDialog(this);
-					if (returnValue == JFileChooser.APPROVE_OPTION) {
-						File fichier = fileChooser.getSelectedFile();
-						System.out.println("Ouverture du fichier : " + fichier.getAbsolutePath());
-					}
-				});
+				openProjectButton.addActionListener(e -> controller.ouvrirProjet(this));
 				menuBar.add(openProjectButton);
 
 				//---- sauvergarder projet ----
@@ -164,23 +157,7 @@ public class MainWindow extends JFrame {
 				saveProjectButton.setPreferredSize(new Dimension(160, 22));
 				saveProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				saveProjectButton.setRequestFocusEnabled(false);
-				saveProjectButton.addActionListener(e -> {
-					JFileChooser fileChooser = new JFileChooser();
-					fileChooser.setDialogTitle("Sauvegarde de Projet");
-					fileChooser.setFileFilter(new FileNameExtensionFilter("*.txt", "txt"));
-					int returnValue = fileChooser.showSaveDialog(this);
-					if (returnValue == JFileChooser.APPROVE_OPTION) {
-						File fichier = fileChooser.getSelectedFile();
-						if(!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".txt"))
-							fichier = new File(fileChooser.getSelectedFile() + ".txt");
-						try(FileWriter fw = new FileWriter(fichier)) {
-							fw.write("test");
-						} catch (Exception except) {
-							except.printStackTrace();
-						}
-						System.out.println("Sauvegarde du fichier : " + fichier.getAbsolutePath());
-					}
-				});
+				saveProjectButton.addActionListener(e -> controller.sauvegarderProjet(this));
 				menuBar.add(saveProjectButton);
 
 				//---- exporter plan ----
@@ -189,18 +166,7 @@ public class MainWindow extends JFrame {
 				exportButton.setMaximumSize(new Dimension(100, 32767));
 				exportButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				exportButton.setRequestFocusEnabled(false);
-				exportButton.addActionListener(e -> {
-					JFileChooser fileChooser = new JFileChooser();
-					fileChooser.setDialogTitle("Exporter les plans");
-					fileChooser.setFileFilter(new FileNameExtensionFilter("*.svg", "SVG"));
-					int returnValue = fileChooser.showSaveDialog(this);
-					if (returnValue == JFileChooser.APPROVE_OPTION) {
-						File fichier = fileChooser.getSelectedFile();
-						if (!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".svg"))
-							fichier = new File(fileChooser.getSelectedFile() + ".svg");
-						controller.exporterPlan(fichier);
-					}
-				});
+				exportButton.addActionListener(e -> controller.exporterPlan(this));
 				menuBar.add(exportButton);
 
 				//---- afficher grille ----
@@ -667,6 +633,11 @@ public class MainWindow extends JFrame {
 								controller.setDistLigneGrille(distGrilleTextField.getText());
 								distGrilleTextField.setText(controller.getDistLigneGrille().toString());
 							});
+							distGrilleTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									distGrilleTextField.postActionEvent();
+								}
+							});
 
 							//---- distGrilleEndLabel ----
 							distGrilleEndLabel.setText("po");
@@ -719,6 +690,11 @@ public class MainWindow extends JFrame {
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								longPlisTextField.setText(controller.getParametrePlan(0));
 							});
+							longPlisTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									longPlisTextField.postActionEvent();
+								}
+							});
 
 							//---- longPlisEndLabel ----
 							longPlisEndLabel.setText("po");
@@ -742,6 +718,11 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								margeEpTextField.setText(controller.getParametrePlan(1));
+							});
+							margeEpTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									margeEpTextField.postActionEvent();
+								}
 							});
 
 							//---- margeEpEndLabel ----
@@ -767,6 +748,11 @@ public class MainWindow extends JFrame {
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								margeLargTextField.setText(controller.getParametrePlan(2));
 							});
+							margeLargTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									margeLargTextField.postActionEvent();
+								}
+							});
 
 							//---- margeLargEndLabel ----
 							margeLargEndLabel.setText("po");
@@ -790,6 +776,11 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								anglePlisTextField.setText(controller.getParametrePlan(3));
+							});
+							anglePlisTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									anglePlisTextField.postActionEvent();
+								}
 							});
 
 							//---- anglePlisEndLabel ----
