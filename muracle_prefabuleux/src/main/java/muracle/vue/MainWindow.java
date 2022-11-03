@@ -662,10 +662,10 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(distGrilleTextField, new GridBagConstraints(1, 11, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 10), 0, 0));
+							distGrilleTextField.setText(controller.getDistLigneGrille().toString());
 							distGrilleTextField.addActionListener(e -> {
-								if (!distGrilleTextField.getText().isEmpty()) {
-									System.out.println(distGrilleLabel.getText() + " update à " + distGrilleTextField.getText() + " " + distGrilleEndLabel.getText());
-								}
+								controller.setDistLigneGrille(distGrilleTextField.getText());
+								distGrilleTextField.setText(controller.getDistLigneGrille().toString());
 							});
 
 							//---- distGrilleEndLabel ----
@@ -713,9 +713,11 @@ public class MainWindow extends JFrame {
 							configurationPlanPanel.add(longPlisTextField, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
+							longPlisTextField.setText(controller.getParametrePlan(0));
 							longPlisTextField.addActionListener(e -> {
-								if (!longPlisTextField.getText().isEmpty())
-									System.out.println(longPlisLabel.getText() + " update à " + longPlisTextField.getText() + " " + longPlisEndLabel.getText());
+								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
+										anglePlisTextField.getText(), longPlisTextField.getText());
+								longPlisTextField.setText(controller.getParametrePlan(0));
 							});
 
 							//---- longPlisEndLabel ----
@@ -735,9 +737,11 @@ public class MainWindow extends JFrame {
 							configurationPlanPanel.add(margeEpTextField, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
+							margeEpTextField.setText(controller.getParametrePlan(1));
 							margeEpTextField.addActionListener(e -> {
-								if (!margeEpTextField.getText().isEmpty())
-									System.out.println(margeEpLabel.getText() + " update à " + margeEpTextField.getText() + " " + margeEpEndLabel.getText());
+								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
+										anglePlisTextField.getText(), longPlisTextField.getText());
+								margeEpTextField.setText(controller.getParametrePlan(1));
 							});
 
 							//---- margeEpEndLabel ----
@@ -757,9 +761,11 @@ public class MainWindow extends JFrame {
 							configurationPlanPanel.add(margeLargTextField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
+							margeLargTextField.setText(controller.getParametrePlan(2));
 							margeLargTextField.addActionListener(e -> {
-								if (!margeLargTextField.getText().isEmpty())
-									System.out.println(margeLargLabel.getText() + " update à " + margeLargTextField.getText() + " " + margeLargEndLabel.getText());
+								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
+										anglePlisTextField.getText(), longPlisTextField.getText());
+								margeLargTextField.setText(controller.getParametrePlan(2));
 							});
 
 							//---- margeLargEndLabel ----
@@ -779,9 +785,11 @@ public class MainWindow extends JFrame {
 							configurationPlanPanel.add(anglePlisTextField, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 10), 0, 0));
+							anglePlisTextField.setText(controller.getParametrePlan(3));
 							anglePlisTextField.addActionListener(e -> {
-								if (!anglePlisTextField.getText().isEmpty())
-									System.out.println(anglePlisLabel.getText() + " update à " + anglePlisTextField.getText() + " " + anglePlisEndLabel.getText());
+								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
+										anglePlisTextField.getText(), longPlisTextField.getText());
+								anglePlisTextField.setText(controller.getParametrePlan(3));
 							});
 
 							//---- anglePlisEndLabel ----

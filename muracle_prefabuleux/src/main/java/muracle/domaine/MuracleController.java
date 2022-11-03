@@ -127,8 +127,12 @@ public class MuracleController {
 
     public void getSelectedAccessoire() {}
 
-    public void setDistLigneGrille(String dist) throws FractionError, PouceError {
-        distLigneGrille = new Pouce(dist);
+    public void setDistLigneGrille(String dist) {
+        try {
+            distLigneGrille = new Pouce(dist);
+        } catch (PouceError | FractionError ignored) {
+            System.out.println("valeur invalide");
+        }
     }
 
     public Pouce getDistLigneGrille() {
@@ -159,5 +163,49 @@ public class MuracleController {
 
     public void setParametreRetourAir(String hauteur, String epaisseur, String distanceSol) {}
 
-    public void setParametrePlan(String margeEpaisseur, String margeLargeur, String anglePlis, String longueurPlis) {}
+    public String getParametrePlan(int indexParam) {
+        String paramValue = "";
+        switch (indexParam) {
+            case 0 :
+                paramValue = generateurPlan.getLongueurPlis().toString();
+                break;
+            case 1 :
+                paramValue = generateurPlan.getMargeEpaisseurMateriaux().toString();
+                break;
+            case 2 :
+                paramValue = generateurPlan.getMargeLargeurReplis().toString();
+                break;
+            case 3 :
+                paramValue = String.valueOf(generateurPlan.getAnglePlis());
+                break;
+        }
+        return  paramValue;
+    }
+
+    public void setParametrePlan(String margeEpaisseur, String margeLargeur, String anglePlis, String longueurPlis) {
+        try {
+            generateurPlan.setMargeEpaisseurMateriaux(new Pouce(margeEpaisseur));
+        } catch (PouceError | FractionError ignored) {
+            System.out.println("valeur invalide");
+        }
+        try {
+            generateurPlan.setMargeLargeurReplis(new Pouce(margeLargeur));
+        } catch (PouceError | FractionError ignored) {
+            System.out.println("valeur invalide");
+        }
+        try {
+            double angle = Double.parseDouble(anglePlis);
+            if (0 <= angle && angle <= 90)
+                generateurPlan.setAnglePlis(angle);
+            else
+                System.out.println("valeur invalide");
+        } catch (Exception ignored) {
+            System.out.println("valeur invalide");
+        }
+        try {
+            generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
+        } catch (PouceError | FractionError ignored) {
+            System.out.println("valeur invalide");
+        }
+    }
 }
