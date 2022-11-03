@@ -19,20 +19,34 @@ import java.util.Stack;
 
 public class MuracleController {
 
-    private char coteSelected = ' ';
-    private int murSelected = -1;
-    private int AccessoireSelected = -1;
-    private int separateurSelected = -1;
-    private boolean isVueExterieur = true;
-    private Pouce distLigneGrille = new Pouce("1");
-    private GenerateurPlan generateurPlan = new GenerateurPlan();
-    private Stack<Object> undoPile = new Stack<>();
-    private Stack<Object> redoPile = new Stack<>();
+    private Salle salle;
+    private char coteSelected;
+    private int murSelected;
+    private int accessoireSelected;
+    private int separateurSelected;
+    private boolean isVueExterieur;
+    private Pouce distLigneGrille;
+    private GenerateurPlan generateurPlan;
+    private Stack<Object> undoPile;
+    private Stack<Object> redoPile;
 
     public MuracleController() throws FractionError, PouceError {
+        creerProjet();
+        distLigneGrille = new Pouce("1");
+        generateurPlan = new GenerateurPlan();
     }
 
-    public void creerProjet() {}
+    public void creerProjet() throws FractionError, PouceError {
+        salle = new Salle(new Pouce("144"), new Pouce("144"),
+                new Pouce("144"), new Pouce("12"));
+        coteSelected = ' ';
+        murSelected = -1;
+        accessoireSelected = -1;
+        separateurSelected = -1;
+        isVueExterieur = true;
+        undoPile = new Stack<>();
+        redoPile = new Stack<>();
+    }
 
     public void ouvrirProjet(Component parent) {
         JFileChooser fileChooser = new JFileChooser();
@@ -133,7 +147,9 @@ public class MuracleController {
 
     public void redoChange() {}
 
-    public void getSalle() {}
+    public Salle getSalle() {
+        return salle;
+    }
 
     public void selectComponent(CoordPouce coordPouce) {}
 
@@ -145,7 +161,11 @@ public class MuracleController {
         coteSelected = orientation;
     }
 
-    public void getSelectedCote() {}
+    public Cote getSelectedCote() {
+        if (coteSelected != ' ')
+            return salle.getCote(coteSelected);
+        return null;
+    }
 
     public void setIsVueExterieur(boolean exterieur) {
         isVueExterieur = exterieur;
@@ -159,11 +179,19 @@ public class MuracleController {
         murSelected = index;
     }
 
-    public void getSelectedMur() {}
+    public Mur getSelectedMur() {
+        if (murSelected != -1)
+            return getSelectedCote().getMurs().get(murSelected);
+        return null;
+    }
 
     public void selectAccessoire(CoordPouce position) {}
 
-    public void getSelectedAccessoire() {}
+    public Accessoire getSelectedAccessoire() {
+        if (accessoireSelected != 1)
+            return getSelectedMur().getAccessoire(accessoireSelected);
+        return null;
+    }
 
     public void setDistLigneGrille(String dist) {
         try {
@@ -178,13 +206,35 @@ public class MuracleController {
         return distLigneGrille;
     }
 
-    public void setDimensionSalle(String largeur, String longueur, String hauteur, String epaisseur) {}
+    public void setDimensionSalle(String largeur, String longueur, String hauteur, String profondeur) {
+        try {
+            if (!largeur.contains("-"))
+                salle.setLargeur(new Pouce(largeur));
+            if (!longueur.contains("-"))
+                salle.setLongueur(new Pouce(longueur));
+            if (!hauteur.contains("-"))
+                salle.setHauteur(new Pouce(hauteur));
+            if (!profondeur.contains("-"))
+                salle.setProfondeur(new Pouce(profondeur));
+        } catch (PouceError | FractionError ignored) {
+            System.out.println("valeur invalide");
+        }
+    }
 
     public void addAccessoire(int indexMur, String type, CoordPouce position) {}
 
     public void removeAccessoire(int indexMur, CoordPouce position) {}
 
-    public void setDimensionAccessoire(String largeur, String hauteur, String marge) {}
+    public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
+        /*try {
+            if (!largeur.contains("-"))
+            if (!hauteur.contains("-"))
+            if (!marge.contains("-"))
+        } catch (PouceError | FractionError ignored) {
+            System.out.println("valeur invalide");
+        }
+         */
+    }
 
     public void setPositionAccessoire(CoordPouce positionPost) {}
 
@@ -192,7 +242,11 @@ public class MuracleController {
         separateurSelected = index;
     }
 
-    public void getSelectedSeparateur() {}
+    public Pouce getSelectedSeparateur() {
+        if (separateurSelected != -1)
+            return getSelectedCote().getSeparateurs().get(separateurSelected);
+        return null;
+    }
 
     public void addSeparateur(CoordPouce coord) {}
 
@@ -200,7 +254,18 @@ public class MuracleController {
 
     public void moveSeparateur(Pouce position) {}
 
-    public void setParametreRetourAir(String hauteur, String epaisseur, String distanceSol) {}
+    public void setParametreRetourAir(String hauteur, String epaisseur, String distanceSol) {
+        try {
+            if (!hauteur.contains("-"))
+                salle.setHauteurRetourAir(new Pouce(hauteur));
+            if (!epaisseur.contains("-"))
+                salle.setEpaisseurTrouRetourAir(new Pouce(epaisseur));
+            if (!distanceSol.contains("-"))
+                salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
+        } catch (PouceError | FractionError ignored) {
+            System.out.println("valeur invalide");
+        }
+    }
 
     public String getParametrePlan(int indexParam) {
         String paramValue = "";
@@ -225,25 +290,13 @@ public class MuracleController {
         try {
             if (!margeEpaisseur.contains("-"))
                 generateurPlan.setMargeEpaisseurMateriaux(new Pouce(margeEpaisseur));
-        } catch (PouceError | FractionError ignored) {
-            System.out.println("valeur invalide");
-        }
-        try {
             if (!margeLargeur.contains("-"))
                 generateurPlan.setMargeLargeurReplis(new Pouce(margeLargeur));
-        } catch (PouceError | FractionError ignored) {
-            System.out.println("valeur invalide");
-        }
-        try {
             double angle = Double.parseDouble(anglePlis);
             if (0 <= angle && angle <= 90)
                 generateurPlan.setAnglePlis(angle);
             else
                 System.out.println("valeur invalide");
-        } catch (Exception ignored) {
-            System.out.println("valeur invalide");
-        }
-        try {
             if (!longueurPlis.contains("-"))
                 generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
         } catch (PouceError | FractionError ignored) {

@@ -418,9 +418,16 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(largSalleTextField, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 									new Insets(0, 0, 10, 10), 0, 0));
+							largSalleTextField.setText(controller.getSalle().getLargeur().toString());
 							largSalleTextField.addActionListener(e -> {
-								if (!largSalleTextField.getText().isEmpty())
-									System.out.println(largSalleLabel.getText() + " update à " + largSalleTextField.getText() + " " + largSalleEndLabel.getText());
+								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
+										hSalleTextField.getText(), epMursTextField.getText());
+								largSalleTextField.setText(controller.getSalle().getLargeur().toString());
+							});
+							largSalleTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									largSalleTextField.postActionEvent();
+								}
 							});
 
 							//---- largSalleEndLabel ----
@@ -440,9 +447,16 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(longSalleTextField, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 									new Insets(0, 0, 10, 10), 0, 0));
+							longSalleTextField.setText(controller.getSalle().getLongueur().toString());
 							longSalleTextField.addActionListener(e -> {
-								if (!longSalleTextField.getText().isEmpty())
-									System.out.println(longSalleLabel.getText() + " update à " + longSalleTextField.getText() + " " + longSalleEndLabel.getText());
+								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
+										hSalleTextField.getText(), epMursTextField.getText());
+								longSalleTextField.setText(controller.getSalle().getLongueur().toString());
+							});
+							longSalleTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									longSalleTextField.postActionEvent();
+								}
 							});
 
 							//---- longSalleEndLabel ----
@@ -462,9 +476,16 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(hSalleTextField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 									new Insets(0, 0, 10, 10), 0, 0));
+							hSalleTextField.setText(controller.getSalle().getHauteur().toString());
 							hSalleTextField.addActionListener(e -> {
-								if (!hSalleTextField.getText().isEmpty())
-									System.out.println(hSalleLabel.getText() + " update à " + hSalleTextField.getText() + " " + hSalleEndLabel.getText());
+								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
+										hSalleTextField.getText(), epMursTextField.getText());
+								hSalleTextField.setText(controller.getSalle().getHauteur().toString());
+							});
+							hSalleTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									hSalleTextField.postActionEvent();
+								}
 							});
 
 							//---- hSalleEndLabel ----
@@ -484,9 +505,15 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(epMursTextField, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 									new Insets(0, 0, 10, 10), 0, 0));
+							epMursTextField.setText(controller.getSalle().getProfondeur().toString());
 							epMursTextField.addActionListener(e -> {
-								if (!epMursTextField.getText().isEmpty()) {
-									System.out.println(epMursLabel.getText() + " update à " + epMursTextField.getText() + " " + epMursEndLabel.getText());
+								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
+										hSalleTextField.getText(), epMursTextField.getText());
+								epMursTextField.setText(controller.getSalle().getProfondeur().toString());
+							});
+							epMursTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									epMursTextField.postActionEvent();
 								}
 							});
 
@@ -511,9 +538,16 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(epTrouTextField, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
+							epTrouTextField.setText(controller.getSalle().getEpaisseurTrouRetourAir().toString());
 							epTrouTextField.addActionListener(e -> {
-								if (!epTrouTextField.getText().isEmpty())
-									System.out.println(epTrouLabel.getText() + " update à " + epTrouTextField.getText() + " " + epTrouEndLabel.getText());
+								controller.setParametreRetourAir(hRetourAirTextField.getText(),
+										epTrouTextField.getText(), distSolRetourAirTextField.getText());
+								epTrouTextField.setText(controller.getSalle().getEpaisseurTrouRetourAir().toString());
+							});
+							epTrouTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									epTrouTextField.postActionEvent();
+								}
 							});
 
 							//---- epTrouEndLabel ----
@@ -533,9 +567,16 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(hRetourAirTextField, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
+							hRetourAirTextField.setText(controller.getSalle().getHauteurRetourAir().toString());
 							hRetourAirTextField.addActionListener(e -> {
-								if (!hRetourAirTextField.getText().isEmpty())
-									System.out.println(hRetourAirLabel.getText() + " update à " + hRetourAirTextField.getText() + " " + hRetourAirEndLabel.getText());
+								controller.setParametreRetourAir(hRetourAirTextField.getText(),
+										epTrouTextField.getText(), distSolRetourAirTextField.getText());
+								hRetourAirTextField.setText(controller.getSalle().getHauteurRetourAir().toString());
+							});
+							hRetourAirTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									hRetourAirTextField.postActionEvent();
+								}
 							});
 
 							//---- hRetourAirEndLabel ----
@@ -555,9 +596,16 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(distSolRetourAirTextField, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
+							distSolRetourAirTextField.setText(controller.getSalle().getDistanceTrouRetourAir().toString());
 							distSolRetourAirTextField.addActionListener(e -> {
-								if (!distSolRetourAirTextField.getText().isEmpty())
-									System.out.println(distSolRetourAirLabel.getText() + " update à " + distSolRetourAirTextField.getText() + " " + distSolRetourAirEndLabel.getText());
+								controller.setParametreRetourAir(hRetourAirTextField.getText(),
+										epTrouTextField.getText(), distSolRetourAirTextField.getText());
+								distSolRetourAirTextField.setText(controller.getSalle().getDistanceTrouRetourAir().toString());
+							});
+							distSolRetourAirTextField.addFocusListener(new FocusAdapter() {
+								public void focusLost(FocusEvent e) {
+									distSolRetourAirTextField.postActionEvent();
+								}
 							});
 
 							//---- distSolRetourAirEndLabel ----

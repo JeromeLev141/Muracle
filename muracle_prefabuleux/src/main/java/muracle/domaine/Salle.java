@@ -1,6 +1,5 @@
 package muracle.domaine;
 
-import com.sun.tools.javac.comp.Todo;
 import muracle.utilitaire.Pouce;
 
 public class Salle implements java.io.Serializable{
