@@ -1,5 +1,6 @@
 package muracle.domaine;
 
+import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
 
 import java.util.ArrayList;
@@ -51,18 +52,28 @@ public class Cote implements java.io.Serializable{
     public ArrayList<Pouce> getSeparateurs() {
         return separateurs;
     }
-    public void addSeparateur(Pouce position){
-        //TODO
+    public void addSeparateur(Pouce position) throws FractionError {
+        int index = 0;
+        for (Pouce separateur : this.separateurs) {
+            if (position.compare(separateur) == 1) {
+                index = index + 1;
+            }
+        }
+        this.separateurs.add(index, position);
+        if (index + 1 == this.separateurs.size()){
+            Mur newMur = new Mur(this.separateurs.get(index + 1).sub(this.separateurs.get(index)),this.getHauteur());
+
+        }
+
     }
     public void deleteSeparateur(int index){
-        //TODO
+        this.separateurs.remove(index);
     }
     public Pouce getSeparateur(int index){
         return this.separateurs.get(index);
-        //TODO
     }
     public void setSeparateur(int index, Pouce position){
-        //TODO
+        this.separateurs.add(index, position);
     }
     private void updateCoins(){
         //TODO
