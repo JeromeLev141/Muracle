@@ -1,6 +1,9 @@
 package muracle.domaine;
 
+import com.sun.tools.javac.comp.Todo;
+import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
+import muracle.utilitaire.PouceError;
 
 public class Salle implements java.io.Serializable{
     private Cote[] tableauCote;
@@ -14,11 +17,14 @@ public class Salle implements java.io.Serializable{
 
     public Salle(){
     }
-    public Salle(Pouce largeur,Pouce hauteur, Pouce longueur, Pouce profondeur){
+    public Salle(Pouce largeur,Pouce hauteur, Pouce longueur, Pouce profondeur) throws FractionError, PouceError {
         this.largeur = largeur;
         this.hauteur = hauteur;
         this.longueur = longueur;
         this.profondeur = profondeur;
+        this.distanceTrouRetourAir = new Pouce("10");
+        this.epaisseurTrouRetourAir = new Pouce("8");
+        this.hauteurRetourAir = new Pouce("12");
     }
 
     public Cote[] getTableauCote() {
