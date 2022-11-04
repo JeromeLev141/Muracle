@@ -3,11 +3,12 @@ package muracle.domaine.drawer;
 import muracle.domaine.MuracleController;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 
 public class Afficheur {
 
-    private final MuracleController controller;
-    private Dimension initialDimension;
+    protected final MuracleController controller;
+    protected Dimension initialDimension;
 
     public Afficheur(MuracleController controller, Dimension initDim) {
         this.controller = controller;
@@ -15,10 +16,20 @@ public class Afficheur {
     }
 
     public void draw(Graphics g) {
-        drawGrille(g);
+        Graphics2D g2d = (Graphics2D) g;
+        drawGrille(g2d);
     }
 
-    private static void drawGrille(Graphics g) {
-        //do something
+    private void drawGrille(Graphics2D g) {
+        double posX, posY;
+        posX = posY = controller.getDistLigneGrille().toDouble();
+        while (posX < initialDimension.width) {
+            g.draw(new Line2D.Double(posX, 0, posX, initialDimension.height));
+            posX += controller.getDistLigneGrille().toDouble();
+        }
+        while (posY < initialDimension.height) {
+            g.draw(new Line2D.Double(0, posY, initialDimension.width, posY));
+            posY += controller.getDistLigneGrille().toDouble();
+        }
     }
 }

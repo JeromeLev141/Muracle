@@ -195,6 +195,10 @@ public class Pouce {
         return fract;
     }
 
+    public double toDouble(){
+        return entier + fraction.toDouble();
+    }
+
     @Override
     public String toString() {
         if (fraction.toDouble() == 0)
