@@ -1,6 +1,7 @@
 package muracle.domaine.drawer;
 
 import muracle.domaine.MuracleController;
+import muracle.utilitaire.FractionError;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -15,12 +16,12 @@ public class Afficheur {
         initialDimension = initDim;
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g) throws FractionError {
         Graphics2D g2d = (Graphics2D) g;
         drawGrille(g2d);
     }
 
-    private void drawGrille(Graphics2D g) {
+    private void drawGrille(Graphics2D g) throws FractionError {
         double posX, posY;
         posX = posY = controller.getDistLigneGrille().toDouble();
         while (posX < initialDimension.width) {
