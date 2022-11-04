@@ -1,6 +1,7 @@
 package muracle.domaine.drawer;
 
 import muracle.domaine.Cote;
+import muracle.domaine.Mur;
 import muracle.domaine.MuracleController;
 import muracle.domaine.Salle;
 import muracle.utilitaire.FractionError;
@@ -28,7 +29,7 @@ public class AfficheurPlanSalle extends Afficheur{
         posX = (initialDimension.width - salle.getLargeur().toDouble()) / 2;
         posY = (initialDimension.getHeight() - salle.getLongueur().toDouble()) / 2;
         w = salle.getLargeur().toDouble();
-        h = salle.getHauteur().toDouble();
+        h = salle.getLongueur().toDouble();
         ep = salle.getProfondeur().toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
@@ -77,5 +78,37 @@ public class AfficheurPlanSalle extends Afficheur{
         }
     }
 
-    private void drawTrouRetourAir(Graphics2D g) {}
+    private void drawTrouRetourAir(Graphics2D g) throws FractionError {
+        /*Cote cote;
+        // south
+        cote = controller.getSalle().getCote('S');
+        for (int i = 0; i < cote.getMurs().size(); i++) {
+            Mur mur = cote.getMurs().get(i);
+            for (int j = 0; j < mur.getAccessoires().length; j++) {
+                if (mur.getAccessoire(i).)
+                    g.draw(new Line2D.Double());
+            }
+        }
+
+        // north
+        cote = controller.getSalle().getCote('N');
+        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
+            g.draw(new Line2D.Double(posX + w -cote.getSeparateur(i).toDouble(), posY,
+                    posX + w - cote.getSeparateur(i).toDouble(), posY - ep));
+        }
+
+        // east
+        cote = controller.getSalle().getCote('E');
+        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
+            g.draw(new Line2D.Double(posX + w, posY + h - cote.getSeparateur(i).toDouble(),
+                    posX + w + ep, posY + h - cote.getSeparateur(i).toDouble()));
+        }
+
+        // west
+        cote = controller.getSalle().getCote('E');
+        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
+            g.draw(new Line2D.Double(posX, posY + cote.getSeparateur(i).toDouble(),
+                    posX - ep, posY + cote.getSeparateur(i).toDouble()));
+        }*/
+    }
 }
