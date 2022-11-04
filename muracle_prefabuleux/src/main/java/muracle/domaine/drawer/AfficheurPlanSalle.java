@@ -11,25 +11,33 @@ import java.awt.geom.Rectangle2D;
 
 public class AfficheurPlanSalle extends Afficheur{
 
+    private double posX;
+    private double posY;
+    private double w;
+    private double h;
+    private double ep;
+
     public AfficheurPlanSalle(MuracleController controller, Dimension initDim) {
         super(controller, initDim);
     }
 
     public void draw(Graphics g) throws FractionError {
         super.draw(g);
+
+        Salle salle = controller.getSalle();
+        posX = (initialDimension.width - salle.getLargeur().toDouble()) / 2;
+        posY = (initialDimension.getHeight() - salle.getLongueur().toDouble()) / 2;
+        w = salle.getLargeur().toDouble();
+        h = salle.getHauteur().toDouble();
+        ep = salle.getProfondeur().toDouble();
+
         Graphics2D g2d = (Graphics2D) g;
         drawSalle(g2d);
         drawSeparateur(g2d);
         drawTrouRetourAir(g2d);
     }
 
-    private void drawSalle(Graphics2D g) throws FractionError {
-        Salle salle = controller.getSalle();
-        double posX = (initialDimension.width - salle.getLargeur().toDouble()) / 2;
-        double posY = (initialDimension.getHeight() - salle.getLongueur().toDouble()) / 2;
-        double w = salle.getLargeur().toDouble();
-        double h = salle.getHauteur().toDouble();
-        double ep = salle.getProfondeur().toDouble();
+    private void drawSalle(Graphics2D g) {
         g.draw(new Rectangle2D.Double(posX, posY, w, h));
         g.draw(new Rectangle2D.Double(posX - ep, posY - ep, w + 2 * ep, h + 2 * ep));
         g.draw(new Line2D.Double(posX, posY, posX - ep, posY - ep));
@@ -39,12 +47,6 @@ public class AfficheurPlanSalle extends Afficheur{
     }
 
     private void drawSeparateur(Graphics2D g) throws FractionError {
-        Salle salle = controller.getSalle();
-        double posX = (initialDimension.width - salle.getLargeur().toDouble()) / 2;
-        double posY = (initialDimension.getHeight() - salle.getLongueur().toDouble()) / 2;
-        double w = salle.getLargeur().toDouble();
-        double h = salle.getHauteur().toDouble();
-        double ep = salle.getProfondeur().toDouble();
         Cote cote;
         // south
         cote = controller.getSalle().getCote('S');
