@@ -50,7 +50,11 @@ public class Pouce {
             }
         else
             throw new PouceError("la string d'entré est invalide");
-
+        
+        if(this.fraction.toDouble() < 0 && this.entier != 0){
+            this.entier *= -1;
+            this.fraction.mulRef(-1);
+        }
 
 
     }
@@ -193,6 +197,10 @@ public class Pouce {
         Fraction fract = this.fraction.copy();
         fract.setNum(fract.getNum() + entier*fract.getDenum());
         return fract;
+    }
+
+    public Double toDouble() throws FractionError {
+        return pouce2Fraction().toDouble();
     }
 
     @Override
