@@ -12,7 +12,6 @@ import javax.swing.*;
 public class App {
 
     public static void main(String[] args) throws FractionError, PouceError {
-
         MainWindow mainWindow = new MainWindow();
         try {
             UIManager.setLookAndFeel(new FlatNordIJTheme());

@@ -8,12 +8,9 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.Objects;
 
 
@@ -26,7 +23,7 @@ public class MainWindow extends JFrame {
 	private int murSelected = -1;
 	private Point accessoireSelected = null;
 
-	private MuracleController controller = new MuracleController();
+	protected MuracleController controller = new MuracleController();
 
 	public MainWindow() throws FractionError, PouceError {
 		initComponents();
@@ -50,7 +47,7 @@ public class MainWindow extends JFrame {
 		JSplitPane splitPaneV = new JSplitPane();
 
 		//Panneau de dessin
-		JPanel drawingPanel = new JPanel();
+		DrawingPanel drawingPanel = new DrawingPanel(this);
 
 		//seulement pour demo
 		JButton coteButton = new JButton();
@@ -176,14 +173,9 @@ public class MainWindow extends JFrame {
 				showGrilleButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				showGrilleButton.setRequestFocusEnabled(false);
 				showGrilleButton.addActionListener(e -> {
-					if (!showGrilleButton.isSelected()) {
-						showGrilleButton.setSelected(false);
-						System.out.println("Grille retirer");
-					}
-					else {
-						showGrilleButton.setSelected(true);
-						System.out.println("Affichage de la grille");
-					}
+					showGrilleButton.setSelected(showGrilleButton.isSelected());
+					controller.reverseIsGrilleShown();
+					drawingPanel.repaint();
 				});
 				menuBar.add(showGrilleButton);
 
@@ -308,6 +300,7 @@ public class MainWindow extends JFrame {
 				{
 					drawingPanel.setMinimumSize(new Dimension(800, 500));
 					drawingPanel.setBackground(Color.white);
+					drawingPanel.setBorder(BorderFactory.createLineBorder(Color.black, 4));
 					drawingPanel.setLayout(new GridBagLayout());
 					((GridBagLayout) drawingPanel.getLayout()).columnWidths = new int[] {0, 0};
 					((GridBagLayout) drawingPanel.getLayout()).rowHeights = new int[] {0, 0};
@@ -330,8 +323,8 @@ public class MainWindow extends JFrame {
 								parametresModifPanel.getComponent(i).setVisible(false);
 							sepParam2.setVisible(false);
 						});
-						drawingPanel.add(coteButton, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
-								GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+						/*drawingPanel.add(coteButton, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+								GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));*/
 
 						murButton.setText("Selectionner un mur (demo)");
 						murButton.setVisible(false);
@@ -349,9 +342,9 @@ public class MainWindow extends JFrame {
 								voirPlanButton.setVisible(false);
 							}
 						});
-						drawingPanel.add(murButton, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
+						/*drawingPanel.add(murButton, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-
+*/
 						accessoireButton.setText("Selectionner un accessoire (demo)");
 						accessoireButton.setVisible(false);
 						accessoireButton.addActionListener(e -> {
@@ -370,8 +363,8 @@ public class MainWindow extends JFrame {
 								sepParam2.setVisible(false);
 							}
 						});
-						drawingPanel.add(accessoireButton, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
-								GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+						/*drawingPanel.add(accessoireButton, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+								GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));*/
 					}
 
 					splitPaneH.setLeftComponent(drawingPanel);
@@ -423,6 +416,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								largSalleTextField.setText(controller.getSalle().getLargeur().toString());
+								drawingPanel.repaint();
 							});
 							largSalleTextField.addFocusListener(new FocusAdapter() {
 								public void focusLost(FocusEvent e) {
@@ -452,6 +446,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								longSalleTextField.setText(controller.getSalle().getLongueur().toString());
+								drawingPanel.repaint();
 							});
 							longSalleTextField.addFocusListener(new FocusAdapter() {
 								public void focusLost(FocusEvent e) {
@@ -481,6 +476,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								hSalleTextField.setText(controller.getSalle().getHauteur().toString());
+								drawingPanel.repaint();
 							});
 							hSalleTextField.addFocusListener(new FocusAdapter() {
 								public void focusLost(FocusEvent e) {
@@ -510,6 +506,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								epMursTextField.setText(controller.getSalle().getProfondeur().toString());
+								drawingPanel.repaint();
 							});
 							epMursTextField.addFocusListener(new FocusAdapter() {
 								public void focusLost(FocusEvent e) {
@@ -543,6 +540,7 @@ public class MainWindow extends JFrame {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
 								epTrouTextField.setText(controller.getSalle().getEpaisseurTrouRetourAir().toString());
+								drawingPanel.repaint();
 							});
 							epTrouTextField.addFocusListener(new FocusAdapter() {
 								public void focusLost(FocusEvent e) {
@@ -680,6 +678,7 @@ public class MainWindow extends JFrame {
 							distGrilleTextField.addActionListener(e -> {
 								controller.setDistLigneGrille(distGrilleTextField.getText());
 								distGrilleTextField.setText(controller.getDistLigneGrille().toString());
+								drawingPanel.repaint();
 							});
 							distGrilleTextField.addFocusListener(new FocusAdapter() {
 								public void focusLost(FocusEvent e) {

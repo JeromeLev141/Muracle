@@ -7,6 +7,7 @@ import muracle.domaine.Salle;
 import muracle.utilitaire.FractionError;
 
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
@@ -33,14 +34,23 @@ public class AfficheurPlanSalle extends Afficheur{
         ep = salle.getProfondeur().toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         drawSalle(g2d);
         drawSeparateur(g2d);
         drawTrouRetourAir(g2d);
     }
 
     private void drawSalle(Graphics2D g) {
-        g.draw(new Rectangle2D.Double(posX, posY, w, h));
-        g.draw(new Rectangle2D.Double(posX - ep, posY - ep, w + 2 * ep, h + 2 * ep));
+        Rectangle2D.Double rectInt = new Rectangle2D.Double(posX, posY, w, h);
+        Rectangle2D.Double rectExt = new Rectangle2D.Double(posX - ep, posY - ep, w + 2 * ep, h + 2 * ep);
+        Area exterieur = new Area(rectExt);
+        Area interieur = new Area(rectInt);
+        exterieur.subtract(interieur);
+        g.setColor(subColor);
+        g.fill(exterieur);
+        g.setColor(mainColor);
+        g.draw(rectInt);
+        g.draw(rectExt);
         g.draw(new Line2D.Double(posX, posY, posX - ep, posY - ep));
         g.draw(new Line2D.Double(posX + w, posY, posX + w + ep , posY - ep));
         g.draw(new Line2D.Double(posX, posY + h, posX - ep, posY + h + ep));

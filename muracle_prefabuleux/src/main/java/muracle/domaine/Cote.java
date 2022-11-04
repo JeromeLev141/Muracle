@@ -19,6 +19,9 @@ public class Cote implements java.io.Serializable{
         this.orientation = orientation;
         this.largeur = largeur;
         this.hauteur = hauteur;
+
+        murs = new ArrayList<>();
+        separateurs = new ArrayList<>();
     }
 
     public char getOrientation() {

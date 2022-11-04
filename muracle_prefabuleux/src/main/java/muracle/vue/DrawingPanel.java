@@ -1,5 +1,8 @@
 package muracle.vue;
 
+import muracle.domaine.MuracleController;
+import muracle.domaine.drawer.Afficheur;
+import muracle.domaine.drawer.AfficheurPlanSalle;
 import muracle.utilitaire.*;
 
 import javax.swing.*;
@@ -30,7 +33,18 @@ public class DrawingPanel extends JPanel {
         /*
         Fonction non terminé
          */
-        super.paintComponent(g);
+        if (mainWindow != null)
+        {
+            super.paintComponent(g);
+            Afficheur drawer = new Afficheur(mainWindow.controller, getSize());
+            if (mainWindow.controller.getSelectedCote() == null)
+                drawer = new AfficheurPlanSalle(mainWindow.controller, getSize());
+            try {
+                drawer.draw(g);
+            } catch (FractionError e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void updateParametre(Dimension dimPanel, Dimension dimPlan){

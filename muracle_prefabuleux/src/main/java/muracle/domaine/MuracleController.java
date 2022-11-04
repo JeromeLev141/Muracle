@@ -26,13 +26,15 @@ public class MuracleController {
     private int separateurSelected;
     private boolean isVueExterieur;
     private Pouce distLigneGrille;
+    private boolean isGrilleShown;
     private GenerateurPlan generateurPlan;
     private Stack<Object> undoPile;
     private Stack<Object> redoPile;
 
     public MuracleController() throws FractionError, PouceError {
         creerProjet();
-        distLigneGrille = new Pouce("1");
+        distLigneGrille = new Pouce("12");
+        isGrilleShown = false;
         generateurPlan = new GenerateurPlan();
     }
 
@@ -204,6 +206,14 @@ public class MuracleController {
 
     public Pouce getDistLigneGrille() {
         return distLigneGrille;
+    }
+
+    public boolean isGrilleShown() {
+        return isGrilleShown;
+    }
+
+    public void reverseIsGrilleShown() {
+        isGrilleShown = !isGrilleShown;
     }
 
     public void setDimensionSalle(String largeur, String longueur, String hauteur, String profondeur) {
