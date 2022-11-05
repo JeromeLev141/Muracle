@@ -1,9 +1,12 @@
 package muracle.vue;
 
-import muracle.domaine.MuracleController;
 import muracle.domaine.drawer.Afficheur;
+import muracle.domaine.drawer.AfficheurElevationCote;
 import muracle.domaine.drawer.AfficheurPlanSalle;
-import muracle.utilitaire.*;
+import muracle.utilitaire.CoordPouce;
+import muracle.utilitaire.Fraction;
+import muracle.utilitaire.FractionError;
+import muracle.utilitaire.Pouce;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,6 +42,8 @@ public class DrawingPanel extends JPanel {
             Afficheur drawer = new Afficheur(mainWindow.controller, getSize());
             if (mainWindow.controller.getSelectedCote() == null)
                 drawer = new AfficheurPlanSalle(mainWindow.controller, getSize());
+            else if (mainWindow.controller.getSelectedMur() == null)
+                drawer = new AfficheurElevationCote(mainWindow.controller, getSize());
             try {
                 drawer.draw(g);
             } catch (FractionError e) {

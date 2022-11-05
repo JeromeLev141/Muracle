@@ -159,7 +159,7 @@ public class MuracleController {
 
     public void selectCoteComponent(CoordPouce coordPouce) {}
 
-    private void selectCote(char orientation) {
+    public void selectCote(char orientation) {
         coteSelected = orientation;
     }
 

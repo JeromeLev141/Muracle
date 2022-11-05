@@ -1,15 +1,16 @@
 package muracle.domaine.drawer;
 
 import muracle.domaine.Cote;
-import muracle.domaine.Mur;
 import muracle.domaine.MuracleController;
 import muracle.domaine.Salle;
 import muracle.utilitaire.FractionError;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Objects;
 
 public class AfficheurPlanSalle extends Afficheur{
 
@@ -38,6 +39,7 @@ public class AfficheurPlanSalle extends Afficheur{
         drawSalle(g2d);
         drawSeparateur(g2d);
         drawTrouRetourAir(g2d);
+        drawVue(g);
     }
 
     private void drawSalle(Graphics2D g) {
@@ -120,5 +122,15 @@ public class AfficheurPlanSalle extends Afficheur{
             g.draw(new Line2D.Double(posX, posY + cote.getSeparateur(i).toDouble(),
                     posX - ep, posY + cote.getSeparateur(i).toDouble()));
         }*/
+    }
+
+    private void drawVue(Graphics g) {
+        try {
+            Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/vues/vueDessus.png")));
+            image = image.getScaledInstance( 64, 64,  Image.SCALE_SMOOTH ) ;
+            g.drawImage(image, initialDimension.width - 96, 32, null);
+        } catch (Exception except) {
+            except.printStackTrace();
+        }
     }
 }

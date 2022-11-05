@@ -1,14 +1,15 @@
 package muracle.domaine.drawer;
 
-import muracle.domaine.Accessoire;
 import muracle.domaine.Cote;
-import muracle.domaine.Mur;
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.FractionError;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Objects;
 
 public class AfficheurElevationCote extends Afficheur {
 
@@ -34,17 +35,25 @@ public class AfficheurElevationCote extends Afficheur {
         drawCote(g2d);
         drawSeparateur(g2d);
         drawAccessoire(g2d);
+        drawVue(g);
     }
 
     private void drawCote(Graphics2D g) {
-        g.draw(new Rectangle2D.Double(posX, posY, w, h));
+        Rectangle2D.Double rect = new Rectangle2D.Double(posX, posY, w, h);
+        g.setColor(subColor);
+        g.fill(new Area(rect));
+        g.setColor(mainColor);
+        g.draw(rect);
     }
 
     private void drawSeparateur(Graphics2D g) throws FractionError {
         Cote cote = controller.getSelectedCote();
         for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            g.draw(new Line2D.Double(cote.getSeparateur(i).toDouble(), posY,
+            if (controller.isVueExterieur())
+                g.draw(new Line2D.Double(cote.getSeparateur(i).toDouble(), posY,
                     cote.getSeparateur(i).toDouble(), posY + h));
+            else g.draw(new Line2D.Double(w - cote.getSeparateur(i).toDouble(), posY,
+                    w - cote.getSeparateur(i).toDouble(), posY + h));
         }
     }
 
@@ -58,5 +67,20 @@ public class AfficheurElevationCote extends Afficheur {
                 g.draw(new Rectangle2D.Double(posX + Accessoire));
             }
         }*/
+    }
+
+    private void drawVue(Graphics g) {
+        try {
+            Image image;
+            String path = "/images/vues/vue" + controller.getSelectedCote().getOrientation();
+            if (controller.isVueExterieur())
+                path += "Ext.png";
+            else path += "Int.png";
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource(path)));
+            image = image.getScaledInstance( 64, 64,  Image.SCALE_SMOOTH ) ;
+            g.drawImage(image, initialDimension.width - 96, 32, null);
+        } catch (Exception except) {
+            except.printStackTrace();
+        }
     }
 }

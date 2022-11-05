@@ -252,6 +252,9 @@ public class MainWindow extends JFrame {
 					for (int i = 0; i < 22; i++)
 						parametresModifPanel.getComponent(i).setVisible(true);
 					sepParam2.setVisible(true);
+
+					controller.selectCote(' ');
+					drawingPanel.repaint();
 				});
 				menuBar.add(retourVueHautButton);
 
@@ -317,14 +320,16 @@ public class MainWindow extends JFrame {
 							murButton.setVisible(true);
 							accessoireButton.setVisible(true);
 
-							coteSelected = 'S';
+							controller.selectCote('N');
 							coteButton.setVisible(false);
 							for (int i = 0; i < 22; i++)
 								parametresModifPanel.getComponent(i).setVisible(false);
 							sepParam2.setVisible(false);
+
+							drawingPanel.repaint();
 						});
-						/*drawingPanel.add(coteButton, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
-								GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));*/
+						drawingPanel.add(coteButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+								GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
 						murButton.setText("Selectionner un mur (demo)");
 						murButton.setVisible(false);
