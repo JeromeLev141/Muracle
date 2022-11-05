@@ -11,10 +11,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.Base64;
 import java.util.Stack;
 
 public class MuracleController {
@@ -28,8 +26,8 @@ public class MuracleController {
     private Pouce distLigneGrille;
     private boolean isGrilleShown;
     private GenerateurPlan generateurPlan;
-    private Stack<Object> undoPile;
-    private Stack<Object> redoPile;
+    private Stack<String> undoPile;
+    private Stack<String> redoPile;
 
     public MuracleController() throws FractionError, PouceError {
         creerProjet();
@@ -143,11 +141,40 @@ public class MuracleController {
 
     public void fermerProjet() {}
 
-    public void pushChange() {}
+    public void pushChange(Stack<String> pile) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(salle);
+        oos.close();
+        pile.push(Base64.getEncoder().encodeToString(baos.toByteArray()));
+    }
 
-    public void undoChange() {}
+    public void pushNewChange() throws IOException {
+        pushChange(undoPile);
+        redoPile.clear();
+    }
 
-    public void redoChange() {}
+    public Salle readChange(String salleEnString) throws IOException, ClassNotFoundException {
+        byte [] bytes = Base64.getDecoder().decode(salleEnString);
+        ObjectInputStream ois = new ObjectInputStream( new ByteArrayInputStream(bytes) );
+        Salle salle  = (Salle) ois .readObject();
+        ois.close();
+        return salle;
+    }
+
+    public void undoChange() throws IOException, ClassNotFoundException {
+        if (undoPile.size() != 0) {
+            pushChange(redoPile);
+            salle = readChange(undoPile.pop());
+        }
+    }
+
+    public void redoChange() throws IOException, ClassNotFoundException {
+        if (redoPile.size() != 0) {
+            pushChange(undoPile);
+            salle = readChange(redoPile.pop());
+        }
+    }
 
     public Salle getSalle() {
         return salle;
@@ -197,7 +224,7 @@ public class MuracleController {
 
     public void setDistLigneGrille(String dist) {
         try {
-            if (!dist.contains("-"))
+            if (!dist.contains("-") && !dist.equals(distLigneGrille.toString()))
                 distLigneGrille = new Pouce(dist);
         } catch (PouceError | FractionError ignored) {
             System.out.println("valeur invalide");
@@ -218,16 +245,26 @@ public class MuracleController {
 
     public void setDimensionSalle(String largeur, String longueur, String hauteur, String profondeur) {
         try {
-            if (!largeur.contains("-"))
+            if (!largeur.contains("-") && !largeur.equals(salle.getLargeur().toString())) {
+                pushNewChange();
                 salle.setLargeur(new Pouce(largeur));
-            if (!longueur.contains("-"))
+            }
+            if (!longueur.contains("-") && !longueur.equals(salle.getLongueur().toString())) {
+                pushNewChange();
                 salle.setLongueur(new Pouce(longueur));
-            if (!hauteur.contains("-"))
+            }
+            if (!hauteur.contains("-") && !hauteur.equals(salle.getHauteur().toString())) {
+                pushNewChange();
                 salle.setHauteur(new Pouce(hauteur));
-            if (!profondeur.contains("-"))
+            }
+            if (!profondeur.contains("-") && !profondeur.equals(salle.getProfondeur().toString())) {
+                pushNewChange();
                 salle.setProfondeur(new Pouce(profondeur));
+            }
         } catch (PouceError | FractionError ignored) {
             System.out.println("valeur invalide");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -266,14 +303,22 @@ public class MuracleController {
 
     public void setParametreRetourAir(String hauteur, String epaisseur, String distanceSol) {
         try {
-            if (!hauteur.contains("-"))
+            if (!hauteur.contains("-") && !hauteur.equals(salle.getHauteurRetourAir().toString())) {
+                pushNewChange();
                 salle.setHauteurRetourAir(new Pouce(hauteur));
-            if (!epaisseur.contains("-"))
+            }
+            if (!epaisseur.contains("-") && !epaisseur.equals(salle.getEpaisseurTrouRetourAir().toString())) {
+                pushNewChange();
                 salle.setEpaisseurTrouRetourAir(new Pouce(epaisseur));
-            if (!distanceSol.contains("-"))
+            }
+            if (!distanceSol.contains("-") && !distanceSol.equals(salle.getDistanceTrouRetourAir().toString())) {
+                pushNewChange();
                 salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
+            }
         } catch (PouceError | FractionError ignored) {
             System.out.println("valeur invalide");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -298,19 +343,29 @@ public class MuracleController {
 
     public void setParametrePlan(String margeEpaisseur, String margeLargeur, String anglePlis, String longueurPlis) {
         try {
-            if (!margeEpaisseur.contains("-"))
+            if (!margeEpaisseur.contains("-") && !margeEpaisseur.equals(generateurPlan.getMargeEpaisseurMateriaux().toString())) {
+                pushNewChange();
                 generateurPlan.setMargeEpaisseurMateriaux(new Pouce(margeEpaisseur));
-            if (!margeLargeur.contains("-"))
+            }
+            if (!margeLargeur.contains("-") && !margeLargeur.equals(generateurPlan.getMargeLargeurReplis().toString())) {
+                pushNewChange();
                 generateurPlan.setMargeLargeurReplis(new Pouce(margeLargeur));
+            }
             double angle = Double.parseDouble(anglePlis);
-            if (0 <= angle && angle <= 90)
+            if (0 <= angle && angle <= 90 && angle != generateurPlan.getAnglePlis()) {
+                pushNewChange();
                 generateurPlan.setAnglePlis(angle);
+            }
             else
                 System.out.println("valeur invalide");
-            if (!longueurPlis.contains("-"))
+            if (!longueurPlis.contains("-") && !longueurPlis.equals(generateurPlan.getLongueurPlis().toString())) {
+                pushNewChange();
                 generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
+            }
         } catch (PouceError | FractionError ignored) {
             System.out.println("valeur invalide");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

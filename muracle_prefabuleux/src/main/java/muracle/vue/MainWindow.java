@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.IOException;
 import java.util.Objects;
 
 
@@ -18,6 +19,10 @@ import java.util.Objects;
  * @author Jerome Levesque
  */
 public class MainWindow extends JFrame {
+
+	interface Updater {
+		void updateTextFields();
+	}
 
 	private char coteSelected = ' ';
 	private int murSelected = -1;
@@ -129,6 +134,21 @@ public class MainWindow extends JFrame {
 		JSeparator sepConfig = new JSeparator();
 
 		JToggleButton voirPlanButton = new JToggleButton();
+
+		Updater updater = () -> {
+			largSalleTextField.setText(controller.getSalle().getLargeur().toString());
+			longSalleTextField.setText(controller.getSalle().getLongueur().toString());
+			hSalleTextField.setText(controller.getSalle().getHauteur().toString());
+			epMursTextField.setText(controller.getSalle().getProfondeur().toString());
+			epTrouTextField.setText(controller.getSalle().getEpaisseurTrouRetourAir().toString());
+			hRetourAirTextField.setText(controller.getSalle().getHauteurRetourAir().toString());
+			distSolRetourAirTextField.setText(controller.getSalle().getDistanceTrouRetourAir().toString());
+			distGrilleTextField.setText(controller.getDistLigneGrille().toString());
+			longPlisTextField.setText(controller.getParametrePlan(0));
+			margeEpTextField.setText(controller.getParametrePlan(1));
+			margeLargTextField.setText(controller.getParametrePlan(2));
+			anglePlisTextField.setText(controller.getParametrePlan(3));
+		};
 
 		{
 			this.setTitle("Muracle");
@@ -272,7 +292,15 @@ public class MainWindow extends JFrame {
 				} catch (Exception except) {
 					except.printStackTrace();
 				}
-				undoButton.addActionListener(e -> System.out.println("undo effectué"));
+				undoButton.addActionListener(e -> {
+					try {
+						controller.undoChange();
+						updater.updateTextFields();
+						drawingPanel.repaint();
+					} catch (IOException | ClassNotFoundException ex) {
+						throw new RuntimeException(ex);
+					}
+				});
 				menuBar.add(undoButton);
 
 				//---- redo ----
@@ -287,7 +315,15 @@ public class MainWindow extends JFrame {
 				} catch (Exception except) {
 					except.printStackTrace();
 				}
-				redoButton.addActionListener(e -> System.out.println("redo effectué"));
+				redoButton.addActionListener(e -> {
+					try {
+						controller.redoChange();
+						updater.updateTextFields();
+						drawingPanel.repaint();
+					} catch (IOException | ClassNotFoundException ex) {
+						throw new RuntimeException(ex);
+					}
+				});
 				menuBar.add(redoButton);
 			}
 			this.setJMenuBar(menuBar);
@@ -416,7 +452,6 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(largSalleTextField, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 									new Insets(0, 0, 10, 10), 0, 0));
-							largSalleTextField.setText(controller.getSalle().getLargeur().toString());
 							largSalleTextField.addActionListener(e -> {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
@@ -446,7 +481,6 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(longSalleTextField, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 									new Insets(0, 0, 10, 10), 0, 0));
-							longSalleTextField.setText(controller.getSalle().getLongueur().toString());
 							longSalleTextField.addActionListener(e -> {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
@@ -476,7 +510,6 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(hSalleTextField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 									new Insets(0, 0, 10, 10), 0, 0));
-							hSalleTextField.setText(controller.getSalle().getHauteur().toString());
 							hSalleTextField.addActionListener(e -> {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
@@ -506,7 +539,6 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(epMursTextField, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 									new Insets(0, 0, 10, 10), 0, 0));
-							epMursTextField.setText(controller.getSalle().getProfondeur().toString());
 							epMursTextField.addActionListener(e -> {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
@@ -540,7 +572,6 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(epTrouTextField, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
-							epTrouTextField.setText(controller.getSalle().getEpaisseurTrouRetourAir().toString());
 							epTrouTextField.addActionListener(e -> {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
@@ -570,7 +601,6 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(hRetourAirTextField, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
-							hRetourAirTextField.setText(controller.getSalle().getHauteurRetourAir().toString());
 							hRetourAirTextField.addActionListener(e -> {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
@@ -599,7 +629,6 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(distSolRetourAirTextField, new GridBagConstraints(1, 7, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
-							distSolRetourAirTextField.setText(controller.getSalle().getDistanceTrouRetourAir().toString());
 							distSolRetourAirTextField.addActionListener(e -> {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
@@ -679,7 +708,6 @@ public class MainWindow extends JFrame {
 							parametresModifPanel.add(distGrilleTextField, new GridBagConstraints(1, 11, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 10), 0, 0));
-							distGrilleTextField.setText(controller.getDistLigneGrille().toString());
 							distGrilleTextField.addActionListener(e -> {
 								controller.setDistLigneGrille(distGrilleTextField.getText());
 								distGrilleTextField.setText(controller.getDistLigneGrille().toString());
@@ -736,7 +764,6 @@ public class MainWindow extends JFrame {
 							configurationPlanPanel.add(longPlisTextField, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
-							longPlisTextField.setText(controller.getParametrePlan(0));
 							longPlisTextField.addActionListener(e -> {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
@@ -765,7 +792,6 @@ public class MainWindow extends JFrame {
 							configurationPlanPanel.add(margeEpTextField, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
-							margeEpTextField.setText(controller.getParametrePlan(1));
 							margeEpTextField.addActionListener(e -> {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
@@ -794,7 +820,6 @@ public class MainWindow extends JFrame {
 							configurationPlanPanel.add(margeLargTextField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 10, 10), 0, 0));
-							margeLargTextField.setText(controller.getParametrePlan(2));
 							margeLargTextField.addActionListener(e -> {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
@@ -823,7 +848,6 @@ public class MainWindow extends JFrame {
 							configurationPlanPanel.add(anglePlisTextField, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 10), 0, 0));
-							anglePlisTextField.setText(controller.getParametrePlan(3));
 							anglePlisTextField.addActionListener(e -> {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
@@ -875,5 +899,6 @@ public class MainWindow extends JFrame {
 			this.setSize(1600, 900);
 			this.setLocationRelativeTo(this.getOwner());
 		}
+		updater.updateTextFields();
 	}
 }

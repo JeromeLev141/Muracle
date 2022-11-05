@@ -1,6 +1,6 @@
 package muracle.utilitaire;
 
-public class CoordPouce {
+public class CoordPouce implements java.io.Serializable{
 
     private Pouce x;
     private Pouce y;

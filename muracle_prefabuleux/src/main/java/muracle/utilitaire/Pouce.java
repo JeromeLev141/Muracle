@@ -1,6 +1,6 @@
 package muracle.utilitaire;
 
-public class Pouce {
+public class Pouce implements java.io.Serializable{
 
     private int entier;
     private Fraction fraction;

@@ -1,7 +1,6 @@
 package muracle.utilitaire;
-import java.lang.Math.*;
 
-public class Fraction {
+public class Fraction implements java.io.Serializable{
 
     private int num;
     private int denum;
