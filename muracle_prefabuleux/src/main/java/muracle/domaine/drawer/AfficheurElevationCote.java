@@ -32,6 +32,7 @@ public class AfficheurElevationCote extends Afficheur {
         h = cote.getHauteur().toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setStroke(new BasicStroke(2));
         drawCote(g2d);
         drawSeparateur(g2d);
         drawAccessoire(g2d);

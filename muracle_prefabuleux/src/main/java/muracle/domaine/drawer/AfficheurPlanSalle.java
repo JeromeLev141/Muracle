@@ -35,6 +35,7 @@ public class AfficheurPlanSalle extends Afficheur{
         ep = salle.getProfondeur().toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setStroke(new BasicStroke(2));
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         drawSalle(g2d);
         drawSeparateur(g2d);
