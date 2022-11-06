@@ -20,6 +20,8 @@ public class DrawingPanel extends JPanel {
     private Dimension dimPlan;
     private Fraction ratioWH;
 
+    private Color backgroundColor;
+
     public DrawingPanel(){}
 
     public DrawingPanel(MainWindow mainWindow){
@@ -31,6 +33,7 @@ public class DrawingPanel extends JPanel {
             ratioWH = new Fraction(1, 1);
         }catch (Exception ignored){}
         posiCam = null;
+        backgroundColor = new Color(89, 100, 124);
     }
     public void paintComponent(Graphics g){
         /*
@@ -39,6 +42,9 @@ public class DrawingPanel extends JPanel {
         if (mainWindow != null)
         {
             super.paintComponent(g);
+            if (mainWindow.isDarkMode)
+                setBackground(backgroundColor);
+            else setBackground(Color.WHITE);
             Afficheur drawer = new Afficheur(mainWindow.controller, getSize());
             if (mainWindow.controller.getSelectedCote() == null)
                 drawer = new AfficheurPlanSalle(mainWindow.controller, getSize());

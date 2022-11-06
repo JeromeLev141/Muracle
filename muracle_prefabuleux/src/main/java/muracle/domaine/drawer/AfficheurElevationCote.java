@@ -40,9 +40,9 @@ public class AfficheurElevationCote extends Afficheur {
 
     private void drawCote(Graphics2D g) {
         Rectangle2D.Double rect = new Rectangle2D.Double(posX, posY, w, h);
-        g.setColor(subColor);
+        g.setColor(fillColor);
         g.fill(new Area(rect));
-        g.setColor(mainColor);
+        g.setColor(lineColor);
         g.draw(rect);
     }
 
@@ -77,8 +77,8 @@ public class AfficheurElevationCote extends Afficheur {
                 path += "Ext.png";
             else path += "Int.png";
             image = ImageIO.read(Objects.requireNonNull(getClass().getResource(path)));
-            image = image.getScaledInstance( 64, 64,  Image.SCALE_SMOOTH ) ;
-            g.drawImage(image, initialDimension.width - 96, 32, null);
+            image = image.getScaledInstance( 48, 48,  Image.SCALE_SMOOTH ) ;
+            g.drawImage(image, initialDimension.width - 64, 16, null);
         } catch (Exception except) {
             except.printStackTrace();
         }

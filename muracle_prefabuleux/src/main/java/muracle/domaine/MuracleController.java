@@ -141,7 +141,7 @@ public class MuracleController {
 
     public void fermerProjet() {}
 
-    public void pushChange(Stack<String> pile) throws IOException {
+    private void pushChange(Stack<String> pile) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(salle);
@@ -149,30 +149,29 @@ public class MuracleController {
         pile.push(Base64.getEncoder().encodeToString(baos.toByteArray()));
     }
 
-    public void pushNewChange() throws IOException {
+    private void pushNewChange() throws IOException {
         pushChange(undoPile);
         redoPile.clear();
     }
 
-    public Salle readChange(String salleEnString) throws IOException, ClassNotFoundException {
+    private void readChange(String salleEnString) throws IOException, ClassNotFoundException {
         byte [] bytes = Base64.getDecoder().decode(salleEnString);
         ObjectInputStream ois = new ObjectInputStream( new ByteArrayInputStream(bytes) );
-        Salle salle  = (Salle) ois .readObject();
+        salle = (Salle) ois .readObject();
         ois.close();
-        return salle;
     }
 
     public void undoChange() throws IOException, ClassNotFoundException {
         if (undoPile.size() != 0) {
             pushChange(redoPile);
-            salle = readChange(undoPile.pop());
+            readChange(undoPile.pop());
         }
     }
 
     public void redoChange() throws IOException, ClassNotFoundException {
         if (redoPile.size() != 0) {
             pushChange(undoPile);
-            salle = readChange(redoPile.pop());
+            readChange(redoPile.pop());
         }
     }
 

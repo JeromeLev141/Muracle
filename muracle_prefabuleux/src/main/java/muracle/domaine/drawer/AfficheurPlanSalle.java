@@ -48,9 +48,9 @@ public class AfficheurPlanSalle extends Afficheur{
         Area exterieur = new Area(rectExt);
         Area interieur = new Area(rectInt);
         exterieur.subtract(interieur);
-        g.setColor(subColor);
+        g.setColor(fillColor);
         g.fill(exterieur);
-        g.setColor(mainColor);
+        g.setColor(lineColor);
         g.draw(rectInt);
         g.draw(rectExt);
         g.draw(new Line2D.Double(posX, posY, posX - ep, posY - ep));
@@ -127,8 +127,8 @@ public class AfficheurPlanSalle extends Afficheur{
     private void drawVue(Graphics g) {
         try {
             Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/vues/vueDessus.png")));
-            image = image.getScaledInstance( 64, 64,  Image.SCALE_SMOOTH ) ;
-            g.drawImage(image, initialDimension.width - 96, 32, null);
+            image = image.getScaledInstance( 48, 48,  Image.SCALE_SMOOTH ) ;
+            g.drawImage(image, initialDimension.width - 64, 16, null);
         } catch (Exception except) {
             except.printStackTrace();
         }

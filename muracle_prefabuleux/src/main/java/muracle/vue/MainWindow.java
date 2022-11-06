@@ -1,5 +1,7 @@
 package muracle.vue;
 
+import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.PouceError;
@@ -29,6 +31,7 @@ public class MainWindow extends JFrame {
 	private Point accessoireSelected = null;
 
 	protected MuracleController controller = new MuracleController();
+	protected boolean isDarkMode = true;
 
 	public MainWindow() throws FractionError, PouceError {
 		initComponents();
@@ -45,6 +48,7 @@ public class MainWindow extends JFrame {
 		JComboBox<String> selectionAccessoireComboBox = new JComboBox<>(new String[] {"Fenêtre", "Porte", "Prise électrique", "Retour d'air"});
 		JButton retourVueHautButton = new JButton();
 		JToggleButton changeVueButton = new JToggleButton();
+		JToggleButton lookButton = new JToggleButton();
 		JButton undoButton = new JButton();
 		JButton redoButton = new JButton();
 
@@ -233,14 +237,9 @@ public class MainWindow extends JFrame {
 				changeVueButton.setRequestFocusEnabled(false);
 				changeVueButton.setVisible(false);
 				changeVueButton.addActionListener(e -> {
-					if (!changeVueButton.isSelected()) {
-						changeVueButton.setSelected(false);
-						System.out.println("Vue changé pour extérieur");
-					}
-					else {
-						changeVueButton.setSelected(true);
-						System.out.println("Vue changé pour intérieur");
-					}
+					changeVueButton.setSelected(changeVueButton.isSelected());
+					controller.setIsVueExterieur(!changeVueButton.isSelected());
+					repaint();
 				});
 				menuBar.add(changeVueButton);
 
@@ -252,7 +251,8 @@ public class MainWindow extends JFrame {
 				retourVueHautButton.setRequestFocusEnabled(false);
 				retourVueHautButton.setVisible(false);
 				retourVueHautButton.addActionListener(e -> {
-					changeVueButton.setSelected(false);
+					if (changeVueButton.isSelected())
+						changeVueButton.doClick();
 					addAccessoireButton.setVisible(false);
 					retourVueHautButton.setVisible(false);
 					changeVueButton.setVisible(false);
@@ -279,6 +279,45 @@ public class MainWindow extends JFrame {
 				menuBar.add(retourVueHautButton);
 
 				menuBar.add(Box.createHorizontalGlue());
+
+				//---- changer look ----
+				lookButton.setPreferredSize(new Dimension(30, 22));
+				lookButton.setMaximumSize(new Dimension(30, 32767));
+				lookButton.setHorizontalTextPosition(SwingConstants.CENTER);
+				lookButton.setRequestFocusEnabled(false);
+				try {
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/moon.png")));
+					image = image.getScaledInstance( 16, 16,  Image.SCALE_SMOOTH ) ;
+					lookButton.setIcon(new ImageIcon(image));
+				} catch (Exception except) {
+					except.printStackTrace();
+				}
+				lookButton.addActionListener(e -> {
+					lookButton.setSelected(lookButton.isSelected());
+					isDarkMode = !lookButton.isSelected();
+					try {
+						String rev = "rev";
+						String mode = "moon";
+						if (lookButton.isSelected()) {
+							UIManager.setLookAndFeel(new FlatCyanLightIJTheme());
+							rev = "";
+							mode = "sun";
+						}
+						else
+							UIManager.setLookAndFeel(new FlatNordIJTheme());
+						SwingUtilities.updateComponentTreeUI(this);
+						Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/" + mode + ".png")));
+						image = image.getScaledInstance( 16, 16,  Image.SCALE_SMOOTH ) ;
+						lookButton.setIcon(new ImageIcon(image));
+						image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/undo" + rev + ".png")));
+						image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
+						undoButton.setIcon(new ImageIcon(image));
+						image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/redo" + rev + ".png")));
+						image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
+						redoButton.setIcon(new ImageIcon(image));
+					}catch (Exception ignored){}
+				});
+				menuBar.add(lookButton);
 
 				//---- undo ----
 				undoButton.setPreferredSize(new Dimension(60, 22));
@@ -338,8 +377,7 @@ public class MainWindow extends JFrame {
 				//======== Panneau de dessin ========
 				{
 					drawingPanel.setMinimumSize(new Dimension(800, 500));
-					drawingPanel.setBackground(Color.white);
-					drawingPanel.setBorder(BorderFactory.createLineBorder(Color.black, 4));
+					drawingPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
 					drawingPanel.setLayout(new GridBagLayout());
 					((GridBagLayout) drawingPanel.getLayout()).columnWidths = new int[] {0, 0};
 					((GridBagLayout) drawingPanel.getLayout()).rowHeights = new int[] {0, 0};
