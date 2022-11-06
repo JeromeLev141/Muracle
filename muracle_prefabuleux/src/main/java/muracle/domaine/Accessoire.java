@@ -21,6 +21,10 @@ public class Accessoire implements java.io.Serializable{
     }
     public Accessoire(Pouce largeur,Pouce hauteur,CoordPouce position){
 
+        this.largeur = largeur;
+        this.hauteur = hauteur;
+        this.position = position;
+
     }
 
     public Pouce getLargeur() {
