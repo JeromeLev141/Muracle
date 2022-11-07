@@ -33,9 +33,25 @@ public class MuracleController {
     private static class Save implements java.io.Serializable{
         public Salle saveSalle;
         public GenerateurPlan saveGenerateurPlan;
-        public Save(Salle saveSalle, GenerateurPlan saveGenerateurPlan) {
+
+        public char saveCoteSelected;
+
+        public int saveMurSelected;
+
+        public int saveAccessoireSelected;
+
+        public int saveSeparateurSelected;
+
+        public boolean saveIsVueExterieur;
+        public Save(Salle saveSalle, GenerateurPlan saveGenerateurPlan, char saveCoteSelected,
+                    int saveMurSelected, int saveAccessoireSelected, int saveSeparateurSelected, boolean saveIsVueExterieur) {
             this.saveSalle = saveSalle;
             this.saveGenerateurPlan = saveGenerateurPlan;
+            this.saveCoteSelected =saveCoteSelected;
+            this.saveMurSelected = saveMurSelected;
+            this.saveAccessoireSelected = saveAccessoireSelected;
+            this.saveSeparateurSelected = saveSeparateurSelected;
+            this.saveIsVueExterieur = saveIsVueExterieur;
         }
     }
 
@@ -80,6 +96,11 @@ public class MuracleController {
                 readChange(sb.toString());
                 undoPile.clear();
                 redoPile.clear();
+                coteSelected = ' ';
+                murSelected = -1;
+                accessoireSelected = -1;
+                separateurSelected = -1;
+                isVueExterieur = true;
             } catch (ClassNotFoundException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -98,7 +119,8 @@ public class MuracleController {
             try(FileWriter fw = new FileWriter(fichier)) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ObjectOutputStream oos = new ObjectOutputStream(baos);
-                oos.writeObject(new Save(salle, generateurPlan));
+                oos.writeObject(new Save(salle, generateurPlan, coteSelected, murSelected, accessoireSelected,
+                        separateurSelected, isVueExterieur));
                 oos.close();
                 fw.write(Base64.getEncoder().encodeToString(baos.toByteArray()));
             } catch (Exception except) {
@@ -183,7 +205,8 @@ public class MuracleController {
     private void pushChange(Stack<String> pile) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(new Save(salle, generateurPlan));
+        oos.writeObject(new Save(salle, generateurPlan, coteSelected, murSelected, accessoireSelected,
+                separateurSelected, isVueExterieur));
         oos.close();
         pile.push(Base64.getEncoder().encodeToString(baos.toByteArray()));
     }
@@ -199,6 +222,11 @@ public class MuracleController {
         Save save = (Save) ois .readObject();
         salle = save.saveSalle;
         generateurPlan = save.saveGenerateurPlan;
+        coteSelected = save.saveCoteSelected;
+        murSelected = save.saveMurSelected;
+        accessoireSelected = save.saveAccessoireSelected;
+        separateurSelected = save.saveSeparateurSelected;
+        isVueExterieur = save.saveIsVueExterieur;
         ois.close();
     }
 
@@ -222,9 +250,9 @@ public class MuracleController {
 
     public void selectComponent(CoordPouce coordPouce) {}
 
-    public void selectSalleComponent(CoordPouce coordPouce) {}
+    private void selectSalleComponent(CoordPouce coordPouce) {}
 
-    public void selectCoteComponent(CoordPouce coordPouce) {}
+    private void selectCoteComponent(CoordPouce coordPouce) {}
 
     public void selectCote(char orientation) {
         coteSelected = orientation;
@@ -244,6 +272,16 @@ public class MuracleController {
         return isVueExterieur;
     }
 
+    public boolean isVueDessus() {return coteSelected == ' ';}
+
+    public boolean isVueCote() { return !isVueDessus();}
+
+    public boolean isMurSelected() { return murSelected != -1; }
+
+    public boolean isAccessoireSelected() { return accessoireSelected != -1; }
+
+    public boolean isSeparateurSelected() { return separateurSelected != -1; }
+
     public void selectMur(int index) {
         murSelected = index;
     }
@@ -254,10 +292,12 @@ public class MuracleController {
         return null;
     }
 
-    public void selectAccessoire(CoordPouce position) {}
+    public void selectAccessoire(int index) {
+        accessoireSelected = index;
+    }
 
     public Accessoire getSelectedAccessoire() {
-        if (accessoireSelected != 1)
+        if (accessoireSelected != -1)
             return getSelectedMur().getAccessoire(accessoireSelected);
         return null;
     }
@@ -312,6 +352,19 @@ public class MuracleController {
 
     public void removeAccessoire(int indexMur, CoordPouce position) {}
 
+    public void moveAccessoire(String posX, String posY) {
+       /* if (!posX.contains("-") && !posY.contains("-")) {
+            try {
+                Pouce pouceX = new Pouce(posX);
+                Pouce pouceY = new Pouce(posY);
+                if (get)
+                getSelectedAccessoire().setPosition(new CoordPouce(new Pouce(posX)));
+            } catch (PouceError | FractionError e) {
+                throw new RuntimeException(e);
+            }
+        }*/
+    }
+
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
         /*try {
             if (!largeur.contains("-"))
@@ -323,8 +376,6 @@ public class MuracleController {
          */
     }
 
-    public void setPositionAccessoire(CoordPouce positionPost) {}
-
     private void selectSeparateur (int index) {
         separateurSelected = index;
     }
@@ -335,11 +386,29 @@ public class MuracleController {
         return null;
     }
 
-    public void addSeparateur(CoordPouce coord) {}
+    public void addSeparateur(Pouce pos) {
+        try {
+            getSelectedCote().addSeparateur(pos);
+        } catch (FractionError e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    public void removeSeparateur(int index) {}
+    public void removeSeparateur(int index) {
+        getSelectedCote().deleteSeparateur(index);
+    }
 
-    public void moveSeparateur(Pouce position) {}
+    public void moveSeparateur(String position) {
+        if (!position.contains("-")) {
+            try {
+                Pouce newSep = new Pouce(position);
+                getSelectedSeparateur().setEntier(newSep.getEntier());
+                getSelectedSeparateur().setFraction(newSep.getFraction());
+            } catch (PouceError | FractionError e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     public void setParametreRetourAir(String hauteur, String epaisseur, String distanceSol) {
         try {

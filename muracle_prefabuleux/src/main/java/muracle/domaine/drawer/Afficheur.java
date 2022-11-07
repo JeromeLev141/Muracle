@@ -17,7 +17,7 @@ public class Afficheur {
     public Afficheur(MuracleController controller, Dimension initDim) {
         this.controller = controller;
         initialDimension = initDim;
-        lineColor = Color.BLACK;
+        lineColor = Color.black;
         fillColor = Color.white;
         grilleColor = new Color(150, 173, 233);
     }
