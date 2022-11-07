@@ -461,12 +461,13 @@ public class MuracleController {
                 generateurPlan.setMargeLargeurReplis(new Pouce(margeLargeur));
             }
             double angle = Double.parseDouble(anglePlis);
-            if (0 <= angle && angle <= 90 && angle != generateurPlan.getAnglePlis()) {
-                pushNewChange();
-                generateurPlan.setAnglePlis(angle);
+            if (0 <= angle && angle <= 90) {
+                if (angle != generateurPlan.getAnglePlis()) {
+                    pushNewChange();
+                    generateurPlan.setAnglePlis(angle);
+                }
             }
-            else
-                System.out.println("valeur invalide");
+            else System.out.println("valeur invalide");
             if (!longueurPlis.contains("-") && !longueurPlis.equals(generateurPlan.getLongueurPlis().toString())) {
                 pushNewChange();
                 generateurPlan.setLongueurPlis(new Pouce(longueurPlis));

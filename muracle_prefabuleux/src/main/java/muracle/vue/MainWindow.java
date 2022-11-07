@@ -145,6 +145,7 @@ public class MainWindow extends JFrame {
 					accessoireButton.setVisible(true);
 					coteButton.setVisible(false);
 				}
+				changeVueButton.setSelected(!controller.isVueExterieur());
 			}
 
 			@Override
@@ -204,6 +205,9 @@ public class MainWindow extends JFrame {
 				openProjectButton.setFocusPainted(false);
 				openProjectButton.addActionListener(e -> {
 					controller.ouvrirProjet(this);
+					updater.updateTextFields();
+					updater.updateButtons();
+					updater.updateParamsShown();
 					drawingPanel.repaint();
 				});
 				menuBar.add(openProjectButton);
@@ -367,6 +371,8 @@ public class MainWindow extends JFrame {
 					try {
 						controller.undoChange();
 						updater.updateTextFields();
+						updater.updateButtons();
+						updater.updateParamsShown();
 						drawingPanel.repaint();
 					} catch (IOException | ClassNotFoundException ex) {
 						throw new RuntimeException(ex);
@@ -390,6 +396,8 @@ public class MainWindow extends JFrame {
 					try {
 						controller.redoChange();
 						updater.updateTextFields();
+						updater.updateButtons();
+						updater.updateParamsShown();
 						drawingPanel.repaint();
 					} catch (IOException | ClassNotFoundException ex) {
 						throw new RuntimeException(ex);
