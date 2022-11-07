@@ -940,6 +940,16 @@ public class MainWindow extends JFrame {
 			this.setSize(1600, 900);
 			this.setLocationRelativeTo(this.getOwner());
 		}
+		addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				closing();
+			}
+		});
 		updater.updateTextFields();
+	}
+
+	private void closing() {
+		controller.fermerProjet(this);
 	}
 }

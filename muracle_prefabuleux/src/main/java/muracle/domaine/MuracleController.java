@@ -63,6 +63,7 @@ public class MuracleController {
     }
 
     public void ouvrirProjet(Component parent) {
+        fermerProjet(parent);
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Ouverture de Projet");
         fileChooser.setFileFilter(new FileNameExtensionFilter("*.mrc", "mrc"));
@@ -168,7 +169,16 @@ public class MuracleController {
         }
     }
 
-    public void fermerProjet() {}
+    public void fermerProjet(Component parent) {
+        if (!undoPile.isEmpty()) {
+            int result = JOptionPane.showConfirmDialog(parent,"Voulez-vous sauvergarder votre travail?\n" +
+                            "Toutes modifications non-sauvegardées seront perdues.", "Attention",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if(result == JOptionPane.YES_OPTION)
+                sauvegarderProjet(parent);
+        }
+    }
 
     private void pushChange(Stack<String> pile) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
