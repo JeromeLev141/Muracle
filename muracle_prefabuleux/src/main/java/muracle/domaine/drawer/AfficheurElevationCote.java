@@ -51,10 +51,10 @@ public class AfficheurElevationCote extends Afficheur {
         Cote cote = controller.getSelectedCote();
         for (int i = 0; i < cote.getSeparateurs().size(); i++) {
             if (controller.isVueExterieur())
-                g.draw(new Line2D.Double(cote.getSeparateur(i).toDouble(), posY,
-                    cote.getSeparateur(i).toDouble(), posY + h));
-            else g.draw(new Line2D.Double(w - cote.getSeparateur(i).toDouble(), posY,
-                    w - cote.getSeparateur(i).toDouble(), posY + h));
+                g.draw(new Line2D.Double(posX + cote.getSeparateur(i).toDouble(), posY,
+                    posX + cote.getSeparateur(i).toDouble(), posY + h));
+            else g.draw(new Line2D.Double(posX + w - cote.getSeparateur(i).toDouble(), posY,
+                    posX + w - cote.getSeparateur(i).toDouble(), posY + h));
         }
     }
 

@@ -13,6 +13,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
 import java.io.*;
 import java.util.Base64;
+import java.util.Scanner;
 import java.util.Stack;
 
 public class MuracleController {
@@ -29,6 +30,15 @@ public class MuracleController {
     private Stack<String> undoPile;
     private Stack<String> redoPile;
 
+    private static class Save implements java.io.Serializable{
+        public Salle saveSalle;
+        public GenerateurPlan saveGenerateurPlan;
+        public Save(Salle saveSalle, GenerateurPlan saveGenerateurPlan) {
+            this.saveSalle = saveSalle;
+            this.saveGenerateurPlan = saveGenerateurPlan;
+        }
+    }
+
     public MuracleController() throws FractionError, PouceError {
         creerProjet();
         distLigneGrille = new Pouce("12");
@@ -39,6 +49,10 @@ public class MuracleController {
     public void creerProjet() throws FractionError, PouceError {
         salle = new Salle(new Pouce("144"), new Pouce("144"),
                 new Pouce("144"), new Pouce("12"));
+        salle.getCote('N').addSeparateur(new Pouce("12"));
+        salle.getCote('E').addSeparateur(new Pouce("12"));
+        salle.getCote('W').addSeparateur(new Pouce("12"));
+        salle.getCote('S').addSeparateur(new Pouce("12"));
         coteSelected = ' ';
         murSelected = -1;
         accessoireSelected = -1;
@@ -51,29 +65,44 @@ public class MuracleController {
     public void ouvrirProjet(Component parent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Ouverture de Projet");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("*.txt", "txt"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("*.mrc", "mrc"));
         int returnValue = fileChooser.showOpenDialog(parent);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File fichier = fileChooser.getSelectedFile();
-            System.out.println("Ouverture du fichier : " + fichier.getAbsolutePath());
+            try {
+                Scanner scan = new Scanner(fichier);
+                StringBuilder sb = new StringBuilder();
+                while(scan.hasNext()) {
+                    sb.append(scan.next());
+                }
+                scan.close();
+                readChange(sb.toString());
+                undoPile.clear();
+                redoPile.clear();
+            } catch (ClassNotFoundException | IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     public void sauvegarderProjet(Component parent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Sauvegarde de Projet");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("*.txt", "txt"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("*.mrc", "mrc"));
         int returnValue = fileChooser.showSaveDialog(parent);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File fichier = fileChooser.getSelectedFile();
-            if(!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".txt"))
-                fichier = new File(fileChooser.getSelectedFile() + ".txt");
+            if(!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".mrc"))
+                fichier = new File(fileChooser.getSelectedFile() + ".mrc");
             try(FileWriter fw = new FileWriter(fichier)) {
-                fw.write("test");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(baos);
+                oos.writeObject(new Save(salle, generateurPlan));
+                oos.close();
+                fw.write(Base64.getEncoder().encodeToString(baos.toByteArray()));
             } catch (Exception except) {
                 except.printStackTrace();
             }
-            System.out.println("Sauvegarde du fichier : " + fichier.getAbsolutePath());
         }
     }
 
@@ -144,7 +173,7 @@ public class MuracleController {
     private void pushChange(Stack<String> pile) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(salle);
+        oos.writeObject(new Save(salle, generateurPlan));
         oos.close();
         pile.push(Base64.getEncoder().encodeToString(baos.toByteArray()));
     }
@@ -157,7 +186,9 @@ public class MuracleController {
     private void readChange(String salleEnString) throws IOException, ClassNotFoundException {
         byte [] bytes = Base64.getDecoder().decode(salleEnString);
         ObjectInputStream ois = new ObjectInputStream( new ByteArrayInputStream(bytes) );
-        salle = (Salle) ois .readObject();
+        Save save = (Save) ois .readObject();
+        salle = save.saveSalle;
+        generateurPlan = save.saveGenerateurPlan;
         ois.close();
     }
 

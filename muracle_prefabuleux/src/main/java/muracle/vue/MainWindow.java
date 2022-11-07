@@ -169,7 +169,10 @@ public class MainWindow extends JFrame {
 				openProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				openProjectButton.setRequestFocusEnabled(false);
 				openProjectButton.setFocusPainted(false);
-				openProjectButton.addActionListener(e -> controller.ouvrirProjet(this));
+				openProjectButton.addActionListener(e -> {
+					controller.ouvrirProjet(this);
+					drawingPanel.repaint();
+				});
 				menuBar.add(openProjectButton);
 
 				//---- sauvergarder projet ----

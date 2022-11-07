@@ -5,7 +5,7 @@ import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
 import muracle.utilitaire.PouceError;
 
-public class GenerateurPlan {
+public class GenerateurPlan implements java.io.Serializable {
 
     private Pouce margeEpaisseurMateriaux = new Pouce("0");
     private Pouce margeLargeurReplis = new Pouce("1");
