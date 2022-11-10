@@ -12,6 +12,7 @@ public class Cote implements java.io.Serializable{
     private Pouce hauteur;
     private ArrayList<Mur> murs;
     private ArrayList<Pouce> separateurs;
+    private Accessoire[] accessoires;
 
     public Cote(){
 
@@ -46,6 +47,27 @@ public class Cote implements java.io.Serializable{
 
     public Pouce getHauteur() {
         return hauteur;
+    }
+    public Accessoire getAccessoire(int index){
+        return this.accessoires[index];
+    }
+
+    public Accessoire[] getAccessoires() {
+        return accessoires;
+    }
+
+    public void addAccessoire(Accessoire accessoire, CoordPouce positionInit){
+        //TODO
+    }
+    public void moveAccessoire(CoordPouce positionInit, CoordPouce positionPost){
+        //TODO
+    }
+    public void removeAccessoire(CoordPouce position){
+        //TODO
+    }
+    private boolean ContainRetourAir(){
+        //TODO
+        return true;
     }
 
     public void setHauteur(Pouce hauteur) {
