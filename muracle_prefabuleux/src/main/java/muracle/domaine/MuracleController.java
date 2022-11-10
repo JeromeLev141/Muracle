@@ -383,8 +383,8 @@ public class MuracleController {
     }
 
     public Accessoire getSelectedAccessoire() {
-        if (accessoireSelected != -1)
-            return getSelectedMur().getAccessoire(accessoireSelected);
+        /*if (accessoireSelected != -1)
+            return getSelectedMur().getAccessoire(accessoireSelected);*/
         return null;
     }
 

@@ -10,7 +10,6 @@ public class Mur implements java.io.Serializable{
     private boolean estCoinGauche;
     private Panneau panneauExt;
     private Panneau panneauInt;
-    private Accessoire[] accessoires;
 
     public Mur(){
     }
@@ -57,26 +56,8 @@ public class Mur implements java.io.Serializable{
     public Panneau getPanneauInt() {
         return panneauInt;
     }
-    public Accessoire getAccessoire(int index){
-        return this.accessoires[index];
-    }
 
-    public Accessoire[] getAccessoires() {
-        return accessoires;
-    }
-    public void addAccessoire(Accessoire accessoire, CoordPouce positionInit){
-        //TODO
-    }
-    public void moveAccessoire(CoordPouce positionInit, CoordPouce positionPost){
-        //TODO
-    }
-    public void removeAccessoire(CoordPouce position){
-        //TODO
-    }
-    private boolean ContainRetourAir(){
-        //TODO
-        return true;
-    }
+
     private void updatePoids(){
         //TODO
     }
