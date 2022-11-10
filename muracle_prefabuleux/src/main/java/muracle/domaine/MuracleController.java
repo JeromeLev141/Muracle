@@ -260,20 +260,20 @@ public class MuracleController {
         if (isVueDessus) {
             try {
                 interactSalleComponent(coordPouce, addSepMode);
-            } catch (FractionError e) {
+            } catch (FractionError | PouceError e) {
                 throw new RuntimeException(e);
             }
         }
         else {
             try {
                 interactCoteComponent(coordPouce, addSepMode, addAccesMode);
-            } catch (FractionError e) {
+            } catch (FractionError | PouceError e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private void interactSalleComponent(CoordPouce coordPouce, boolean addSepMode) throws FractionError {
+    private void interactSalleComponent(CoordPouce coordPouce, boolean addSepMode) throws FractionError, PouceError {
         coteSelected = ' ';
         separateurSelected = -1;
         Pouce posX = coordPouce.getX();
@@ -316,7 +316,7 @@ public class MuracleController {
             setIsVueDessus(false);
     }
 
-    private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode) throws FractionError {
+    private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode) throws FractionError, PouceError {
         // add interraction avec accessoire et murs
         separateurSelected = -1;
         Pouce posX = coordPouce.getX();
