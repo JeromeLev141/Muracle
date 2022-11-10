@@ -44,6 +44,7 @@ public class MainWindow extends JFrame {
 		JButton saveProjectButton = new JButton();
 		JButton exportButton = new JButton();
 		JToggleButton showGrilleButton = new JToggleButton();
+		JToggleButton addSeparateurButton = new JToggleButton();
 		JToggleButton addAccessoireButton = new JToggleButton();
 		JComboBox<String> selectionAccessoireComboBox = new JComboBox<>(new String[] {"Fenêtre", "Porte", "Prise électrique", "Retour d'air"});
 		JButton retourVueHautButton = new JButton();
@@ -119,13 +120,13 @@ public class MainWindow extends JFrame {
 		Updater updater = new Updater() {
 			@Override
 			public void updateTextFields() {
-				largSalleTextField.setText(controller.getSalle().getLargeur().toString());
-				longSalleTextField.setText(controller.getSalle().getLongueur().toString());
-				hSalleTextField.setText(controller.getSalle().getHauteur().toString());
-				epMursTextField.setText(controller.getSalle().getProfondeur().toString());
-				epTrouTextField.setText(controller.getSalle().getEpaisseurTrouRetourAir().toString());
-				hRetourAirTextField.setText(controller.getSalle().getHauteurRetourAir().toString());
-				distSolRetourAirTextField.setText(controller.getSalle().getDistanceTrouRetourAir().toString());
+				largSalleTextField.setText(controller.getDimensionSalle(0));
+				longSalleTextField.setText(controller.getDimensionSalle(1));
+				hSalleTextField.setText(controller.getDimensionSalle(2));
+				epMursTextField.setText(controller.getDimensionSalle(3));
+				hRetourAirTextField.setText(controller.getParametreRetourAir(0));
+				epTrouTextField.setText(controller.getParametreRetourAir(1));
+				distSolRetourAirTextField.setText(controller.getParametreRetourAir(2));
 				distGrilleTextField.setText(controller.getDistLigneGrille().toString());
 				longPlisTextField.setText(controller.getParametrePlan(0));
 				margeEpTextField.setText(controller.getParametrePlan(1));
@@ -243,6 +244,18 @@ public class MainWindow extends JFrame {
 				});
 				menuBar.add(showGrilleButton);
 
+				//---- ajouterSeparateur grille ----
+				addSeparateurButton.setText("Ajouter séparateur");
+				addSeparateurButton.setMaximumSize(new Dimension(100, 32767));
+				addSeparateurButton.setPreferredSize(new Dimension(140, 22));
+				addSeparateurButton.setHorizontalTextPosition(SwingConstants.CENTER);
+				addSeparateurButton.setRequestFocusEnabled(false);
+				addSeparateurButton.addActionListener(e -> {
+					addSeparateurButton.setSelected(addSeparateurButton.isSelected());
+					// do something
+				});
+				menuBar.add(addSeparateurButton);
+
 				//---- ajouter accessoire ----
 				addAccessoireButton.setText("Ajouter Accessoire");
 				addAccessoireButton.setMaximumSize(new Dimension(100, 32767));
@@ -299,17 +312,14 @@ public class MainWindow extends JFrame {
 					murButton.setVisible(false);
 					accessoireButton.setVisible(false);
 
-					if (controller.isMurSelected())
-						controller.selectMur(-1);
-					if (controller.isAccessoireSelected())
-						controller.selectAccessoire(-1);
+
 					if (voirPlanButton.isSelected())
 						voirPlanButton.doClick();
 					if (addAccessoireButton.isSelected())
 						addAccessoireButton.doClick();
 
 					coteButton.setVisible(true);
-					controller.selectCote(' ');
+					controller.setIsVueDessus(true);
 					updater.updateParamsShown();
 					drawingPanel.repaint();
 				});
@@ -356,7 +366,7 @@ public class MainWindow extends JFrame {
 				menuBar.add(lookButton);
 
 				//---- undo ----
-				undoButton.setPreferredSize(new Dimension(60, 22));
+				undoButton.setPreferredSize(new Dimension(50, 22));
 				undoButton.setMaximumSize(new Dimension(50, 32767));
 				undoButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				undoButton.setRequestFocusEnabled(false);
@@ -381,7 +391,7 @@ public class MainWindow extends JFrame {
 				menuBar.add(undoButton);
 
 				//---- redo ----
-				redoButton.setPreferredSize(new Dimension(60, 22));
+				redoButton.setPreferredSize(new Dimension(50, 22));
 				redoButton.setMaximumSize(new Dimension(50, 32767));
 				redoButton.setRequestFocusEnabled(false);
 				redoButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -413,6 +423,7 @@ public class MainWindow extends JFrame {
 				splitPaneH.setBorder(new EmptyBorder(20, 20, 20, 20));
 				splitPaneH.setMinimumSize(new Dimension(1100, 500));
 				splitPaneH.setResizeWeight(1.0);
+				splitPaneH.setEnabled(false);
 
 				//======== Panneau de dessin ========
 				{
@@ -429,6 +440,7 @@ public class MainWindow extends JFrame {
 						coteButton.setText("Vue de côté (demo)");
 						coteButton.addActionListener(e -> {
 							controller.selectCote('N');
+							controller.setIsVueDessus(false);
 							updater.updateButtons();
 							updater.updateParamsShown();
 
@@ -478,7 +490,7 @@ public class MainWindow extends JFrame {
 							largSalleTextField.addActionListener(e -> {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
-								largSalleTextField.setText(controller.getSalle().getLargeur().toString());
+								largSalleTextField.setText(controller.getDimensionSalle(0));
 								drawingPanel.repaint();
 							});
 
@@ -487,7 +499,7 @@ public class MainWindow extends JFrame {
 							longSalleTextField.addActionListener(e -> {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
-								longSalleTextField.setText(controller.getSalle().getLongueur().toString());
+								longSalleTextField.setText(controller.getDimensionSalle(1));
 								drawingPanel.repaint();
 							});
 
@@ -496,7 +508,7 @@ public class MainWindow extends JFrame {
 							hSalleTextField.addActionListener(e -> {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
-								hSalleTextField.setText(controller.getSalle().getHauteur().toString());
+								hSalleTextField.setText(controller.getDimensionSalle(2));
 								drawingPanel.repaint();
 							});
 
@@ -505,7 +517,7 @@ public class MainWindow extends JFrame {
 							epMursTextField.addActionListener(e -> {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
-								epMursTextField.setText(controller.getSalle().getProfondeur().toString());
+								epMursTextField.setText(controller.getDimensionSalle(3));
 								drawingPanel.repaint();
 							});
 

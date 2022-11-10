@@ -3,10 +3,13 @@ package muracle.domaine.drawer;
 import muracle.domaine.Cote;
 import muracle.domaine.MuracleController;
 import muracle.domaine.Salle;
+import muracle.utilitaire.CoordPouce;
+import muracle.utilitaire.Fraction;
 import muracle.utilitaire.FractionError;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -24,8 +27,8 @@ public class AfficheurPlanSalle extends Afficheur{
         super(controller, initDim);
     }
 
-    public void draw(Graphics g) throws FractionError {
-        super.draw(g);
+    public void draw(Graphics g, double zoom, Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
+        super.draw(g,zoom,dim,posiCam,dimPlan);
 
         Salle salle = controller.getSalle();
         posX = (initialDimension.width - salle.getLargeur().toDouble()) / 2;
@@ -35,12 +38,15 @@ public class AfficheurPlanSalle extends Afficheur{
         ep = salle.getProfondeur().toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
+        drawVue(g);
         g2d.setStroke(new BasicStroke(2));
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        ajustement(g2d,zoom, dim, posiCam, dimPlan);
+
         drawSalle(g2d);
         drawSeparateur(g2d);
         drawTrouRetourAir(g2d);
-        drawVue(g);
     }
 
     private void drawSalle(Graphics2D g) {

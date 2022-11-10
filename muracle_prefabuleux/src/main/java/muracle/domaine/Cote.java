@@ -97,8 +97,11 @@ public class Cote implements java.io.Serializable{
         return this.separateurs.get(index);
     }
     public void setSeparateur(int index, Pouce position){
+
         separateurs.get(index).setEntier(position.getEntier());
         separateurs.get(index).setFraction(position.getFraction());
         sortSeparateur();
     }
+    public CoordPouce getDimension(){return new CoordPouce(this.largeur,this.hauteur);}
+
 }

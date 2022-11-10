@@ -2,6 +2,8 @@ package muracle.domaine.drawer;
 
 import muracle.domaine.Cote;
 import muracle.domaine.MuracleController;
+import muracle.utilitaire.CoordPouce;
+import muracle.utilitaire.Fraction;
 import muracle.utilitaire.FractionError;
 
 import javax.imageio.ImageIO;
@@ -22,8 +24,8 @@ public class AfficheurElevationCote extends Afficheur {
         super(controller, initDim);
     }
 
-    public void draw(Graphics g) throws FractionError {
-        super.draw(g);
+    public void draw(Graphics g, double zoom,Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
+        super.draw(g,zoom,dim,posiCam,dimPlan);
 
         Cote cote = controller.getSelectedCote();
         posX = (initialDimension.width - cote.getLargeur().toDouble()) / 2;
@@ -33,10 +35,13 @@ public class AfficheurElevationCote extends Afficheur {
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
+        drawVue(g);
+
+        ajustement(g2d,zoom, dim, posiCam,dimPlan);
+
         drawCote(g2d);
         drawSeparateur(g2d);
         drawAccessoire(g2d);
-        drawVue(g);
     }
 
     private void drawCote(Graphics2D g) {

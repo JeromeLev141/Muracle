@@ -12,6 +12,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Scanner;
 import java.util.Stack;
@@ -23,9 +24,13 @@ public class MuracleController {
     private int murSelected;
     private int accessoireSelected;
     private int separateurSelected;
+
+    private boolean isVueDessus;
     private boolean isVueExterieur;
     private Pouce distLigneGrille;
     private boolean isGrilleShown;
+
+    //private String errorMessage;
     private GenerateurPlan generateurPlan;
     private Stack<String> undoPile;
     private Stack<String> redoPile;
@@ -59,6 +64,7 @@ public class MuracleController {
         creerProjet();
         distLigneGrille = new Pouce("12");
         isGrilleShown = false;
+        //errorMessage = "";
         generateurPlan = new GenerateurPlan();
     }
 
@@ -73,6 +79,7 @@ public class MuracleController {
         murSelected = -1;
         accessoireSelected = -1;
         separateurSelected = -1;
+        isVueDessus = true;
         isVueExterieur = true;
         undoPile = new Stack<>();
         redoPile = new Stack<>();
@@ -141,10 +148,11 @@ public class MuracleController {
             //a faire
             try {
                 XMLOutputFactory factory = XMLOutputFactory.newInstance();
-                XMLStreamWriter writer = factory.createXMLStreamWriter(new FileOutputStream(fichier));
+                XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(fichier.toPath()));
                 writer.writeStartDocument();
+                generateurPlan.genererPlans(salle, writer);
 
-                writer.writeStartElement("svg");
+                /*writer.writeStartElement("svg");
                 writer.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
                 writer.writeAttribute("width", "600");
                 writer.writeAttribute("height", "400");
@@ -177,7 +185,7 @@ public class MuracleController {
                         "M 210 110 L 220 120 L 220 280 L 210 290 z");
                 writer.writeAttribute("fill", "white");
                 writer.writeAttribute("stroke", "blue");
-                writer.writeAttribute("stroke-width", "1");
+                writer.writeAttribute("stroke-width", "1");*/
 
                 writer.writeEndDocument();
 
@@ -186,7 +194,6 @@ public class MuracleController {
             } catch (IOException | XMLStreamException ex) {
                 throw new RuntimeException(ex);
             }
-
             System.out.println("Exportation des plans au fichier : " + fichier.getAbsolutePath());
         }
     }
@@ -248,11 +255,81 @@ public class MuracleController {
         return salle;
     }
 
-    public void selectComponent(CoordPouce coordPouce) {}
+    public void interactComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode) {
+        // manque les deux autres vues
+        if (isVueDessus) {
+            try {
+                interactSalleComponent(coordPouce, addSepMode);
+            } catch (FractionError e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+            try {
+                interactCoteComponent(coordPouce, addSepMode, addAccesMode);
+            } catch (FractionError e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
-    private void selectSalleComponent(CoordPouce coordPouce) {}
+    private void interactSalleComponent(CoordPouce coordPouce, boolean addSepMode) throws FractionError {
+        coteSelected = ' ';
+        separateurSelected = -1;
+        Pouce posX = coordPouce.getX();
+        Pouce posY = coordPouce.getY();
+        Pouce ep = salle.getProfondeur(); // epaisseur mur
+        Pouce coinX = salle.getProfondeur().add(salle.getLargeur()); // coin interieur haut droit
+        Pouce coinY = salle.getProfondeur().add(salle.getLongueur()); // coin interieur bas gauche
+        Pouce posXVueCote = new Pouce(1, 1, 0); //temporaire
+        if (posX.compare(ep) == 1 && posX.compare(coinX) == -1) {
+            if (posY.compare(ep) == -1) {
+                selectCote('N');
+                posXVueCote = coinX.sub(posX);
+            }
+            else if (posY.compare(coinY) == 1) {
+                selectCote('S');
+                posXVueCote = posX.sub(ep);
+            }
+        }
+        else if (posY.compare(ep) == 1 && posY.compare(coinY) == -1) {
+            if (posX.compare(ep) == -1) {
+                selectCote('W');
+                posXVueCote = posY.sub(ep);
+            }
+            else if (posY.compare(coinY) == 1) {
+                selectCote('E');
+                posXVueCote = coinY.sub(posY);
+            }
+        }
+        if (coteSelected != ' ') {
+            if (getSelectedCote().getSeparateurs().contains(posXVueCote))
+                selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posXVueCote));
+            else {
+                if (addSepMode) {
+                    getSelectedCote().addSeparateur(posXVueCote);
+                    selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posXVueCote));
+                }
+            }
+        }
+        if (coteSelected != ' ' && separateurSelected != -1)
+            setIsVueDessus(false);
+    }
 
-    private void selectCoteComponent(CoordPouce coordPouce) {}
+    private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode) throws FractionError {
+        // add interraction avec accessoire et murs
+        separateurSelected = -1;
+        Pouce posX = coordPouce.getX();
+        Pouce posY = coordPouce.getY();
+        if (getSelectedCote().getSeparateurs().contains(posX))
+            selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posX));
+        else {
+            if (addSepMode) {
+                getSelectedCote().addSeparateur(posX);
+                selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posX));
+            }
+        }
+    }
 
     public void selectCote(char orientation) {
         coteSelected = orientation;
@@ -272,7 +349,16 @@ public class MuracleController {
         return isVueExterieur;
     }
 
-    public boolean isVueDessus() {return coteSelected == ' ';}
+    public void setIsVueDessus(boolean dessus) {
+        if (dessus) {
+            coteSelected = ' ';
+            separateurSelected = -1;
+            accessoireSelected = -1;
+            murSelected = -1;
+        }
+        isVueDessus = dessus;
+    }
+    public boolean isVueDessus() {return isVueDessus; }
 
     public boolean isVueCote() { return !isVueDessus();}
 
@@ -323,6 +409,24 @@ public class MuracleController {
         isGrilleShown = !isGrilleShown;
     }
 
+    public String getDimensionSalle(int indexConfig) {
+        String configValue = "";
+        switch (indexConfig) {
+            case 0 :
+                configValue = salle.getLargeur().toString();
+                break;
+            case 1 :
+                configValue = salle.getLongueur().toString();
+                break;
+            case 2 :
+                configValue = salle.getHauteur().toString();
+                break;
+            case 3 :
+                configValue = salle.getProfondeur().toString();
+                break;
+        }
+        return  configValue;
+    }
     public void setDimensionSalle(String largeur, String longueur, String hauteur, String profondeur) {
         try {
             if (!largeur.contains("-") && !largeur.equals(salle.getLargeur().toString())) {
@@ -342,7 +446,6 @@ public class MuracleController {
                 salle.setProfondeur(new Pouce(profondeur));
             }
         } catch (PouceError | FractionError ignored) {
-            System.out.println("valeur invalide");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -394,20 +497,37 @@ public class MuracleController {
         }*/
     }
 
-    public void removeSeparateur(int index) {
-        getSelectedCote().deleteSeparateur(index);
+    public void removeSeparateur() {
+        getSelectedCote().deleteSeparateur(getSelectedCote().getSeparateurs().indexOf(getSelectedSeparateur()));
+        separateurSelected = -1;
     }
 
     public void moveSeparateur(String position) {
         if (!position.contains("-")) {
             try {
                 Pouce newSep = new Pouce(position);
-                getSelectedSeparateur().setEntier(newSep.getEntier());
-                getSelectedSeparateur().setFraction(newSep.getFraction());
+                getSelectedCote().setSeparateur(separateurSelected, newSep);
+                // devrait return la nouvelle index
             } catch (PouceError | FractionError e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public String getParametreRetourAir(int indexParam) {
+        String paramValue = "";
+        switch (indexParam) {
+            case 0 :
+                paramValue = salle.getHauteurRetourAir().toString();
+                break;
+            case 1 :
+                paramValue = salle.getEpaisseurTrouRetourAir().toString();
+                break;
+            case 2 :
+                paramValue = salle.getDistanceTrouRetourAir().toString();
+                break;
+        }
+        return  paramValue;
     }
 
     public void setParametreRetourAir(String hauteur, String epaisseur, String distanceSol) {
@@ -478,4 +598,11 @@ public class MuracleController {
             throw new RuntimeException(e);
         }
     }
+
+    /*public String getErrorMessage() {
+        return errorMessage;
+    }
+    public void ackErrorMessage() {
+        errorMessage = "";
+    }*/
 }

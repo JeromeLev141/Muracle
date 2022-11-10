@@ -10,35 +10,29 @@ import muracle.utilitaire.Pouce;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
-public class DrawingPanel extends JPanel {
-    private Dimension dimPanel;
+public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWheelListener, MouseListener {
     private MainWindow mainWindow;
     private Fraction zoomFactor;
     private CoordPouce posiCam;
-    private Dimension dimPlan;
-    private Fraction ratioWH;
-
+    private CoordPouce dimPlan;
     private Color backgroundColor;
 
-    public DrawingPanel(){}
 
     public DrawingPanel(MainWindow mainWindow){
         this.mainWindow = mainWindow;
-        dimPanel = null;
         dimPlan = null;
         try {
             zoomFactor = new Fraction(1, 1);
-            ratioWH = new Fraction(1, 1);
         }catch (Exception ignored){}
         posiCam = null;
         backgroundColor = new Color(89, 100, 124);
+        addMouseMotionListener(this);
+        addMouseWheelListener(this);
     }
+
     public void paintComponent(Graphics g){
-        /*
-        Fonction non terminé
-         */
         if (mainWindow != null)
         {
             super.paintComponent(g);
@@ -46,55 +40,64 @@ public class DrawingPanel extends JPanel {
                 setBackground(backgroundColor);
             else setBackground(Color.WHITE);
             Afficheur drawer = new Afficheur(mainWindow.controller, getSize());
-            if (mainWindow.controller.getSelectedCote() == null)
+
+            if (mainWindow.controller.isVueDessus()) {
+                this.updateParametre();
                 drawer = new AfficheurPlanSalle(mainWindow.controller, getSize());
-            else if (mainWindow.controller.getSelectedMur() == null)
+            }
+            else {
+                this.updateParametre();
                 drawer = new AfficheurElevationCote(mainWindow.controller, getSize());
+            }
+
             try {
-                drawer.draw(g);
+                drawer.draw(g,(double)zoomFactor.getDenum()/zoomFactor.getNum(),this.getSize(),posiCam,dimPlan);
+
             } catch (FractionError e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void updateParametre(Dimension dimPanel, Dimension dimPlan){
-        resetZoomFactor();
-        this.dimPlan = dimPlan;
-        this.dimPanel = dimPanel;
+    public void updateParametre(){
+        //resetZoomFactor();
+        if (mainWindow.controller.getSelectedCote() == null)
+            try {
+                this.dimPlan = mainWindow.controller.getSalle().getDimension();
+            }catch (FractionError ignored){}
+
+        else if (mainWindow.controller.getSelectedMur() == null)
+            this.dimPlan = mainWindow.controller.getSelectedCote().getDimension();
+
         try{
-            this.posiCam = new CoordPouce(new Pouce(dimPlan.width,0,1), new Pouce(dimPlan.height,0,1));
-            this.ratioWH = new Fraction(dimPanel.width,dimPanel.height);
+            this.posiCam = new CoordPouce(this.dimPlan.getX().div(2), this.dimPlan.getY().div(2));
         }catch (Exception ex){
-            throw new Error("Erreur dans le calcul de coord");
+            throw new Error("Erreur dans l'opdate des paramètre");
         }
 
 
     }
 
+
     public CoordPouce coordPixelToPouce(MouseEvent event){
         try {
-            Pouce posiX = new Pouce(0, dimPlan.width, 2).addRef(posiCam.getX()).mulRef(zoomFactor);
-            posiX.mulRef(new Fraction(2* event.getX(),dimPanel.width).subRef(new Fraction(-1,1)));
+            //System.out.println(dimPlan + " " + zoomFactor + getSize() + posiCam);
 
-            Pouce posiY = new Pouce(0, dimPlan.height, 2).addRef(posiCam.getY()).mulRef(zoomFactor).mulRef(this.ratioWH);
-            posiY.mulRef(new Fraction(2* event.getY(),dimPanel.height).subRef(new Fraction(-1,1)));
+            Pouce posiX = new Pouce(0,this.getSize().width,2);
+            posiX.mulRef(zoomFactor);
+            posiX.mulRef(new Fraction(2* event.getX(),this.getSize().width).subRef(new Fraction(1,1)));
+            posiX.addRef(posiCam.getX());
 
+            Pouce posiY = new Pouce(0,this.getSize().height,2);
+            posiY.mulRef(zoomFactor);
+            posiY.mulRef(new Fraction(2* event.getY(),this.getSize().height).subRef(new Fraction(1,1)));
+            posiY.addRef(posiCam.getY());
             return new CoordPouce(posiX,posiY);
         }catch (Exception ex){
             throw new Error("Erreur dans le calcul de coord");
         }
     }
 
-
-
-    public Dimension getDimPanel() {
-        return dimPanel;
-    }
-
-    public void setDimPanel(Dimension dimPanel) {
-        this.dimPanel = dimPanel;
-    }
 
     public MainWindow getMainWindow() {
         return mainWindow;
@@ -109,14 +112,16 @@ public class DrawingPanel extends JPanel {
     }
 
     public void addZoomFactor() {
+        this.setZoomFactor((int)((double)this.zoomFactor.getDenum()/this.zoomFactor.getNum()*100 + 10));
     }
 
     public void subZoomFactor() {
+        this.setZoomFactor((int)((double)this.zoomFactor.getDenum()/this.zoomFactor.getNum()*100 - 10));
     }
 
     public void resetZoomFactor() {
-        this.zoomFactor.setNum(3);
-        this.zoomFactor.setDenum(2);
+        this.zoomFactor.setNum(1);
+        this.zoomFactor.setDenum(1);
     }
 
     public void setZoomFactor(int zoomFactor){
@@ -134,21 +139,52 @@ public class DrawingPanel extends JPanel {
         this.posiCam = posiCam;
     }
 
-    public Dimension getDimPlan() {
-        return dimPlan;
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
     }
 
-    public void setDimPlan(Dimension dimPlan) {
-        this.dimPlan = dimPlan;
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        CoordPouce c = coordPixelToPouce(e);
+        System.out.println(c.toString() + " <=> " + e.getX() + " - " + e.getY());
     }
 
-    public Fraction getRatioWH() {
-        return ratioWH;
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        if(e.getWheelRotation() < 0) {
+            addZoomFactor();
+            this.repaint();
+
+        }
+        else{
+            subZoomFactor();
+            this.repaint();
+        }
     }
 
-    public void setRatioWH(int largeur, int longueur) {
-        this.ratioWH.setNum(largeur);
-        this.ratioWH.setDenum(longueur);
-        this.ratioWH.simplifier();
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

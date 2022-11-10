@@ -5,6 +5,8 @@ import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
 import muracle.utilitaire.PouceError;
 
+import javax.xml.stream.XMLStreamWriter;
+
 public class GenerateurPlan implements java.io.Serializable {
 
     private Pouce margeEpaisseurMateriaux = new Pouce("0");
@@ -49,7 +51,7 @@ public class GenerateurPlan implements java.io.Serializable {
         longueurPlis = longPlis;
     }
 
-    public void genererPlans() {}
+    public void genererPlans(Salle salle, XMLStreamWriter writer) {}
 
     public CoordPouce[][] genererCoordonees() {
         return null;
