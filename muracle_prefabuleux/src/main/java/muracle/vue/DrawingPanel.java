@@ -12,7 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWheelListener {
+public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWheelListener, MouseListener {
     private MainWindow mainWindow;
     private Fraction zoomFactor;
     private CoordPouce posiCam;
@@ -173,4 +173,28 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
         }
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }
