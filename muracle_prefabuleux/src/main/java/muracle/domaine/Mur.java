@@ -52,7 +52,6 @@ public class Mur implements java.io.Serializable{
     public Panneau getPanneauExt() {
         return panneauExt;
     }
-
     public Panneau getPanneauInt() {
         return panneauInt;
     }
