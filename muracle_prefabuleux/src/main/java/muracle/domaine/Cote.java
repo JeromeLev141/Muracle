@@ -3,8 +3,10 @@ package muracle.domaine;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
+import muracle.utilitaire.PouceError;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Cote implements java.io.Serializable{
     private char orientation;
@@ -21,11 +23,7 @@ public class Cote implements java.io.Serializable{
         this.orientation = orientation;
         this.largeur = largeur;
         this.hauteur = hauteur;
-
         murs = new ArrayList<>();
-        Mur murInit = new Mur(largeur, hauteur);
-        murInit.setEstCoinDroit(true);
-        murs.add(murInit);
         separateurs = new ArrayList<>();
     }
 
@@ -57,7 +55,7 @@ public class Cote implements java.io.Serializable{
     }
 
     public void addAccessoire(Accessoire accessoire, CoordPouce positionInit){
-        //TODO
+
     }
     public void moveAccessoire(CoordPouce positionInit, CoordPouce positionPost){
         //TODO
@@ -81,23 +79,16 @@ public class Cote implements java.io.Serializable{
     public ArrayList<Pouce> getSeparateurs() {
         return separateurs;
     }
-    public void addSeparateur(Pouce position) throws FractionError {
-        int index = 0;
-        for (Pouce separateur : this.separateurs) {
-            if (position.compare(separateur) == 1) {
-                index = index + 1;
-            }
+    public void addSeparateur(Pouce position) throws PouceError {
+        if(position.compare(largeur) == -1){
+            separateurs.add(position);
+            sortSeparateur();
+        }else{
+            throw new PouceError("Position en dehors du côté");
         }
-        this.separateurs.add(index, position);
-        Mur newMur;
-        if (index + 1 != this.separateurs.size())
-            newMur = new Mur(this.separateurs.get(index + 1).sub(this.separateurs.get(index)),this.getHauteur());
-        else {
-            newMur = new Mur(getLargeur().sub(separateurs.get(index)), getHauteur());
-            newMur.setEstCoinDroit(true);
-            murs.get(index).setEstCoinDroit(false);
-        }
-        murs.add(index + 1, newMur);
+    }
+    private void sortSeparateur(){
+        separateurs.sort(Pouce::compare);
     }
     public void deleteSeparateur(int index){
         this.separateurs.remove(index);
@@ -106,9 +97,8 @@ public class Cote implements java.io.Serializable{
         return this.separateurs.get(index);
     }
     public void setSeparateur(int index, Pouce position){
-        this.separateurs.add(index, position);
-    }
-    private void updateCoins(){
-        //TODO
+        separateurs.get(index).setEntier(position.getEntier());
+        separateurs.get(index).setFraction(position.getFraction());
+        sortSeparateur();
     }
 }

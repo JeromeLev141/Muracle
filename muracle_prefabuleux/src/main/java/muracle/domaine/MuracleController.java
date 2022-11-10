@@ -387,11 +387,11 @@ public class MuracleController {
     }
 
     public void addSeparateur(Pouce pos) {
-        try {
+        /*try {
             getSelectedCote().addSeparateur(pos);
         } catch (FractionError e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     public void removeSeparateur(int index) {

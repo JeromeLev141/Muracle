@@ -56,9 +56,4 @@ public class Mur implements java.io.Serializable{
     public Panneau getPanneauInt() {
         return panneauInt;
     }
-
-
-    private void updatePoids(){
-        //TODO
-    }
 }
