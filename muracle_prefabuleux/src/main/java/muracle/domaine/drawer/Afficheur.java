@@ -1,9 +1,13 @@
 package muracle.domaine.drawer;
 
 import muracle.domaine.MuracleController;
+import muracle.utilitaire.CoordPouce;
+import muracle.utilitaire.Fraction;
 import muracle.utilitaire.FractionError;
+import muracle.utilitaire.Pouce;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 
 public class Afficheur {
@@ -22,13 +26,26 @@ public class Afficheur {
         grilleColor = new Color(150, 173, 233);
     }
 
-    public void draw(Graphics g) throws FractionError {
+    public void draw(Graphics g, double zoom, Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
         g.setColor(lineColor);
         if (controller.isGrilleShown()) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             drawGrille(g2d);
         }
+    }
+
+    protected void ajustement(Graphics2D g2d,double zoom,Dimension dim, CoordPouce posiCam, CoordPouce dimPlan){
+        AffineTransform at = new AffineTransform();
+
+        try{
+            at.translate((-1*zoom * posiCam.getX().sub(dimPlan.getX().div(2)).toDouble()) + (-1*(zoom-1)*dim.getWidth()/2),
+                    (-1*zoom * posiCam.getY().sub(dimPlan.getY().div(2)).toDouble()) + (-1*(zoom-1)*dim.getHeight()/2));
+            //System.out.println(zoom*posiCam.getX().sub(dimPlan.getX().div(2)).toDouble());
+        }catch (FractionError ignored){}
+
+        at.scale(zoom,zoom);
+        g2d.transform(at);
     }
 
     private void drawGrille(Graphics2D g) throws FractionError {

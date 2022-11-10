@@ -1,5 +1,6 @@
 package muracle.domaine;
 
+import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
 
@@ -85,7 +86,9 @@ public class Cote implements java.io.Serializable{
     public void setSeparateur(int index, Pouce position){
         this.separateurs.add(index, position);
     }
+    public CoordPouce getDimension(){return new CoordPouce(this.largeur,this.hauteur);}
     private void updateCoins(){
         //TODO
     }
+
 }

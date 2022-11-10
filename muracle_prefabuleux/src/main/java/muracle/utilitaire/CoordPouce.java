@@ -34,4 +34,9 @@ public class CoordPouce implements java.io.Serializable{
         Pouce y = pts1.getY().sub(pts2.getY());
         return null;
     }
+
+    @Override
+    public String toString(){
+        return "X : " + getX() + " | Y : " + getY();
+    }
 }
