@@ -37,6 +37,7 @@ public class AfficheurElevationCote extends Afficheur {
         drawSeparateur(g2d);
         drawAccessoire(g2d);
         drawVue(g);
+        //drawErrorMessage(g2d);
     }
 
     private void drawCote(Graphics2D g) {

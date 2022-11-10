@@ -41,6 +41,7 @@ public class AfficheurPlanSalle extends Afficheur{
         drawSeparateur(g2d);
         drawTrouRetourAir(g2d);
         drawVue(g);
+        //drawErrorMessage(g2d);
     }
 
     private void drawSalle(Graphics2D g) {

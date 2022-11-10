@@ -46,9 +46,9 @@ public class DrawingPanel extends JPanel {
                 setBackground(backgroundColor);
             else setBackground(Color.WHITE);
             Afficheur drawer = new Afficheur(mainWindow.controller, getSize());
-            if (mainWindow.controller.getSelectedCote() == null)
+            if (mainWindow.controller.isVueDessus())
                 drawer = new AfficheurPlanSalle(mainWindow.controller, getSize());
-            else if (mainWindow.controller.getSelectedMur() == null)
+            else
                 drawer = new AfficheurElevationCote(mainWindow.controller, getSize());
             try {
                 drawer.draw(g);
