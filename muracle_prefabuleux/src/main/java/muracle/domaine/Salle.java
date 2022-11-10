@@ -55,7 +55,8 @@ public class Salle implements java.io.Serializable{
 
     public void setLargeur(Pouce largeur) {
         this.largeur = largeur;
-        //modifier 2 murs nord sud
+        getCote('N').setLargeur(largeur);
+        getCote('S').setLargeur(largeur);
     }
 
     public Pouce getEpaisseurTrouRetourAir() {
@@ -72,7 +73,10 @@ public class Salle implements java.io.Serializable{
 
     public void setHauteur(Pouce hauteur) {
         this.hauteur = hauteur;
-        //modifie ChaqueCOTE
+        getCote('E').setHauteur(hauteur);
+        getCote('W').setHauteur(hauteur);
+        getCote('N').setHauteur(hauteur);
+        getCote('S').setHauteur(hauteur);
     }
 
     public Pouce getHauteurRetourAir() {
@@ -89,7 +93,8 @@ public class Salle implements java.io.Serializable{
 
     public void setLongueur(Pouce longueur) {
         this.longueur = longueur;
-        //modifie  murs2 est west
+        getCote('E').setLargeur(longueur);
+        getCote('W').setLargeur(longueur);
     }
 
     public Pouce getProfondeur() {
