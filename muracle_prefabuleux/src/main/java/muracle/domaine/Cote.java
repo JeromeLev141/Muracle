@@ -1,5 +1,7 @@
 package muracle.domaine;
 
+import muracle.domaine.errors.AccessoireFitInCoteError;
+import muracle.domaine.errors.AccessoireIntersectError;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
@@ -56,14 +58,19 @@ public class Cote implements java.io.Serializable{
         return accessoires;
     }
 
-    //TO REMOVE
     public void setAccessoires(ArrayList<Accessoire> accessoires){
         this.accessoires = accessoires;
     }
 
-    public void addAccessoire(Accessoire accessoire) throws FractionError, PouceError {
-        if(doesAccessoireFitInCote(accessoire) && doesAccessoireFitWithOtherAccessoires(accessoire)){
+    public void addAccessoire(Accessoire accessoire) throws FractionError, PouceError, AccessoireFitInCoteError, AccessoireIntersectError {
+        boolean fitInCote = doesAccessoireFitInCote(accessoire);
+        boolean fitWithAccessories = doesAccessoireFitWithOtherAccessoires(accessoire);
+        if(fitInCote && fitWithAccessories){
             accessoires.add(accessoire);
+        } else if (!fitInCote) {
+            throw new AccessoireFitInCoteError("Accessoire ne rentre pas dans le côté");
+        } else {
+            throw new AccessoireIntersectError("Accessoire intersecte avec les autres");
         }
     }
     public boolean doesAccessoireFitInCote(Accessoire accessoire) throws FractionError, PouceError {

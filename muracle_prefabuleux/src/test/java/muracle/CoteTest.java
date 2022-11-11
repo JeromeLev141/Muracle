@@ -3,8 +3,11 @@ package muracle;
 
 import muracle.domaine.Accessoire;
 import muracle.domaine.Cote;
+import muracle.domaine.errors.AccessoireFitInCoteError;
+import muracle.domaine.errors.AccessoireIntersectError;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.Pouce;
+import muracle.utilitaire.PouceError;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -30,8 +33,10 @@ public class CoteTest {
             Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
             Accessoire accessoire = new Accessoire(new Pouce("10"), new Pouce("5"), new CoordPouce(new Pouce("-5"), new Pouce("0")));
             cote.addAccessoire(accessoire);
-            assertEquals(0, cote.getAccessoires().size());
-        }catch (Exception e){
+            fail();//Test doit lancer une exception
+        }catch (AccessoireFitInCoteError | AccessoireIntersectError e){
+            assertTrue(true);
+        } catch (Exception e){
             fail();
         }
     }
