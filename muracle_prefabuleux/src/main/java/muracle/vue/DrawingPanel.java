@@ -86,7 +86,7 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
         }
     }
 
-    public CoordPouce coordPixelToPouce(MouseEvent event){
+    private CoordPouce coordPixelToPouceAll(MouseEvent event){
         try {
             //System.out.println(dimPlan + " " + zoomFactor + getSize() + posiCam);
 
@@ -100,6 +100,22 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
             posiY.mulRef(new Fraction(2* event.getY(),this.getSize().height).subRef(new Fraction(1,1)));
             posiY.addRef(posiCam.getY());
             return new CoordPouce(posiX,posiY);
+        }catch (Exception ex){
+            throw new Error("Erreur dans le calcul de coord");
+        }
+    }
+
+    public CoordPouce coordPixelToPouce(MouseEvent event){
+        try {
+            //System.out.println(dimPlan + " " + zoomFactor + getSize() + posiCam);
+
+            CoordPouce coord = coordPixelToPouce(event);
+            double x =coord.getX().toDouble();
+            double y = coord.getY().toDouble();
+            if (x >= 0 && x <= dimPlan.getX().toDouble() && y >= 0 && y <= dimPlan.getY().toDouble())
+                return coord;
+            else
+                return null;
         }catch (Exception ex){
             throw new Error("Erreur dans le calcul de coord");
         }
@@ -176,7 +192,7 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        CoordPouce c = coordPixelToPouce(e);
+        CoordPouce c = coordPixelToPouceAll(e);
         System.out.println(c.toString() + " <=> " + e.getX() + " - " + e.getY());
     }
 
