@@ -35,13 +35,15 @@ public class AfficheurElevationCote extends Afficheur {
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
-        drawVue(g);
+
 
         ajustement(g2d,zoom, dim, posiCam,dimPlan);
-
         drawCote(g2d);
         drawSeparateur(g2d);
         drawAccessoire(g2d);
+        reset(g2d,zoom, dim, posiCam, dimPlan);
+
+        drawVue(g);
     }
 
     private void drawCote(Graphics2D g) {

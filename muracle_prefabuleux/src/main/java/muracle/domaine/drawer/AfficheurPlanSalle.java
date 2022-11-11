@@ -38,7 +38,7 @@ public class AfficheurPlanSalle extends Afficheur{
         ep = salle.getProfondeur().toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
-        drawVue(g);
+
         g2d.setStroke(new BasicStroke(2));
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -47,6 +47,9 @@ public class AfficheurPlanSalle extends Afficheur{
         drawSalle(g2d);
         drawSeparateur(g2d);
         drawTrouRetourAir(g2d);
+
+        reset(g2d,zoom, dim, posiCam, dimPlan);
+        drawVue(g);
     }
 
     private void drawSalle(Graphics2D g) {

@@ -44,10 +44,19 @@ public class Afficheur {
         try{
             at.translate((-1*zoom * posiCam.getX().sub(dimPlan.getX().div(2)).toDouble()) + (-1*(zoom-1)*dim.getWidth()/2),
                     (-1*zoom * posiCam.getY().sub(dimPlan.getY().div(2)).toDouble()) + (-1*(zoom-1)*dim.getHeight()/2));
-            //System.out.println(zoom*posiCam.getX().sub(dimPlan.getX().div(2)).toDouble());
         }catch (FractionError ignored){}
 
         at.scale(zoom,zoom);
+        g2d.transform(at);
+    }
+
+    protected void reset(Graphics2D g2d, double zoom,Dimension dim, CoordPouce posiCam, CoordPouce dimPlan){
+        AffineTransform at = new AffineTransform();
+        at.scale(1/zoom,1/zoom);
+        try {
+            at.translate((1 * zoom * posiCam.getX().sub(dimPlan.getX().div(2)).toDouble()) + (1 * (zoom - 1) * dim.getWidth() / 2),
+                    (1 * zoom * posiCam.getY().sub(dimPlan.getY().div(2)).toDouble()) + (1 * (zoom - 1) * dim.getHeight() / 2));
+        }catch (FractionError ignored){}
         g2d.transform(at);
     }
 

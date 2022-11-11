@@ -52,6 +52,18 @@ public class Fraction implements java.io.Serializable{
         return this.copy().addRef(fraction);
     }
 
+    public Fraction addRef(int val){
+        val *= this.denum;
+        this.num += val;
+        simplifier();
+        return this;
+    }
+
+    //fait une addition par reference copy
+    public Fraction add(int val) throws FractionError {
+        return this.copy().addRef(val);
+    }
+
     //fait une soustraction par reference
     public Fraction subRef(Fraction fraction){
         int numfraction = fraction.num * this.denum;
@@ -98,6 +110,19 @@ public class Fraction implements java.io.Serializable{
     //fait une division par reference copy
     public Fraction div(Fraction fraction) throws FractionError {
         return this.copy().divRef(fraction);
+    }
+
+    public Fraction divRef(int diviseur) throws FractionError{
+        if (diviseur == 0){
+            throw new FractionError("Division par zero");
+        }
+        this.denum *= diviseur;
+        simplifier();
+        return this;
+    }
+
+    public Fraction div(int diviseur) throws FractionError{
+        return this.copy().divRef(diviseur);
     }
 
     // equivalent a ==

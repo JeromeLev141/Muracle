@@ -58,6 +58,7 @@ public class MainWindow extends JFrame {
 
 		//Panneau de dessin
 		DrawingPanel drawingPanel = new DrawingPanel(this);
+		drawingPanel.updateParametre();
 
 		//seulement pour demo
 		JButton coteButton = new JButton();
@@ -321,6 +322,7 @@ public class MainWindow extends JFrame {
 					coteButton.setVisible(true);
 					controller.setIsVueDessus(true);
 					updater.updateParamsShown();
+					drawingPanel.updateParametre();
 					drawingPanel.repaint();
 				});
 				menuBar.add(retourVueHautButton);
@@ -439,11 +441,12 @@ public class MainWindow extends JFrame {
 					{
 						coteButton.setText("Vue de côté (demo)");
 						coteButton.addActionListener(e -> {
+
 							controller.selectCote('N');
 							controller.setIsVueDessus(false);
 							updater.updateButtons();
 							updater.updateParamsShown();
-
+							drawingPanel.updateParametre();
 							drawingPanel.repaint();
 						});
 						drawingPanel.add(coteButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
