@@ -12,7 +12,7 @@ public class CoteDTO {
     public Pouce Hauteur;
     public ArrayList<Mur> Murs;
     public ArrayList<Pouce> Separateurs;
-    public Accessoire[] Accessoires;
+    public ArrayList<Accessoire> Accessoires;
     public UUID id;
 
     CoteDTO(Cote cote){
