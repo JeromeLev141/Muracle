@@ -34,7 +34,9 @@ public class Afficheur {
         if (controller.isGrilleShown()) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            drawGrille(g2d);
+            ajustement(g2d, zoom, dim, posiCam, dimPlan);
+            drawGrille(g2d, zoom);
+            reset(g2d, zoom, dim, posiCam, dimPlan);
         }
     }
 
@@ -60,16 +62,20 @@ public class Afficheur {
         g2d.transform(at);
     }
 
-    private void drawGrille(Graphics2D g) throws FractionError {
+    private void drawGrille(Graphics2D g, double zoom) throws FractionError {
         g.setColor(grilleColor);
-        double posX = initialDimension.width % controller.getDistLigneGrille().toDouble() / 2;
-        double posY = initialDimension.height % controller.getDistLigneGrille().toDouble() / 2;
-        while (posX < initialDimension.width) {
-            g.draw(new Line2D.Double(posX, 0, posX, initialDimension.height));
+        double decalX = (int) (2 * initialDimension.width / controller.getDistLigneGrille().toDouble())
+                * controller.getDistLigneGrille().toDouble();
+        double decalY = (int) (2 * initialDimension.height / controller.getDistLigneGrille().toDouble())
+                * controller.getDistLigneGrille().toDouble();
+        double posX = initialDimension.width % controller.getDistLigneGrille().toDouble() / 2 - decalX;
+        double posY = initialDimension.height % controller.getDistLigneGrille().toDouble() / 2 - decalY;
+        while (posX < 3 * initialDimension.width) {
+            g.draw(new Line2D.Double(posX, -2 * initialDimension.height, posX, 3 * initialDimension.height));
             posX += controller.getDistLigneGrille().toDouble();
         }
-        while (posY < initialDimension.height) {
-            g.draw(new Line2D.Double(0, posY, initialDimension.width, posY));
+        while (posY < 3 * initialDimension.height) {
+            g.draw(new Line2D.Double(-2 * initialDimension.width, posY, 3 * initialDimension.width, posY));
             posY += controller.getDistLigneGrille().toDouble();
         }
         g.setColor(lineColor);

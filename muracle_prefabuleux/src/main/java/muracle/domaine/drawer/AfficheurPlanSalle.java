@@ -63,10 +63,10 @@ public class AfficheurPlanSalle extends Afficheur{
         g.setColor(lineColor);
         g.draw(rectInt);
         g.draw(rectExt);
-        g.draw(new Line2D.Double(posX, posY, posX - ep, posY - ep));
-        g.draw(new Line2D.Double(posX + w, posY, posX + w + ep , posY - ep));
-        g.draw(new Line2D.Double(posX, posY + h, posX - ep, posY + h + ep));
-        g.draw(new Line2D.Double(posX + w, posY + h, posX + w + ep, posY + h + ep));
+        g.draw(new Line2D.Double(posX, posY, posX - ep + 1, posY - ep + 1));
+        g.draw(new Line2D.Double(posX + w, posY, posX + w - 1 + ep , posY - ep + 1));
+        g.draw(new Line2D.Double(posX, posY + h, posX - ep + 1, posY + h + ep - 1));
+        g.draw(new Line2D.Double(posX + w, posY + h, posX + w + ep - 1, posY + h + ep - 1));
     }
 
     private void drawSeparateur(Graphics2D g) throws FractionError {
