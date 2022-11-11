@@ -42,13 +42,11 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
                 setBackground(backgroundColor);
             else setBackground(Color.WHITE);
             Afficheur drawer = new Afficheur(mainWindow.controller, getSize());
-
+            this.update();
             if (mainWindow.controller.isVueDessus()) {
-                //this.updateParametre();
                 drawer = new AfficheurPlanSalle(mainWindow.controller, getSize());
             }
             else {
-                //this.updateParametre();
                 drawer = new AfficheurElevationCote(mainWindow.controller, getSize());
             }
 
@@ -59,6 +57,16 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
                 e.printStackTrace();
             }
         }
+    }
+
+    public void update(){
+        if (mainWindow.controller.getSelectedCote() == null)
+            try {
+                this.dimPlan = mainWindow.controller.getSalle().getDimension();
+            }catch (FractionError ignored){}
+
+        else if (mainWindow.controller.getSelectedMur() == null)
+            this.dimPlan = mainWindow.controller.getSelectedCote().getDimension();
     }
 
     public void updateParametre(){
@@ -114,23 +122,25 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
         if (zoomFactor.toDouble() <= 0.1){
             this.zoomFactor.setNum(1);
             this.zoomFactor.setDenum(10);
-        }else
-            this.setZoomFactor((int)((double)this.zoomFactor.getDenum()/this.zoomFactor.getNum()*100 + 5));
+        }else {
+            try {
+                this.zoomInc = new Fraction(5,100);
+                this.setZoomFactor((int) ((double) this.zoomFactor.getDenum() / this.zoomFactor.getNum() * 100 + 5));
+                //zoomInc = zoomInc.subRef(zoomFactor);
+            }catch (FractionError ignored){}
+        }
 
         System.out.println(zoomInc);
     }
 
     public void subZoomFactor() {
-        try {
-            if (zoomFactor.toDouble() >= 5) {
-                this.zoomFactor.setNum(5);
-                this.zoomFactor.setDenum(1);
-            } else {
-                this.zoomInc = zoomFactor.copy();
-                this.setZoomFactor((int) ((double) this.zoomFactor.getDenum() / this.zoomFactor.getNum() * 100 - 5));
-                zoomInc = zoomFactor.sub(zoomInc);
-            }
-        }catch (FractionError ignored){}
+
+        if (zoomFactor.toDouble() >= 5) {
+            this.zoomFactor.setNum(5);
+            this.zoomFactor.setDenum(1);
+        } else {
+            this.setZoomFactor((int) ((double) this.zoomFactor.getDenum() / this.zoomFactor.getNum() * 100 - 5));
+        }
     }
 
     public void resetZoomFactor() {
@@ -167,60 +177,57 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
     @Override
     public void mouseMoved(MouseEvent e) {
         CoordPouce c = coordPixelToPouce(e);
-        //System.out.println(c.toString() + " <=> " + e.getX() + " - " + e.getY());
+        System.out.println(c.toString() + " <=> " + e.getX() + " - " + e.getY());
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         if(e.getWheelRotation() < 0) {
+            //Zoom
             addZoomFactor();
-
             try {
-                if (zoomFactor.toDouble() >= 1) {
+                if (zoomFactor.toDouble() >= 3) {
                     this.posiCam = new CoordPouce(this.dimPlan.getX().div(2), this.dimPlan.getY().div(2));
-                }else {
+                }else if (zoomFactor.toDouble() > 0.1) {
                     //CoordPouce posi = coordPixelToPouce(e);
-                    //Pouce x = dimPlan.getX().div(2);
-                    /*
-                    Pouce x = new Pouce(0,getSize().width,2);
+                    Pouce x = dimPlan.getX().div(2);
+
+                    //Pouce x = new Pouce(0,getSize().width,2);
                     x.mulRef(zoomInc);
-                    x.mulRef(new Pouce(0,2*e.getX(),getSize().width).subRef(new Pouce(-1,0,1)));
+                    x.mulRef(new Fraction(2*e.getX(),getSize().width).subRef(1));
                     this.posiCam.getX().addRef(x);
 
-                    //Pouce y = dimPlan.getY().div(2);
-                    Pouce y = new Pouce(0,getSize().height,2);
-                    x.mulRef(zoomInc);
-                    x.mulRef(new Pouce(0,2*e.getY(),getSize().height).subRef(new Pouce(-1,0,1)));
+                    Pouce y = dimPlan.getY().div(2);
+                    //Pouce y = new Pouce(0,getSize().height,2);
+                    y.mulRef(zoomInc);
+                    y.mulRef(new Fraction(2*e.getY(),getSize().height).subRef(1));
                     this.posiCam.getY().addRef(y);
-                    */
-
                 }
                 System.out.println(this.posiCam);
+                System.out.println(dimPlan);
+                System.out.println(getSize());
             }catch (FractionError ignored){}
             this.repaint();
 
         }
         else{
+            //Dezoom
             subZoomFactor();
-            /*
-            try {
-                if (zoomFactor.toDouble() >= 1) {
+            if (zoomFactor.toDouble() >= 3)
+                try {
                     this.posiCam = new CoordPouce(this.dimPlan.getX().div(2), this.dimPlan.getY().div(2));
-                }else
-                    posiCam = coordPixelToPouce(e);
-            }catch (FractionError ignored){}
-            */
+                }catch (FractionError ignored){}
             this.repaint();
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        //System.out.println("X : " + e.getX() + " | Y : " + e.getY());
 
     }
 

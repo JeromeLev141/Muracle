@@ -64,6 +64,18 @@ public class Fraction implements java.io.Serializable{
         return this.copy().addRef(val);
     }
 
+    public Fraction subRef(int val){
+        val *= this.denum;
+        this.num -= val;
+        simplifier();
+        return this;
+    }
+
+    //fait une addition par reference copy
+    public Fraction sub(int val) throws FractionError {
+        return this.copy().subRef(val);
+    }
+
     //fait une soustraction par reference
     public Fraction subRef(Fraction fraction){
         int numfraction = fraction.num * this.denum;
