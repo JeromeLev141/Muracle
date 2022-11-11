@@ -106,14 +106,7 @@ public class Cote implements java.io.Serializable{
     public void removeAccessoire(CoordPouce position){
         //TODO
     }
-    private boolean ContainRetourAir(){
-        for (Accessoire accessoire : accessoires) {
-            if (Objects.equals(accessoire.getType(), "RetourAir")) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     public void setHauteur(Pouce hauteur) {
         this.hauteur = hauteur;

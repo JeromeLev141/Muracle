@@ -82,15 +82,6 @@ public class CoteTest {
     }
 
     @Test
-    public void ContainRetourAir(){
-        try{
-            Cote cote = new Cote('N', new Pouce("12"), new Pouce("15"));
-        }catch (Exception e){
-            fail();
-        }
-    }
-
-    @Test
     public void addSeparateur(){}
 
     @Test

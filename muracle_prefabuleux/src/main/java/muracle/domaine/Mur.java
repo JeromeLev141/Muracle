@@ -3,6 +3,8 @@ package muracle.domaine;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.Pouce;
 
+import java.util.Objects;
+
 public class Mur implements java.io.Serializable{
     private Pouce largeur;
     private Pouce hauteur;
@@ -54,5 +56,8 @@ public class Mur implements java.io.Serializable{
     }
     public Panneau getPanneauInt() {
         return panneauInt;
+    }
+    private boolean ContainRetourAir(){
+        return false;
     }
 }
