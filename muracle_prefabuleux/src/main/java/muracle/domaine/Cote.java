@@ -3,10 +3,7 @@ package muracle.domaine;
 import muracle.domaine.errors.AccessoireFitInCoteError;
 import muracle.domaine.errors.AccessoireIntersectError;
 import muracle.domaine.errors.SeparateurChevaucheError;
-import muracle.utilitaire.CoordPouce;
-import muracle.utilitaire.FractionError;
-import muracle.utilitaire.Pouce;
-import muracle.utilitaire.PouceError;
+import muracle.utilitaire.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,8 +74,16 @@ public class Cote implements java.io.Serializable{
     public boolean doesAccessoireFitInCote(Accessoire accessoire) throws FractionError, PouceError {
         CoordPouce cote1 = new CoordPouce(new Pouce("0"), new Pouce("0"));
         CoordPouce cote2 = new CoordPouce(largeur, hauteur);
-        CoordPouce accessoire1 = accessoire.getPosition();
-        CoordPouce accessoire2 =new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
+        CoordPouce accessoire1;
+        CoordPouce accessoire2;
+        if(Objects.equals(accessoire.getType(), "Fenetre")){
+            Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
+            accessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
+            accessoire2 =new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(jeuSupplementaire)), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(jeuSupplementaire));
+        }else{
+            accessoire1 = accessoire.getPosition();
+            accessoire2 =new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
+        }
 
         boolean isLeftValid = (cote1.getX().compare(accessoire1.getX()) == -1) || (cote1.getX().compare(accessoire1.getX()) == 0);
         boolean isRightValid = (cote2.getX().compare(accessoire2.getX()) == 1) ||  (cote2.getX().compare(accessoire2.getX()) == 0);

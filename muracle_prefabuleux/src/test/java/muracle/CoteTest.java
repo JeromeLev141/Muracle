@@ -28,6 +28,18 @@ public class CoteTest {
         }
     }
     @Test
+    public void addAccessoireFenetre(){
+        try{
+            Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
+            Accessoire accessoire = new Accessoire(new Pouce("10"), new Pouce("5"), new CoordPouce(new Pouce("0"), new Pouce("0")));
+            accessoire.setType("Fenetre");
+            cote.addAccessoire(accessoire);
+            assertEquals(1, cote.getAccessoires().size());
+        }catch (Exception e){
+            fail();
+        }
+    }
+    @Test
     public void addAccessoireNonValid(){
         try{
             Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
