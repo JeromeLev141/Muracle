@@ -2,6 +2,7 @@ package muracle.domaine;
 
 import muracle.domaine.errors.AccessoireFitInCoteError;
 import muracle.domaine.errors.AccessoireIntersectError;
+import muracle.domaine.errors.SeparateurChevaucheError;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
@@ -143,11 +144,15 @@ public class Cote implements java.io.Serializable{
     public Pouce getSeparateur(int index){
         return this.separateurs.get(index);
     }
-    public void setSeparateur(int index, Pouce position){
+    public void setSeparateur(int index, Pouce position) throws SeparateurChevaucheError {
+        if(!separateurs.contains(position)){
+            separateurs.get(index).setEntier(position.getEntier());
+            separateurs.get(index).setFraction(position.getFraction());
+            sortSeparateur();
+        }else{
+            throw new SeparateurChevaucheError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
+        }
 
-        separateurs.get(index).setEntier(position.getEntier());
-        separateurs.get(index).setFraction(position.getFraction());
-        sortSeparateur();
     }
     public CoordPouce getDimension(){return new CoordPouce(this.largeur,this.hauteur);}
 

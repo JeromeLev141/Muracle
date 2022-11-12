@@ -1,5 +1,6 @@
 package muracle.domaine;
 
+import muracle.domaine.errors.SeparateurChevaucheError;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
@@ -508,7 +509,7 @@ public class MuracleController {
                 Pouce newSep = new Pouce(position);
                 getSelectedCote().setSeparateur(separateurSelected, newSep);
                 // devrait return la nouvelle index
-            } catch (PouceError | FractionError e) {
+            } catch (PouceError | FractionError | SeparateurChevaucheError e) {
                 throw new RuntimeException(e);
             }
         }
