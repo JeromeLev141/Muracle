@@ -1,12 +1,8 @@
 package muracle.domaine;
 
-import muracle.domaine.errors.AccessoireFitInCoteError;
-import muracle.domaine.errors.AccessoireIntersectError;
-import muracle.domaine.errors.SeparateurChevaucheError;
 import muracle.utilitaire.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 
 public class Cote implements java.io.Serializable{
@@ -60,15 +56,15 @@ public class Cote implements java.io.Serializable{
         this.accessoires = accessoires;
     }
 
-    public void addAccessoire(Accessoire accessoire) throws FractionError, PouceError, AccessoireFitInCoteError, AccessoireIntersectError {
+    public void addAccessoire(Accessoire accessoire) throws FractionError, PouceError, CoteError {
         boolean fitInCote = doesAccessoireFitInCote(accessoire);
         boolean fitWithAccessories = doesAccessoireFitWithOtherAccessoires(accessoire);
         if(fitInCote && fitWithAccessories){
             accessoires.add(accessoire);
         } else if (!fitInCote) {
-            throw new AccessoireFitInCoteError("Accessoire ne rentre pas dans le côté");
+            throw new CoteError("Accessoire ne rentre pas dans le côté");
         } else {
-            throw new AccessoireIntersectError("Accessoire intersecte avec les autres");
+            throw new CoteError("Accessoire intersecte avec les autres");
         }
     }
     public boolean doesAccessoireFitInCote(Accessoire accessoire) throws FractionError, PouceError {
@@ -117,7 +113,8 @@ public class Cote implements java.io.Serializable{
         //check if position valide
     }
     public void removeAccessoire(CoordPouce position){
-        //TODO
+        //trouve accessoire
+        //remove from arraylist
     }
 
 
@@ -132,12 +129,12 @@ public class Cote implements java.io.Serializable{
     public ArrayList<Pouce> getSeparateurs() {
         return separateurs;
     }
-    public void addSeparateur(Pouce position) throws PouceError {
+    public void addSeparateur(Pouce position) throws CoteError {
         if(position.compare(largeur) == -1){
             separateurs.add(position);
             sortSeparateur();
         }else{
-            throw new PouceError("Position en dehors du côté");
+            throw new CoteError("Position en dehors du côté");
         }
     }
     private void sortSeparateur(){
@@ -149,13 +146,13 @@ public class Cote implements java.io.Serializable{
     public Pouce getSeparateur(int index){
         return this.separateurs.get(index);
     }
-    public void setSeparateur(int index, Pouce position) throws SeparateurChevaucheError {
+    public void setSeparateur(int index, Pouce position) throws CoteError {
         if(!separateurs.contains(position)){
             separateurs.get(index).setEntier(position.getEntier());
             separateurs.get(index).setFraction(position.getFraction());
             sortSeparateur();
         }else{
-            throw new SeparateurChevaucheError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
+            throw new CoteError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
         }
 
     }
