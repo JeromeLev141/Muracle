@@ -1,6 +1,5 @@
 package muracle.domaine;
 
-import muracle.domaine.errors.SeparateurChevaucheError;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
@@ -75,10 +74,6 @@ public class MuracleController {
     public void creerProjet() throws FractionError, PouceError {
         salle = new Salle(new Pouce("144"), new Pouce("144"),
                 new Pouce("144"), new Pouce("12"));
-        salle.getCote('N').addSeparateur(new Pouce("12"));
-        salle.getCote('E').addSeparateur(new Pouce("48"));
-        salle.getCote('W').addSeparateur(new Pouce("96"));
-        salle.getCote('S').addSeparateur(new Pouce("120"));
         coteSelected = ' ';
         murSelected = -1;
         accessoireSelected = -1;
@@ -510,7 +505,7 @@ public class MuracleController {
         try {
             pushNewChange();
             getSelectedCote().addSeparateur(pos);
-        } catch (PouceError e) {
+        } catch (CoteError e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -536,7 +531,7 @@ public class MuracleController {
                     getSelectedCote().setSeparateur(separateurSelected, newSep);
                     selectSeparateur(getSelectedCote().getSeparateurs().indexOf(newSep));
                 }
-            } catch (PouceError | FractionError | SeparateurChevaucheError e) {
+            } catch (PouceError | FractionError | CoteError e) {
                 throw new RuntimeException(e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
