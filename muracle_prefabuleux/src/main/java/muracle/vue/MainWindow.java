@@ -220,6 +220,7 @@ public class MainWindow extends JFrame {
 					updater.updateTextFields();
 					updater.updateButtons();
 					updater.updateParamsShown();
+					drawingPanel.updateParametre();
 					drawingPanel.repaint();
 				});
 				menuBar.add(openProjectButton);
@@ -303,7 +304,7 @@ public class MainWindow extends JFrame {
 				changeVueButton.addActionListener(e -> {
 					changeVueButton.setSelected(changeVueButton.isSelected());
 					controller.setIsVueExterieur(!changeVueButton.isSelected());
-					repaint();
+					drawingPanel.repaint();
 				});
 				menuBar.add(changeVueButton);
 
@@ -526,6 +527,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								largSalleTextField.setText(controller.getDimensionSalle(0));
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -535,6 +537,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								longSalleTextField.setText(controller.getDimensionSalle(1));
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -544,6 +547,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								hSalleTextField.setText(controller.getDimensionSalle(2));
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -553,6 +557,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								epMursTextField.setText(controller.getDimensionSalle(3));
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 

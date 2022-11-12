@@ -2,9 +2,7 @@ package muracle.domaine.drawer;
 
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.CoordPouce;
-import muracle.utilitaire.Fraction;
 import muracle.utilitaire.FractionError;
-import muracle.utilitaire.Pouce;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -18,7 +16,8 @@ public class Afficheur {
     protected final Color fillColor;
     private final Color grilleColor;
 
-    //private final Color errorColor;
+    protected final Color selectColor;
+    protected final Color errorColor;
 
     public Afficheur(MuracleController controller, Dimension initDim) {
         this.controller = controller;
@@ -26,7 +25,8 @@ public class Afficheur {
         lineColor = Color.black;
         fillColor = Color.white;
         grilleColor = new Color(150, 173, 233);
-        //errorColor = Color.red;
+        selectColor = new Color(192, 236, 137);
+        errorColor = Color.red;
     }
 
     public void draw(Graphics g, double zoom, Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {

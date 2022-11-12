@@ -3,7 +3,6 @@ package muracle.domaine.drawer;
 import muracle.domaine.Cote;
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.CoordPouce;
-import muracle.utilitaire.Fraction;
 import muracle.utilitaire.FractionError;
 
 import javax.imageio.ImageIO;
@@ -57,11 +56,23 @@ public class AfficheurElevationCote extends Afficheur {
     private void drawSeparateur(Graphics2D g) throws FractionError {
         Cote cote = controller.getSelectedCote();
         for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            if (controller.isVueExterieur())
-                g.draw(new Line2D.Double(posX + cote.getSeparateur(i).toDouble(), posY,
-                    posX + cote.getSeparateur(i).toDouble(), posY + h));
-            else g.draw(new Line2D.Double(posX + w - cote.getSeparateur(i).toDouble(), posY,
-                    posX + w - cote.getSeparateur(i).toDouble(), posY + h));
+            Line2D.Double ligne;
+            if (controller.isVueExterieur()) {
+                ligne = new Line2D.Double(posX + cote.getSeparateur(i).toDouble(), posY,
+                        posX + cote.getSeparateur(i).toDouble(), posY + h);
+            }
+            else {
+                ligne = new Line2D.Double(posX + w - cote.getSeparateur(i).toDouble(), posY,
+                        posX + w - cote.getSeparateur(i).toDouble(), posY + h);
+            }
+            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+                g.setColor(selectColor);
+                g.setStroke(new BasicStroke(4));
+                g.draw(new Line2D.Double(ligne.x1, ligne.y1 + 3, ligne.x2, ligne.y2 - 3));
+                g.setStroke(new BasicStroke(2));
+                g.setColor(lineColor);
+            }
+            g.draw(ligne);
         }
     }
 

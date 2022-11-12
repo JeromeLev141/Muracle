@@ -71,30 +71,63 @@ public class AfficheurPlanSalle extends Afficheur{
         Cote cote;
         // south
         cote = controller.getSalle().getCote('S');
+        Line2D.Double ligne;
         for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            g.draw(new Line2D.Double(posX + cote.getSeparateur(i).toDouble(), posY + h,
-                    posX + cote.getSeparateur(i).toDouble(), posY + h + ep));
+            ligne = new Line2D.Double(posX + cote.getSeparateur(i).toDouble(), posY + h,
+                    posX + cote.getSeparateur(i).toDouble(), posY + h + ep);
+            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+                g.setColor(selectColor);
+                g.setStroke(new BasicStroke(4));
+                g.draw(new Line2D.Double(ligne.x1, ligne.y1 + 3, ligne.x2, ligne.y2 - 3));
+                g.setStroke(new BasicStroke(2));
+                g.setColor(lineColor);
+            }
+            g.draw(ligne);
         }
 
         // north
         cote = controller.getSalle().getCote('N');
         for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            g.draw(new Line2D.Double(posX + w -cote.getSeparateur(i).toDouble(), posY,
-                    posX + w - cote.getSeparateur(i).toDouble(), posY - ep));
+            ligne = new Line2D.Double(posX + w -cote.getSeparateur(i).toDouble(), posY,
+                    posX + w - cote.getSeparateur(i).toDouble(), posY - ep);
+            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+                g.setColor(selectColor);
+                g.setStroke(new BasicStroke(4));
+                g.draw(new Line2D.Double(ligne.x1, ligne.y1 - 3, ligne.x2, ligne.y2 + 3));
+                g.setStroke(new BasicStroke(2));
+                g.setColor(lineColor);
+            }
+            g.draw(ligne);
         }
 
         // east
         cote = controller.getSalle().getCote('E');
         for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            g.draw(new Line2D.Double(posX + w, posY + h - cote.getSeparateur(i).toDouble(),
-                    posX + w + ep, posY + h - cote.getSeparateur(i).toDouble()));
+            ligne = new Line2D.Double(posX + w, posY + h - cote.getSeparateur(i).toDouble(),
+                    posX + w + ep, posY + h - cote.getSeparateur(i).toDouble());
+            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+                g.setColor(selectColor);
+                g.setStroke(new BasicStroke(4));
+                g.draw(new Line2D.Double(ligne.x1 + 3, ligne.y1, ligne.x2 - 3, ligne.y2));
+                g.setStroke(new BasicStroke(2));
+                g.setColor(lineColor);
+            }
+            g.draw(ligne);
         }
 
         // west
         cote = controller.getSalle().getCote('W');
         for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            g.draw(new Line2D.Double(posX, posY + cote.getSeparateur(i).toDouble(),
-                    posX - ep, posY + cote.getSeparateur(i).toDouble()));
+            ligne = new Line2D.Double(posX, posY + cote.getSeparateur(i).toDouble(),
+                    posX - ep, posY + cote.getSeparateur(i).toDouble());
+            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+                g.setColor(selectColor);
+                g.setStroke(new BasicStroke(4));
+                g.draw(new Line2D.Double(ligne.x1 - 3, ligne.y1, ligne.x2 + 3, ligne.y2));
+                g.setStroke(new BasicStroke(2));
+                g.setColor(lineColor);
+            }
+            g.draw(ligne);
         }
     }
 

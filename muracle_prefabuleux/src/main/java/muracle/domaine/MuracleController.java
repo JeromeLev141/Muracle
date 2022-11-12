@@ -257,6 +257,7 @@ public class MuracleController {
 
     public void interactComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode) {
         // manque les deux autres vues
+        separateurSelected = -1;
         if (coordPouce != null) {
             if (isVueDessus) {
                 try {
@@ -276,7 +277,6 @@ public class MuracleController {
 
     private void interactSalleComponent(CoordPouce coordPouce, boolean addSepMode) throws FractionError, PouceError {
         coteSelected = ' ';
-        separateurSelected = -1;
         Pouce posX = coordPouce.getX();
         Pouce posY = coordPouce.getY();
         Pouce ep = salle.getProfondeur(); // epaisseur mur
@@ -328,6 +328,8 @@ public class MuracleController {
         separateurSelected = -1;
         Pouce posX = coordPouce.getX();
         Pouce posY = coordPouce.getY();
+        if (!isVueExterieur)
+            posX= getSelectedCote().getLargeur().sub(posX);
         boolean contientSep = false;
         for (Pouce sep : getSelectedCote().getSeparateurs()) {
             Pouce jeu = new Pouce(1, 0, 1); // la largeur des lignes est de deux pouces (pixels) en zoom x1
