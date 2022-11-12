@@ -13,6 +13,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -133,6 +135,8 @@ public class MainWindow extends JFrame {
 				margeEpTextField.setText(controller.getParametrePlan(1));
 				margeLargTextField.setText(controller.getParametrePlan(2));
 				anglePlisTextField.setText(controller.getParametrePlan(3));
+				if (controller.isSeparateurSelected())
+					posSepTextField.setText(controller.getSelectedSeparateur().toString());
 			}
 
 			@Override
@@ -437,6 +441,40 @@ public class MainWindow extends JFrame {
 					((GridBagLayout) drawingPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
 					((GridBagLayout) drawingPanel.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
+					drawingPanel.addMouseListener(new MouseListener() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							System.out.println(drawingPanel.coordPixelToPouce(e));
+							controller.interactComponent(drawingPanel.coordPixelToPouce(e),
+									addSeparateurButton.isSelected(), addAccessoireButton.isSelected());
+							updater.updateParamsShown();
+							updater.updateButtons();
+							updater.updateTextFields();
+							drawingPanel.updateParametre();
+							drawingPanel.repaint();
+						}
+
+						@Override
+						public void mousePressed(MouseEvent e) {
+
+						}
+
+						@Override
+						public void mouseReleased(MouseEvent e) {
+
+						}
+
+						@Override
+						public void mouseEntered(MouseEvent e) {
+
+						}
+
+						@Override
+						public void mouseExited(MouseEvent e) {
+
+						}
+					});
+
 					//temporaire (pour demo)
 					{
 						coteButton.setText("Vue de côté (demo)");
@@ -494,6 +532,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								largSalleTextField.setText(controller.getDimensionSalle(0));
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -503,6 +542,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								longSalleTextField.setText(controller.getDimensionSalle(1));
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -512,6 +552,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								hSalleTextField.setText(controller.getDimensionSalle(2));
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -521,6 +562,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								epMursTextField.setText(controller.getDimensionSalle(3));
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -535,6 +577,7 @@ public class MainWindow extends JFrame {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
 								epTrouTextField.setText(controller.getSalle().getEpaisseurTrouRetourAir().toString());
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -544,6 +587,7 @@ public class MainWindow extends JFrame {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
 								hRetourAirTextField.setText(controller.getSalle().getHauteurRetourAir().toString());
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -553,15 +597,19 @@ public class MainWindow extends JFrame {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
 								distSolRetourAirTextField.setText(controller.getSalle().getDistanceTrouRetourAir().toString());
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
 							//---- params separateurs ----
 							addParams(parametresModifPanel, "Position du Séparateur", posSepTextField, "po", posY++);
 							posSepTextField.addActionListener(e -> {
-								controller.moveSeparateur(posSepTextField.getText());
-								posSepTextField.setText(controller.getSelectedSeparateur().toString());
-								drawingPanel.repaint();
+								if (controller.isSeparateurSelected()) {
+									controller.moveSeparateur(posSepTextField.getText());
+									posSepTextField.setText(controller.getSelectedSeparateur().toString());
+									drawingPanel.updateParametre();
+									drawingPanel.repaint();
+								}
 							});
 
 							// params accessoires
@@ -570,6 +618,7 @@ public class MainWindow extends JFrame {
 							posXAccesTextField.addActionListener(e -> {
 								controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
 								posXAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getX().toString());
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -578,6 +627,7 @@ public class MainWindow extends JFrame {
 							posYAccesTextField.addActionListener(e -> {
 								controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
 								posYAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getY().toString());
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -586,6 +636,7 @@ public class MainWindow extends JFrame {
 							largAccesTextField.addActionListener(e -> {
 								controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
 								largAccesTextField.setText(controller.getSelectedAccessoire().getLargeur().toString());
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -594,6 +645,7 @@ public class MainWindow extends JFrame {
 							hAccesTextField.addActionListener(e -> {
 								controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
 								hAccesTextField.setText(controller.getSelectedAccessoire().getHauteur().toString());
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 
@@ -624,6 +676,7 @@ public class MainWindow extends JFrame {
 							distGrilleTextField.addActionListener(e -> {
 								controller.setDistLigneGrille(distGrilleTextField.getText());
 								distGrilleTextField.setText(controller.getDistLigneGrille().toString());
+								drawingPanel.updateParametre();
 								drawingPanel.repaint();
 							});
 						}

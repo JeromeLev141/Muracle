@@ -72,9 +72,9 @@ public class MuracleController {
         salle = new Salle(new Pouce("144"), new Pouce("144"),
                 new Pouce("144"), new Pouce("12"));
         salle.getCote('N').addSeparateur(new Pouce("12"));
-        salle.getCote('E').addSeparateur(new Pouce("12"));
-        salle.getCote('W').addSeparateur(new Pouce("12"));
-        salle.getCote('S').addSeparateur(new Pouce("12"));
+        salle.getCote('E').addSeparateur(new Pouce("48"));
+        salle.getCote('W').addSeparateur(new Pouce("96"));
+        salle.getCote('S').addSeparateur(new Pouce("120"));
         coteSelected = ' ';
         murSelected = -1;
         accessoireSelected = -1;
@@ -281,7 +281,7 @@ public class MuracleController {
         Pouce ep = salle.getProfondeur(); // epaisseur mur
         Pouce coinX = salle.getProfondeur().add(salle.getLargeur()); // coin interieur haut droit
         Pouce coinY = salle.getProfondeur().add(salle.getLongueur()); // coin interieur bas gauche
-        Pouce posXVueCote = new Pouce(1, 1, 0); //temporaire
+        Pouce posXVueCote = new Pouce(1, 0, 1); //temporaire
         if (posX.compare(ep) == 1 && posX.compare(coinX) == -1) {
             if (posY.compare(ep) == -1) {
                 selectCote('N');
@@ -297,23 +297,29 @@ public class MuracleController {
                 selectCote('W');
                 posXVueCote = posY.sub(ep);
             }
-            else if (posY.compare(coinY) == 1) {
+            else if (posX.compare(coinX) == 1) {
                 selectCote('E');
                 posXVueCote = coinY.sub(posY);
             }
         }
         if (coteSelected != ' ') {
-            if (getSelectedCote().getSeparateurs().contains(posXVueCote))
-                selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posXVueCote));
-            else {
-                if (addSepMode) {
-                    getSelectedCote().addSeparateur(posXVueCote);
-                    selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posXVueCote));
+            boolean contientSep = false;
+            for (Pouce sep : getSelectedCote().getSeparateurs()) {
+                Pouce jeu = new Pouce(1, 0, 1); // la largeur des lignes est de deux pouces (pixels) en zoom x1
+                if (posXVueCote.compare(sep.sub(jeu)) == 1 &&
+                        posXVueCote.compare(sep.add(jeu)) == -1) {
+                    selectSeparateur(getSelectedCote().getSeparateurs().indexOf(sep));
+                    contientSep = true;
                 }
             }
+            if (!contientSep && addSepMode) {
+                getSelectedCote().addSeparateur(posXVueCote);
+                selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posXVueCote));
+            }
         }
-        if (coteSelected != ' ' && separateurSelected != -1)
+        if (coteSelected != ' ' && separateurSelected == -1) {
             setIsVueDessus(false);
+        }
     }
 
     private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode) throws FractionError, PouceError {

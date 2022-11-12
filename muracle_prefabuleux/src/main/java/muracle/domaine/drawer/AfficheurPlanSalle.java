@@ -4,12 +4,10 @@ import muracle.domaine.Cote;
 import muracle.domaine.MuracleController;
 import muracle.domaine.Salle;
 import muracle.utilitaire.CoordPouce;
-import muracle.utilitaire.Fraction;
 import muracle.utilitaire.FractionError;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -93,7 +91,7 @@ public class AfficheurPlanSalle extends Afficheur{
         }
 
         // west
-        cote = controller.getSalle().getCote('E');
+        cote = controller.getSalle().getCote('W');
         for (int i = 0; i < cote.getSeparateurs().size(); i++) {
             g.draw(new Line2D.Double(posX, posY + cote.getSeparateur(i).toDouble(),
                     posX - ep, posY + cote.getSeparateur(i).toDouble()));
