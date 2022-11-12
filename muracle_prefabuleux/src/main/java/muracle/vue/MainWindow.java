@@ -571,7 +571,7 @@ public class MainWindow extends JFrame {
 							epTrouTextField.addActionListener(e -> {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
-								epTrouTextField.setText(controller.getSalle().getEpaisseurTrouRetourAir().toString());
+								epTrouTextField.setText(controller.getSalleReadOnly().epaisseurTrouRetourAir.toString());
 								drawingPanel.repaint();
 							});
 
@@ -580,7 +580,7 @@ public class MainWindow extends JFrame {
 							hRetourAirTextField.addActionListener(e -> {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
-								hRetourAirTextField.setText(controller.getSalle().getHauteurRetourAir().toString());
+								hRetourAirTextField.setText(controller.getSalleReadOnly().hauteurRetourAir.toString());
 								drawingPanel.repaint();
 							});
 
@@ -589,7 +589,7 @@ public class MainWindow extends JFrame {
 							distSolRetourAirTextField.addActionListener(e -> {
 								controller.setParametreRetourAir(hRetourAirTextField.getText(),
 										epTrouTextField.getText(), distSolRetourAirTextField.getText());
-								distSolRetourAirTextField.setText(controller.getSalle().getDistanceTrouRetourAir().toString());
+								distSolRetourAirTextField.setText(controller.getSalleReadOnly().distanceTrouRetourAir.toString());
 								drawingPanel.repaint();
 							});
 
@@ -608,7 +608,7 @@ public class MainWindow extends JFrame {
 							addParams(parametresModifPanel, "Position X de <type acessoire (demo)>", posXAccesTextField, "po", posY++);
 							posXAccesTextField.addActionListener(e -> {
 								controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
-								posXAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getX().toString());
+								//posXAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getX().toString());
 								drawingPanel.repaint();
 							});
 
@@ -616,7 +616,7 @@ public class MainWindow extends JFrame {
 							addParams(parametresModifPanel, "Position Y de <type acessoire (demo)>", posYAccesTextField, "po", posY++);
 							posYAccesTextField.addActionListener(e -> {
 								controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
-								posYAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getY().toString());
+								//posYAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getY().toString());
 								drawingPanel.repaint();
 							});
 
@@ -624,7 +624,7 @@ public class MainWindow extends JFrame {
 							addParams(parametresModifPanel, "Largeur de <type acessoire (demo)>", largAccesTextField, "po", posY++);
 							largAccesTextField.addActionListener(e -> {
 								controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
-								largAccesTextField.setText(controller.getSelectedAccessoire().getLargeur().toString());
+								//largAccesTextField.setText(controller.getSelectedAccessoire().getLargeur().toString());
 								drawingPanel.repaint();
 							});
 
@@ -632,7 +632,7 @@ public class MainWindow extends JFrame {
 							addParams(parametresModifPanel, "Hauteur de <type acessoire (demo)>", hAccesTextField, "po", posY++);
 							hAccesTextField.addActionListener(e -> {
 								controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
-								hAccesTextField.setText(controller.getSelectedAccessoire().getHauteur().toString());
+								//hAccesTextField.setText(controller.getSelectedAccessoire().getHauteur().toString());
 								drawingPanel.repaint();
 							});
 

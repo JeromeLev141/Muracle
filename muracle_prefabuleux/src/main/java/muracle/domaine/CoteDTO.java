@@ -1,5 +1,6 @@
 package muracle.domaine;
 
+import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.Pouce;
 
 import java.util.ArrayList;
@@ -7,20 +8,22 @@ import java.util.UUID;
 
 public class CoteDTO {
 
-    public char Orientation;
-    public Pouce Largeur;
-    public Pouce Hauteur;
-    public ArrayList<Mur> Murs;
-    public ArrayList<Pouce> Separateurs;
-    public ArrayList<Accessoire> Accessoires;
+    public char orientation;
+    public Pouce largeur;
+    public Pouce hauteur;
+    public ArrayList<Mur> murs;
+    public ArrayList<Pouce> separateurs;
+    public ArrayList<Accessoire> accessoires;
     public UUID id;
 
     CoteDTO(Cote cote){
-        Orientation = cote.getOrientation();
-        Largeur = cote.getLargeur();
-        Hauteur = cote.getHauteur();
-        Murs = cote.getMurs();
-        Separateurs = cote.getSeparateurs();
-        Accessoires = cote.getAccessoires();
+        orientation = cote.getOrientation();
+        largeur = cote.getLargeur();
+        hauteur = cote.getHauteur();
+        murs = cote.getMurs();
+        separateurs = cote.getSeparateurs();
+        accessoires = cote.getAccessoires();
     }
+
+    public CoordPouce getDimension(){return new CoordPouce(this.largeur,this.hauteur);}
 }

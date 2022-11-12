@@ -1,8 +1,8 @@
 package muracle.domaine.drawer;
 
-import muracle.domaine.Cote;
+import muracle.domaine.CoteDTO;
 import muracle.domaine.MuracleController;
-import muracle.domaine.Salle;
+import muracle.domaine.SalleDTO;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 
@@ -28,12 +28,12 @@ public class AfficheurPlanSalle extends Afficheur{
     public void draw(Graphics g, double zoom, Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
         super.draw(g,zoom,dim,posiCam,dimPlan);
 
-        Salle salle = controller.getSalle();
-        posX = (initialDimension.width - salle.getLargeur().toDouble()) / 2;
-        posY = (initialDimension.getHeight() - salle.getLongueur().toDouble()) / 2;
-        w = salle.getLargeur().toDouble();
-        h = salle.getLongueur().toDouble();
-        ep = salle.getProfondeur().toDouble();
+        SalleDTO salle = controller.getSalleReadOnly();
+        posX = (initialDimension.width - salle.largeur.toDouble()) / 2;
+        posY = (initialDimension.getHeight() - salle.longueur.toDouble()) / 2;
+        w = salle.largeur.toDouble();
+        h = salle.longueur.toDouble();
+        ep = salle.profondeur.toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
 
@@ -68,14 +68,14 @@ public class AfficheurPlanSalle extends Afficheur{
     }
 
     private void drawSeparateur(Graphics2D g) throws FractionError {
-        Cote cote;
+        CoteDTO cote;
         // south
-        cote = controller.getSalle().getCote('S');
+        cote = controller.getSalleReadOnly().getCote('S');
         Line2D.Double ligne;
-        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            ligne = new Line2D.Double(posX + cote.getSeparateur(i).toDouble(), posY + h,
-                    posX + cote.getSeparateur(i).toDouble(), posY + h + ep);
-            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+        for (int i = 0; i < cote.separateurs.size(); i++) {
+            ligne = new Line2D.Double(posX + cote.separateurs.get(i).toDouble(), posY + h,
+                    posX + cote.separateurs.get(i).toDouble(), posY + h + ep);
+            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g.setColor(selectColor);
                 g.setStroke(new BasicStroke(4));
                 g.draw(new Line2D.Double(ligne.x1, ligne.y1 + 3, ligne.x2, ligne.y2 - 3));
@@ -86,11 +86,11 @@ public class AfficheurPlanSalle extends Afficheur{
         }
 
         // north
-        cote = controller.getSalle().getCote('N');
-        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            ligne = new Line2D.Double(posX + w -cote.getSeparateur(i).toDouble(), posY,
-                    posX + w - cote.getSeparateur(i).toDouble(), posY - ep);
-            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+        cote = controller.getSalleReadOnly().getCote('N');
+        for (int i = 0; i < cote.separateurs.size(); i++) {
+            ligne = new Line2D.Double(posX + w -cote.separateurs.get(i).toDouble(), posY,
+                    posX + w - cote.separateurs.get(i).toDouble(), posY - ep);
+            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g.setColor(selectColor);
                 g.setStroke(new BasicStroke(4));
                 g.draw(new Line2D.Double(ligne.x1, ligne.y1 - 3, ligne.x2, ligne.y2 + 3));
@@ -101,11 +101,11 @@ public class AfficheurPlanSalle extends Afficheur{
         }
 
         // east
-        cote = controller.getSalle().getCote('E');
-        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            ligne = new Line2D.Double(posX + w, posY + h - cote.getSeparateur(i).toDouble(),
-                    posX + w + ep, posY + h - cote.getSeparateur(i).toDouble());
-            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+        cote = controller.getSalleReadOnly().getCote('E');
+        for (int i = 0; i < cote.separateurs.size(); i++) {
+            ligne = new Line2D.Double(posX + w, posY + h - cote.separateurs.get(i).toDouble(),
+                    posX + w + ep, posY + h - cote.separateurs.get(i).toDouble());
+            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g.setColor(selectColor);
                 g.setStroke(new BasicStroke(4));
                 g.draw(new Line2D.Double(ligne.x1 + 3, ligne.y1, ligne.x2 - 3, ligne.y2));
@@ -116,11 +116,11 @@ public class AfficheurPlanSalle extends Afficheur{
         }
 
         // west
-        cote = controller.getSalle().getCote('W');
-        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            ligne = new Line2D.Double(posX, posY + cote.getSeparateur(i).toDouble(),
-                    posX - ep, posY + cote.getSeparateur(i).toDouble());
-            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+        cote = controller.getSalleReadOnly().getCote('W');
+        for (int i = 0; i < cote.separateurs.size(); i++) {
+            ligne = new Line2D.Double(posX, posY + cote.separateurs.get(i).toDouble(),
+                    posX - ep, posY + cote.separateurs.get(i).toDouble());
+            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g.setColor(selectColor);
                 g.setStroke(new BasicStroke(4));
                 g.draw(new Line2D.Double(ligne.x1 - 3, ligne.y1, ligne.x2 + 3, ligne.y2));

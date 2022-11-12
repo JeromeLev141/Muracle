@@ -62,22 +62,22 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
     public void update(){
         if (mainWindow.controller.isVueDessus())
             try {
-                this.dimPlan = mainWindow.controller.getSalle().getDimension();
+                this.dimPlan = mainWindow.controller.getSalleReadOnly().getDimension();
             }catch (FractionError ignored){}
 
         else if (mainWindow.controller.isVueCote())
-            this.dimPlan = mainWindow.controller.getSelectedCote().getDimension();
+            this.dimPlan = mainWindow.controller.getSelectedCoteReadOnly().getDimension();
     }
 
     public void updateParametre(){
         resetZoomFactor();
         if (mainWindow.controller.isVueDessus())
             try {
-                this.dimPlan = mainWindow.controller.getSalle().getDimension();
+                this.dimPlan = mainWindow.controller.getSalleReadOnly().getDimension();
             }catch (FractionError ignored){}
 
         else if (mainWindow.controller.isVueCote())
-            this.dimPlan = mainWindow.controller.getSelectedCote().getDimension();
+            this.dimPlan = mainWindow.controller.getSelectedCoteReadOnly().getDimension();
 
         try{
             this.posiCam = new CoordPouce(this.dimPlan.getX().div(2), this.dimPlan.getY().div(2));

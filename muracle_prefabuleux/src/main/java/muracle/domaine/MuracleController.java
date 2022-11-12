@@ -14,6 +14,7 @@ import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -251,7 +252,8 @@ public class MuracleController {
         }
     }
 
-    public Salle getSalle() {
+    public  SalleDTO getSalleReadOnly() { return new SalleDTO(salle); }
+    private Salle getSalle() {
         return salle;
     }
 
@@ -349,7 +351,8 @@ public class MuracleController {
         coteSelected = orientation;
     }
 
-    public Cote getSelectedCote() {
+    public CoteDTO getSelectedCoteReadOnly() { return new CoteDTO(Objects.requireNonNull(getSelectedCote())); }
+    private Cote getSelectedCote() {
         if (coteSelected != ' ')
             return salle.getCote(coteSelected);
         return null;
@@ -386,7 +389,8 @@ public class MuracleController {
         murSelected = index;
     }
 
-    public Mur getSelectedMur() {
+    public MurDTO getSelectedMurReadOnly() { return new MurDTO(Objects.requireNonNull(getSelectedMur())); }
+    private Mur getSelectedMur() {
         if (murSelected != -1)
             return getSelectedCote().getMurs().get(murSelected);
         return null;
@@ -396,7 +400,7 @@ public class MuracleController {
         accessoireSelected = index;
     }
 
-    public Accessoire getSelectedAccessoire() {
+    private Accessoire getSelectedAccessoire() {
         /*if (accessoireSelected != -1)
             return getSelectedMur().getAccessoire(accessoireSelected);*/
         return null;

@@ -25,7 +25,7 @@ public class Afficheur {
         lineColor = Color.black;
         fillColor = Color.white;
         grilleColor = new Color(150, 173, 233);
-        selectColor = new Color(192, 236, 137);
+        selectColor = new Color(97, 255, 89);
         errorColor = Color.red;
     }
 

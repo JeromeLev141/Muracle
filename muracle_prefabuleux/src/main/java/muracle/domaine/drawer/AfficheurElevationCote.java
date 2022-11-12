@@ -1,6 +1,6 @@
 package muracle.domaine.drawer;
 
-import muracle.domaine.Cote;
+import muracle.domaine.CoteDTO;
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
@@ -26,11 +26,11 @@ public class AfficheurElevationCote extends Afficheur {
     public void draw(Graphics g, double zoom,Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
         super.draw(g,zoom,dim,posiCam,dimPlan);
 
-        Cote cote = controller.getSelectedCote();
-        posX = (initialDimension.width - cote.getLargeur().toDouble()) / 2;
-        posY = (initialDimension.getHeight() - cote.getHauteur().toDouble()) / 2;
-        w = cote.getLargeur().toDouble();
-        h = cote.getHauteur().toDouble();
+        CoteDTO cote = controller.getSelectedCoteReadOnly();
+        posX = (initialDimension.width - cote.largeur.toDouble()) / 2;
+        posY = (initialDimension.getHeight() - cote.hauteur.toDouble()) / 2;
+        w = cote.largeur.toDouble();
+        h = cote.hauteur.toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
@@ -54,18 +54,18 @@ public class AfficheurElevationCote extends Afficheur {
     }
 
     private void drawSeparateur(Graphics2D g) throws FractionError {
-        Cote cote = controller.getSelectedCote();
-        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
+        CoteDTO cote = controller.getSelectedCoteReadOnly();
+        for (int i = 0; i < cote.separateurs.size(); i++) {
             Line2D.Double ligne;
             if (controller.isVueExterieur()) {
-                ligne = new Line2D.Double(posX + cote.getSeparateur(i).toDouble(), posY,
-                        posX + cote.getSeparateur(i).toDouble(), posY + h);
+                ligne = new Line2D.Double(posX + cote.separateurs.get(i).toDouble(), posY,
+                        posX + cote.separateurs.get(i).toDouble(), posY + h);
             }
             else {
-                ligne = new Line2D.Double(posX + w - cote.getSeparateur(i).toDouble(), posY,
-                        posX + w - cote.getSeparateur(i).toDouble(), posY + h);
+                ligne = new Line2D.Double(posX + w - cote.separateurs.get(i).toDouble(), posY,
+                        posX + w - cote.separateurs.get(i).toDouble(), posY + h);
             }
-            if (controller.getSelectedSeparateur() == cote.getSeparateur(i)) {
+            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g.setColor(selectColor);
                 g.setStroke(new BasicStroke(4));
                 g.draw(new Line2D.Double(ligne.x1, ligne.y1 + 3, ligne.x2, ligne.y2 - 3));
@@ -91,7 +91,7 @@ public class AfficheurElevationCote extends Afficheur {
     private void drawVue(Graphics g) {
         try {
             Image image;
-            String path = "/images/vues/vue" + controller.getSelectedCote().getOrientation();
+            String path = "/images/vues/vue" + controller.getSelectedCoteReadOnly().orientation;
             if (controller.isVueExterieur())
                 path += "Ext.png";
             else path += "Int.png";
