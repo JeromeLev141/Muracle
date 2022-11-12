@@ -429,7 +429,7 @@ public class MainWindow extends JFrame {
 				splitPaneH.setBorder(new EmptyBorder(20, 20, 20, 20));
 				splitPaneH.setMinimumSize(new Dimension(1100, 500));
 				splitPaneH.setResizeWeight(1.0);
-				splitPaneH.setEnabled(false);
+				splitPaneH.setEnabled(true);
 
 				//======== Panneau de dessin ========
 				{
