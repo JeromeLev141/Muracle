@@ -2,6 +2,7 @@ package muracle.vue;
 
 import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
+import muracle.domaine.CoteError;
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.PouceError;
@@ -35,7 +36,7 @@ public class MainWindow extends JFrame {
 	protected MuracleController controller = new MuracleController();
 	protected boolean isDarkMode = true;
 
-	public MainWindow() throws FractionError, PouceError {
+	public MainWindow() throws FractionError, PouceError, CoteError {
 		initComponents();
 	}
 
