@@ -115,6 +115,13 @@ public class Cote implements java.io.Serializable{
     public void removeAccessoire(CoordPouce position){
         //trouve accessoire
         //remove from arraylist
+        for(Accessoire accessoire : accessoires){
+            /* if (point dans accessoire){
+                    remove
+                    break;
+                    }
+            * */
+        }
     }
 
 
@@ -130,7 +137,7 @@ public class Cote implements java.io.Serializable{
         return separateurs;
     }
     public void addSeparateur(Pouce position) throws CoteError {
-        if(position.compare(largeur) == -1){
+        if(position.compare(largeur) == -1 || !separateurs.contains(position)){
             separateurs.add(position);
             sortSeparateur();
         }else{
@@ -147,7 +154,7 @@ public class Cote implements java.io.Serializable{
         return this.separateurs.get(index);
     }
     public void setSeparateur(int index, Pouce position) throws CoteError {
-        if(!separateurs.contains(position)){
+        if(!separateurs.contains(position) || (position.compare(largeur) == -1)){
             separateurs.remove(index);
             separateurs.add(position);
             sortSeparateur();
