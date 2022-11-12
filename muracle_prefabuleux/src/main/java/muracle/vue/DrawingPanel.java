@@ -60,23 +60,23 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
     }
 
     public void update(){
-        if (mainWindow.controller.getSelectedCote() == null)
+        if (mainWindow.controller.isVueDessus())
             try {
                 this.dimPlan = mainWindow.controller.getSalle().getDimension();
             }catch (FractionError ignored){}
 
-        else if (mainWindow.controller.getSelectedMur() == null)
+        else if (mainWindow.controller.isVueCote())
             this.dimPlan = mainWindow.controller.getSelectedCote().getDimension();
     }
 
     public void updateParametre(){
         resetZoomFactor();
-        if (mainWindow.controller.getSelectedCote() == null)
+        if (mainWindow.controller.isVueDessus())
             try {
                 this.dimPlan = mainWindow.controller.getSalle().getDimension();
             }catch (FractionError ignored){}
 
-        else if (mainWindow.controller.getSelectedMur() == null)
+        else if (mainWindow.controller.isVueCote())
             this.dimPlan = mainWindow.controller.getSelectedCote().getDimension();
 
         try{
@@ -109,7 +109,7 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
         try {
             //System.out.println(dimPlan + " " + zoomFactor + getSize() + posiCam);
 
-            CoordPouce coord = coordPixelToPouce(event);
+            CoordPouce coord = coordPixelToPouceAll(event);
             double x =coord.getX().toDouble();
             double y = coord.getY().toDouble();
             if (x >= 0 && x <= dimPlan.getX().toDouble() && y >= 0 && y <= dimPlan.getY().toDouble())
@@ -192,8 +192,8 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        CoordPouce c = coordPixelToPouceAll(e);
-        System.out.println(c.toString() + " <=> " + e.getX() + " - " + e.getY());
+        //CoordPouce c = coordPixelToPouceAll(e);
+        //System.out.println(c.toString() + " <=> " + e.getX() + " - " + e.getY());
     }
 
     @Override

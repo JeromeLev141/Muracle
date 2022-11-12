@@ -6,7 +6,6 @@ import muracle.domaine.errors.SeparateurChevaucheError;
 import muracle.utilitaire.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 
 public class Cote implements java.io.Serializable{
@@ -151,8 +150,8 @@ public class Cote implements java.io.Serializable{
     }
     public void setSeparateur(int index, Pouce position) throws SeparateurChevaucheError {
         if(!separateurs.contains(position)){
-            separateurs.get(index).setEntier(position.getEntier());
-            separateurs.get(index).setFraction(position.getFraction());
+            separateurs.remove(index);
+            separateurs.add(position);
             sortSeparateur();
         }else{
             throw new SeparateurChevaucheError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
