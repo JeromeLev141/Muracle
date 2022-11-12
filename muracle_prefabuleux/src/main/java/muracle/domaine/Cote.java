@@ -109,19 +109,22 @@ public class Cote implements java.io.Serializable{
         }
         return true;
     }
-    public void moveAccessoire(CoordPouce positionInit, CoordPouce positionPost){
-        //check if position valide
-    }
-    public void removeAccessoire(CoordPouce position){
-        //trouve accessoire
-        //remove from arraylist
-        for(Accessoire accessoire : accessoires){
-            /* if (point dans accessoire){
-                    remove
-                    break;
-                    }
-            * */
+    public void moveAccessoire(Accessoire accessoire, CoordPouce positionPost) throws FractionError, PouceError, CoteError {
+
+        Accessoire dummyAccessoire = new Accessoire(accessoire);
+        dummyAccessoire.setPosition(positionPost);
+        boolean fitInCote = doesAccessoireFitInCote(dummyAccessoire);
+        boolean fitWithAccessories = doesAccessoireFitWithOtherAccessoires(dummyAccessoire);
+        if(fitInCote && fitWithAccessories){
+            accessoire.setPosition(positionPost);
+        } else if (!fitInCote) {
+            throw new CoteError("Accessoire ne rentre pas dans le côté");
+        } else {
+            throw new CoteError("Accessoire intersecte avec les autres");
         }
+    }
+    public void removeAccessoire(Accessoire accessoire){
+        accessoires.remove(accessoire);
     }
 
 

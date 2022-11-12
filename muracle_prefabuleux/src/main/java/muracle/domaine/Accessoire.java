@@ -8,9 +8,6 @@ public class Accessoire implements java.io.Serializable{
 
     private Pouce largeur;
     private Pouce hauteur;
-
-
-
     private CoordPouce position;
     private String type;
     private Boolean isInterieurOnly;
@@ -26,7 +23,13 @@ public class Accessoire implements java.io.Serializable{
         this.position = position;
 
     }
-
+    public Accessoire(Accessoire accessoire){
+        this.largeur = accessoire.largeur;
+        this.hauteur = accessoire.hauteur;
+        this.position = accessoire.position;
+        this.type = accessoire.type;
+        this.isInterieurOnly = accessoire.isInterieurOnly;
+    }
     public Pouce getLargeur() {
         return largeur;
     }
