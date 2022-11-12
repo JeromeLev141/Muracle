@@ -95,10 +95,31 @@ public class CoteTest {
             fail();
         }
     }
-
     @Test
-    public void addSeparateur(){}
-
+    public void addSeparateurValid(){
+        try{
+            Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
+            cote.addSeparateur(new Pouce("12"));
+            cote.addSeparateur(new Pouce("30"));
+            cote.addSeparateur(new Pouce("10"));
+            cote.addSeparateur(new Pouce("29"));
+            assertEquals(4, cote.getSeparateurs().size());
+        }catch (Exception e){
+            fail();
+        }
+    }
     @Test
-    public void sortSeparateur(){}
+    public void setSeparateurValid(){
+        try{
+            Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
+            cote.addSeparateur(new Pouce("12"));
+            cote.addSeparateur(new Pouce("30"));
+            cote.addSeparateur(new Pouce("10"));
+            cote.addSeparateur(new Pouce("29"));
+            cote.setSeparateur(2, new Pouce("15"));
+            assertEquals("15", cote.getSeparateurs().get(2).toString());
+        }catch (Exception e){
+            fail();
+        }
+    }
 }
