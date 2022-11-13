@@ -256,7 +256,7 @@ public class MainWindow extends JFrame {
 				});
 				menuBar.add(showGrilleButton);
 
-				//---- ajouterSeparateur grille ----
+				//---- ajouter Separateur ----
 				addSeparateurButton.setText("Ajouter séparateur");
 				addSeparateurButton.setMaximumSize(new Dimension(100, 32767));
 				addSeparateurButton.setPreferredSize(new Dimension(140, 22));
@@ -264,7 +264,8 @@ public class MainWindow extends JFrame {
 				addSeparateurButton.setRequestFocusEnabled(false);
 				addSeparateurButton.addActionListener(e -> {
 					addSeparateurButton.setSelected(addSeparateurButton.isSelected());
-					// do something
+					if (addAccessoireButton.isSelected())
+						addAccessoireButton.doClick();
 				});
 				menuBar.add(addSeparateurButton);
 
@@ -282,6 +283,8 @@ public class MainWindow extends JFrame {
 					}
 					else {
 						addAccessoireButton.setSelected(true);
+						if (addSeparateurButton.isSelected())
+							addSeparateurButton.setSelected(false);
 						selectionAccessoireComboBox.setVisible(true);
 					}
 				});
@@ -456,7 +459,7 @@ public class MainWindow extends JFrame {
 							boolean token = controller.isVueDessus();
 							System.out.println(drawingPanel.coordPixelToPouce(e));
 							controller.interactComponent(drawingPanel.coordPixelToPouce(e),
-									addSeparateurButton.isSelected(), addAccessoireButton.isSelected());
+									addSeparateurButton.isSelected(), addAccessoireButton.isSelected(), (String) selectionAccessoireComboBox.getSelectedItem());
 							updater.updateParamsShown();
 							updater.updateButtons();
 							updater.updateTextFields();

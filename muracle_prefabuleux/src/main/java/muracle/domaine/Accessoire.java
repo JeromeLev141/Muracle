@@ -62,7 +62,7 @@ public class Accessoire implements java.io.Serializable{
         this.type = type;
     }
 
-    public Boolean getInterieurOnly() {
+    public Boolean isInterieurOnly() {
         return isInterieurOnly;
     }
 

@@ -1,5 +1,9 @@
 package muracle.domaine;
 
+import muracle.domaine.accessoire.Fenetre;
+import muracle.domaine.accessoire.Porte;
+import muracle.domaine.accessoire.PriseElec;
+import muracle.domaine.accessoire.RetourAir;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
@@ -257,7 +261,8 @@ public class MuracleController {
         return salle;
     }
 
-    public void interactComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode) {
+    public void interactComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) {
+        System.out.println(type);
         // manque les deux autres vues
         separateurSelected = -1;
         if (coordPouce != null) {
@@ -269,7 +274,7 @@ public class MuracleController {
                 }
             } else {
                 try {
-                    interactCoteComponent(coordPouce, addSepMode, addAccesMode);
+                    interactCoteComponent(coordPouce, addSepMode, addAccesMode, type);
                 } catch (FractionError | PouceError e) {
                     throw new RuntimeException(e);
                 }
@@ -325,25 +330,44 @@ public class MuracleController {
         }
     }
 
-    private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode) throws FractionError, PouceError {
+    private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) throws FractionError, PouceError {
         // add interraction avec accessoire et murs
         separateurSelected = -1;
+        accessoireSelected = -1;
         Pouce posX = coordPouce.getX();
         Pouce posY = coordPouce.getY();
-        if (!isVueExterieur)
-            posX= getSelectedCote().getLargeur().sub(posX);
-        boolean contientSep = false;
-        for (Pouce sep : getSelectedCote().getSeparateurs()) {
-            Pouce jeu = new Pouce(1, 0, 1); // la largeur des lignes est de deux pouces (pixels) en zoom x1
-            if (posX.compare(sep.sub(jeu)) == 1 &&
-                    posX.compare(sep.add(jeu)) == -1) {
-                selectSeparateur(getSelectedCote().getSeparateurs().indexOf(sep));
-                contientSep = true;
+        if (!isVueExterieur) {
+            posX = getSelectedCote().getLargeur().sub(posX);
+            coordPouce.setX(posX);
+        }
+
+        boolean contientAcces = false;
+        for (Accessoire acces : getSelectedCote().getAccessoires()) {
+            if (posX.compare(acces.getPosition().getX()) == 1 && posX.compare(acces.getPosition().getX().add(acces.getLargeur())) == -1) {
+                if (posY.compare(acces.getPosition().getY()) == 1 && posY.compare(acces.getPosition().getY().add(acces.getHauteur())) == -1) {
+                    selectAccessoire(getSelectedCote().getAccessoires().indexOf(acces));
+                    contientAcces = true;
+                }
             }
         }
-        if (!contientSep && addSepMode) {
-            addSeparateur(posX);
-            selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posX));
+        if (!contientAcces && addAccesMode) {
+            addAccessoire(type, coordPouce);
+            selectAccessoire(getSelectedCote().getAccessoires().size() - 1);
+        }
+
+        if (!addAccesMode) {
+            boolean contientSep = false;
+            for (Pouce sep : getSelectedCote().getSeparateurs()) {
+                Pouce jeu = new Pouce(1, 0, 1); // la largeur des lignes est de deux pouces (pixels) en zoom x1
+                if (posX.compare(sep.sub(jeu)) == 1 && posX.compare(sep.add(jeu)) == -1) {
+                    selectSeparateur(getSelectedCote().getSeparateurs().indexOf(sep));
+                    contientSep = true;
+                }
+            }
+            if (!contientSep && addSepMode) {
+                addSeparateur(posX);
+                selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posX));
+            }
         }
     }
 
@@ -469,7 +493,55 @@ public class MuracleController {
         }
     }
 
-    public void addAccessoire(int indexMur, String type, CoordPouce position) {}
+    public void addAccessoire(String type, CoordPouce position) {
+        try {
+            Accessoire acces;
+            switch (type) {
+                case "Fenêtre":
+                    Fenetre fenetre = new Fenetre(new Pouce(18, 0, 1), new Pouce(24, 0, 1), position);
+                    fenetre.setMarge(new Pouce(0, 1, 8));
+                    acces = fenetre;
+                    break;
+                case "Porte":
+                    Pouce hauteurStandart = new Pouce(88, 0, 1);
+                    position.setY(salle.getHauteur().sub(hauteurStandart));
+                    acces = new Porte(new Pouce(38, 0, 1), hauteurStandart, position);
+                    break;
+                case "Prise électrique":
+                    acces = new PriseElec(new Pouce(2, 0, 1), new Pouce(4, 0, 1), position);
+                    break;
+                default:
+                    Pouce debutMur = new Pouce(0, 0, 1);
+                    int indexSepSuivant = 0;
+                    if (getSelectedCote().getSeparateurs().size() != 0) {
+                        for (Pouce sep : getSelectedCote().getSeparateurs()) {
+                            if (position.getX().compare(sep) == 1) {
+                                debutMur = sep;
+                                indexSepSuivant++;
+                            }
+                        }
+                    }
+                    Pouce finMur;
+                    if (indexSepSuivant == getSelectedCote().getSeparateurs().size())
+                        finMur = getSelectedCote().getLargeur();
+                    else
+                        finMur = getSelectedCote().getSeparateur(indexSepSuivant);
+
+                    Pouce largeurStandart = new Pouce(32, 0, 1);
+                    Pouce largeurMur = finMur.sub(debutMur);
+                    position.setX(debutMur.add(largeurMur.sub(largeurStandart).div(2)));
+                    position.setY(salle.getHauteur().sub(salle.getDistanceTrouRetourAir().add(salle.getHauteurRetourAir())));
+                    acces = new RetourAir(largeurStandart, salle.getHauteurRetourAir(), position);
+                    break;
+            }
+            pushNewChange();
+            getSelectedCote().addAccessoire(acces);
+        } catch (FractionError | PouceError | CoteError e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void removeAccessoire(int indexMur, CoordPouce position) {}
 
