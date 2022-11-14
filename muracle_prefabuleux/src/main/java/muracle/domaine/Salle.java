@@ -20,7 +20,7 @@ public class Salle implements java.io.Serializable{
         this.longueur = longueur;
         this.profondeur = profondeur;
         this.distanceTrouRetourAir = new Pouce("10");
-        this.epaisseurTrouRetourAir = new Pouce("8");
+        this.epaisseurTrouRetourAir = new Pouce("6");
         this.hauteurRetourAir = new Pouce("12");
 
         tableauCote = new Cote[]{new Cote('S', largeur, hauteur), new Cote('E', longueur, hauteur),

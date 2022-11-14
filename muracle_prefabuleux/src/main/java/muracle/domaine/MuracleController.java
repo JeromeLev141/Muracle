@@ -262,7 +262,6 @@ public class MuracleController {
     }
 
     public void interactComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) {
-        System.out.println(type);
         // manque les deux autres vues
         separateurSelected = -1;
         if (coordPouce != null) {
@@ -425,8 +424,8 @@ public class MuracleController {
     }
 
     private Accessoire getSelectedAccessoire() {
-        /*if (accessoireSelected != -1)
-            return getSelectedMur().getAccessoire(accessoireSelected);*/
+        if (accessoireSelected != -1)
+            return getSelectedCote().getAccessoire(accessoireSelected);
         return null;
     }
 
@@ -543,30 +542,44 @@ public class MuracleController {
         }
     }
 
-    public void removeAccessoire(int indexMur, CoordPouce position) {}
+    public void removeAccessoire() {
+        try {
+            pushNewChange();
+            getSelectedCote().removeAccessoire(getSelectedAccessoire());
+            accessoireSelected = -1;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void moveAccessoire(String posX, String posY) {
-       /* if (!posX.contains("-") && !posY.contains("-")) {
-            try {
+        try {
+            if (!posX.contains("-") && !posY.contains("-")) {
                 Pouce pouceX = new Pouce(posX);
                 Pouce pouceY = new Pouce(posY);
-                if (get)
-                getSelectedAccessoire().setPosition(new CoordPouce(new Pouce(posX)));
-            } catch (PouceError | FractionError e) {
-                throw new RuntimeException(e);
-            }
-        }*/
+                if (!pouceX.equals(getSelectedAccessoire().getPosition().getX()) ||
+                        !pouceY.equals(getSelectedAccessoire().getPosition().getY())) {
+                    pushNewChange();
+                    getSelectedAccessoire().setPosition(new CoordPouce(pouceX, pouceY));
+                }
+        }
+        } catch(PouceError | FractionError e){
+            System.out.println(e.getMessage());
+        } catch(IOException e){
+            throw new RuntimeException(e);
+        }
     }
 
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
         /*try {
-            if (!largeur.contains("-"))
+            if (!largeur.contains("-")) {
+                a continuer
+            }
             if (!hauteur.contains("-"))
             if (!marge.contains("-"))
-        } catch (PouceError | FractionError ignored) {
-            System.out.println("valeur invalide");
-        }
-         */
+        } catch (PouceError | FractionError e) {
+            System.out.println(e.getMessage());
+        }*/
     }
 
     private void selectSeparateur (int index) {
@@ -584,7 +597,7 @@ public class MuracleController {
             pushNewChange();
             getSelectedCote().addSeparateur(pos);
         } catch (CoteError e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -610,7 +623,7 @@ public class MuracleController {
                     selectSeparateur(getSelectedCote().getSeparateurs().indexOf(newSep));
                 }
             } catch (PouceError | FractionError | CoteError e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -647,8 +660,8 @@ public class MuracleController {
                 pushNewChange();
                 salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
             }
-        } catch (PouceError | FractionError ignored) {
-            System.out.println("valeur invalide");
+        } catch (PouceError | FractionError e) {
+            System.out.println(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -695,8 +708,8 @@ public class MuracleController {
                 pushNewChange();
                 generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
             }
-        } catch (PouceError | FractionError ignored) {
-            System.out.println("valeur invalide");
+        } catch (PouceError | FractionError e) {
+            System.out.println(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

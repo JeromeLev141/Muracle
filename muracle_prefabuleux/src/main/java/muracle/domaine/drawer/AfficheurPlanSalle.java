@@ -1,5 +1,6 @@
 package muracle.domaine.drawer;
 
+import muracle.domaine.Accessoire;
 import muracle.domaine.CoteDTO;
 import muracle.domaine.MuracleController;
 import muracle.domaine.SalleDTO;
@@ -132,37 +133,68 @@ public class AfficheurPlanSalle extends Afficheur{
     }
 
     private void drawTrouRetourAir(Graphics2D g) throws FractionError {
-        /*Cote cote;
+        CoteDTO cote;
+
         // south
-        cote = controller.getSalle().getCote('S');
-        for (int i = 0; i < cote.getMurs().size(); i++) {
-            Mur mur = cote.getMurs().get(i);
-            for (int j = 0; j < mur.getAccessoires().length; j++) {
-                if (mur.getAccessoire(i).)
-                    g.draw(new Line2D.Double());
+        cote = controller.getSalleReadOnly().getCote('S');
+        for (Accessoire acces : cote.accessoires) {
+            if (acces.getType().equals("Retour d'air")) {
+                double retourPosX = acces.getPosition().getX().toDouble();
+                double retourPosY = h + (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
+                Rectangle2D.Double rect = new Rectangle2D.Double(posX + retourPosX, posY + retourPosY,
+                        acces.getLargeur().toDouble(), controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble());
+                g.setColor(fillColor.darker().darker());
+                g.fill(new Area(rect));
+                g.setColor(lineColor);
+                g.draw(rect);
             }
         }
 
         // north
-        cote = controller.getSalle().getCote('N');
-        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            g.draw(new Line2D.Double(posX + w -cote.getSeparateur(i).toDouble(), posY,
-                    posX + w - cote.getSeparateur(i).toDouble(), posY - ep));
+        cote = controller.getSalleReadOnly().getCote('N');
+        g.setColor(fillColor.darker().darker());
+        for (Accessoire acces : cote.accessoires) {
+            if (acces.getType().equals("Retour d'air")) {
+                double retourPosX = w - acces.getPosition().getX().toDouble() - acces.getLargeur().toDouble();
+                double retourPosY = (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
+                Rectangle2D.Double rect = new Rectangle2D.Double(posX + retourPosX, posY - ep + retourPosY,
+                        acces.getLargeur().toDouble(), controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble());
+                g.setColor(fillColor.darker().darker());
+                g.fill(new Area(rect));
+                g.setColor(lineColor);
+                g.draw(rect);
+            }
         }
 
         // east
-        cote = controller.getSalle().getCote('E');
-        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            g.draw(new Line2D.Double(posX + w, posY + h - cote.getSeparateur(i).toDouble(),
-                    posX + w + ep, posY + h - cote.getSeparateur(i).toDouble()));
+        cote = controller.getSalleReadOnly().getCote('E');
+        for (Accessoire acces : cote.accessoires) {
+            if (acces.getType().equals("Retour d'air")) {
+                double retourPosX = w + (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
+                double retourPosY = h - acces.getPosition().getX().toDouble() - acces.getLargeur().toDouble();
+                Rectangle2D.Double rect = new Rectangle2D.Double(posX + retourPosX, posY + retourPosY,
+                        controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble(), acces.getLargeur().toDouble());
+                g.setColor(fillColor.darker().darker());
+                g.fill(new Area(rect));
+                g.setColor(lineColor);
+                g.draw(rect);
+            }
         }
 
         // west
-        cote = controller.getSalle().getCote('E');
-        for (int i = 0; i < cote.getSeparateurs().size(); i++) {
-            g.draw(new Line2D.Double(posX, posY + cote.getSeparateur(i).toDouble(),
-                    posX - ep, posY + cote.getSeparateur(i).toDouble()));
-        }*/
+        cote = controller.getSalleReadOnly().getCote('W');
+        for (Accessoire acces : cote.accessoires) {
+            if (acces.getType().equals("Retour d'air")) {
+                double retourPosX = (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
+                double retourPosY = acces.getPosition().getX().toDouble();
+                Rectangle2D.Double rect = new Rectangle2D.Double(posX - ep + retourPosX, posY + retourPosY,
+                        controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble(), acces.getLargeur().toDouble());
+                g.setColor(fillColor.darker().darker());
+                g.fill(new Area(rect));
+                g.setColor(lineColor);
+                g.draw(rect);
+            }
+        }
     }
 
     private void drawVue(Graphics g) {

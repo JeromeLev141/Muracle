@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class AfficheurElevationCote extends Afficheur {
@@ -77,9 +78,8 @@ public class AfficheurElevationCote extends Afficheur {
 
     private void drawAccessoire(Graphics2D g, Area coteArea) throws FractionError {
         CoteDTO cote = controller.getSelectedCoteReadOnly();
-        Rectangle2D.Double[] rectangles = new Rectangle2D.Double[cote.accessoires.size()];
-        int i = 0;
-        g.setColor(fillColor.darker());
+        ArrayList<Rectangle2D.Double> rectangles = new ArrayList<>();
+        g.setColor(fillColor.darker().darker());
         for (Accessoire acces : cote.accessoires) {
             Rectangle2D.Double rect = null;
             double accesPosX = acces.getPosition().getX().toDouble();
@@ -94,15 +94,15 @@ public class AfficheurElevationCote extends Afficheur {
                 coteArea.subtract(new Area(rect));
                 if (acces.isInterieurOnly())
                     g.fill(new Area(rect));
-                rectangles[i] = rect;
+                rectangles.add(rect);
             }
-            i++;
         }
         g.setColor(fillColor);
         g.fill(coteArea);
         g.setColor(lineColor);
-        for (Rectangle2D.Double rect : rectangles)
+        for (Rectangle2D.Double rect : rectangles) {
             g.draw(rect);
+        }
     }
 
     private void drawVue(Graphics g) {

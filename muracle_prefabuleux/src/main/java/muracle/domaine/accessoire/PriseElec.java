@@ -7,12 +7,12 @@ import muracle.utilitaire.Pouce;
 public class PriseElec extends Accessoire {
 
     public PriseElec(){
-        this.setType("PriseElec");
+        this.setType("Prise électrique");
         this.setInterieurOnly(Boolean.TRUE);
     }
 
     public PriseElec(Pouce largeur, Pouce hauteur, CoordPouce position){
-        this.setType("PriseElec");
+        this.setType("Prise électrique");
         this.setInterieurOnly(Boolean.TRUE);
         this.setLargeur(largeur);
         this.setHauteur(hauteur);
