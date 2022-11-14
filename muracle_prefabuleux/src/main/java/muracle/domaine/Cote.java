@@ -64,7 +64,7 @@ public class Cote implements java.io.Serializable{
         } else if (!fitInCote) {
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         } else {
-            throw new CoteError("Accessoire intersecte avec les autres");
+            throw new CoteError("Accessoire intersecte avec les autres accessoires");
         }
     }
     public boolean doesAccessoireFitInCote(Accessoire accessoire) throws FractionError, PouceError {
@@ -92,12 +92,29 @@ public class Cote implements java.io.Serializable{
     // Suit cet algorithme
     // https://silentmatt.com/rectangle-intersection/
     public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) throws FractionError {
-        CoordPouce mainAccessoire1 = accessoire.getPosition();
-        CoordPouce mainAccessoire2 = new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
+        CoordPouce mainAccessoire1;
+        CoordPouce mainAccessoire2;
+        if(Objects.equals(accessoire.getType(), "Fenetre")){
+            Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
+            mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
+            mainAccessoire2 = new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(jeuSupplementaire)), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(jeuSupplementaire));
+        }else{
+            mainAccessoire1 = accessoire.getPosition();
+            mainAccessoire2 = new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
+        }
         if(!accessoires.isEmpty()){
             for(int i = 0; i < accessoires.size(); i++){
-                CoordPouce secondAccessoire1 = getAccessoire(i).getPosition();
-                CoordPouce secondAccessoire2 = new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()), getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur()));
+                CoordPouce secondAccessoire1;
+                CoordPouce secondAccessoire2;
+                if(Objects.equals(getAccessoire(i).getType(), "Fenetre")){
+                    Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
+                    secondAccessoire1 =  new CoordPouce(getAccessoire(i).getPosition().getX().add(jeuSupplementaire), getAccessoire(i).getPosition().getY().add(jeuSupplementaire));
+                    secondAccessoire2 =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(jeuSupplementaire)), (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(jeuSupplementaire));
+                }else{
+                    secondAccessoire1 = getAccessoire(i).getPosition();
+                    secondAccessoire2 = new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()), getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur()));
+                }
+
 
                 if((mainAccessoire1.getX().compare(secondAccessoire2.getX()) == -1) &&
                         mainAccessoire2.getX().compare(secondAccessoire1.getX()) == 1 &&
@@ -120,7 +137,7 @@ public class Cote implements java.io.Serializable{
         } else if (!fitInCote) {
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         } else {
-            throw new CoteError("Accessoire intersecte avec les autres");
+            throw new CoteError("Accessoire intersecte avec les autres accessoires");
         }
     }
     public void removeAccessoire(Accessoire accessoire){
