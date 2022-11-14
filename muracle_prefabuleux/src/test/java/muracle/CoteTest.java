@@ -55,7 +55,21 @@ public class CoteTest {
     public void moveAccessoire(){}
 
     @Test
-    public void removeAccessoire(){}
+    public void removeAccessoire(){
+        try{
+            Cote cote = new Cote('N', new Pouce("12"), new Pouce("15"));
+            Accessoire accessoire = new Accessoire(new Pouce("1"), new Pouce("1"), new CoordPouce(new Pouce("0"), new Pouce("0")));
+            Accessoire accessoire2 = new Accessoire(new Pouce("1"), new Pouce("1"), new CoordPouce(new Pouce("5"), new Pouce("5")));
+            Accessoire accessoire3 = new Accessoire(new Pouce("1"), new Pouce("1"), new CoordPouce(new Pouce("10"), new Pouce("10")));
+            cote.addAccessoire(accessoire);
+            cote.addAccessoire(accessoire2);
+            cote.addAccessoire(accessoire3);
+            cote.removeAccessoire(accessoire);
+            assertEquals(2, cote.getAccessoires().size());
+        }catch (Exception e){
+            fail();
+        }
+    }
 
     @Test
     public void doesAccessoireFitInCote(){
@@ -68,6 +82,20 @@ public class CoteTest {
             assertTrue(cote.doesAccessoireFitInCote(accessoire));
             assertFalse(cote.doesAccessoireFitInCote(accessoire2));
             assertTrue(cote.doesAccessoireFitInCote(accessoire3));
+        }catch (Exception e){
+            fail();
+        }
+    }
+    @Test
+    public void AccessoireFenetre(){
+        try{
+            Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
+            Accessoire accessoire = new Accessoire(new Pouce("1"), new Pouce("1"), new CoordPouce(new Pouce("20"), new Pouce("20")));
+            Accessoire accessoire2 = new Accessoire(new Pouce("12"), new Pouce("12"), new CoordPouce(new Pouce("0"), new Pouce("0")));
+            accessoire2.setType("Fenetre");
+            cote.addAccessoire(accessoire2);
+            accessoire.setType("Fenetre");
+            assertTrue(cote.doesAccessoireFitWithOtherAccessoires(accessoire));
         }catch (Exception e){
             fail();
         }
