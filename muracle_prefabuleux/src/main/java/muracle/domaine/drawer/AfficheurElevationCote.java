@@ -79,6 +79,7 @@ public class AfficheurElevationCote extends Afficheur {
     private void drawAccessoire(Graphics2D g, Area coteArea) throws FractionError {
         CoteDTO cote = controller.getSelectedCoteReadOnly();
         ArrayList<Rectangle2D.Double> rectangles = new ArrayList<>();
+        int indexAccesSelected = -1;
         g.setColor(fillColor.darker().darker());
         for (Accessoire acces : cote.accessoires) {
             Rectangle2D.Double rect = null;
@@ -95,11 +96,20 @@ public class AfficheurElevationCote extends Afficheur {
                 if (acces.isInterieurOnly())
                     g.fill(new Area(rect));
                 rectangles.add(rect);
+                if (acces == controller.getSelectedAccessoire())
+                    indexAccesSelected = rectangles.size() - 1;
             }
         }
         g.setColor(fillColor);
         g.fill(coteArea);
         g.setColor(lineColor);
+        if (indexAccesSelected != -1) {
+            g.setColor(selectColor);
+            g.setStroke(new BasicStroke(4));
+            g.draw(rectangles.get(indexAccesSelected));
+            g.setStroke(new BasicStroke(2));
+            g.setColor(lineColor);
+        }
         for (Rectangle2D.Double rect : rectangles) {
             g.draw(rect);
         }

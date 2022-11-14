@@ -4,6 +4,7 @@ import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
 import muracle.domaine.CoteError;
 import muracle.domaine.MuracleController;
+import muracle.domaine.accessoire.Fenetre;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.PouceError;
 
@@ -138,6 +139,14 @@ public class MainWindow extends JFrame {
 				anglePlisTextField.setText(controller.getParametrePlan(3));
 				if (controller.isSeparateurSelected())
 					posSepTextField.setText(controller.getSelectedSeparateur().toString());
+				if (controller.isAccessoireSelected()) {
+					posXAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getX().toString());
+					posYAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getY().toString());
+					largAccesTextField.setText(controller.getSelectedAccessoire().getLargeur().toString());
+					hAccesTextField.setText(controller.getSelectedAccessoire().getHauteur().toString());
+					if (controller.getSelectedAccessoire().getType().equals("Fenêtre"))
+						margeAccesTextField.setText(((Fenetre) controller.getSelectedAccessoire()).getMarge().toString());
+				}
 			}
 
 			@Override
@@ -182,6 +191,15 @@ public class MainWindow extends JFrame {
 					else if (controller.isAccessoireSelected()) {
 						for (int i = 22; i < 25; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
+						if (!controller.getSelectedAccessoire().getType().equals("Fenêtre"))
+							for (int i = 37; i < 40; i++)
+								parametresModifPanel.getComponent(i).setVisible(false);
+						if (controller.getSelectedAccessoire().getType().equals("Retour d'air")) {
+							for (int i = 25; i < 31; i++)
+								parametresModifPanel.getComponent(i).setVisible(false);
+							for (int i = 34; i < 37; i++)
+								parametresModifPanel.getComponent(i).setVisible(false);
+						}
 						deleteButton.setVisible(true);
 					}
 					else {
@@ -610,41 +628,52 @@ public class MainWindow extends JFrame {
 							//---- posXAccesParam ----
 							addParams(parametresModifPanel, "Position X de l'accessoire", posXAccesTextField, "po", posY++);
 							posXAccesTextField.addActionListener(e -> {
-								controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
-								//posXAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getX().toString());
-								drawingPanel.repaint();
+								if (controller.isAccessoireSelected()) {
+									controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
+									posXAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getX().toString());
+									drawingPanel.repaint();
+								}
 							});
 
 							//---- posYAccesParam ----
 							addParams(parametresModifPanel, "Position Y de l'acessoire", posYAccesTextField, "po", posY++);
 							posYAccesTextField.addActionListener(e -> {
-								controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
-								//posYAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getY().toString());
-								drawingPanel.repaint();
+								if (controller.isAccessoireSelected()) {
+									controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
+									posYAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getY().toString());
+									drawingPanel.repaint();
+								}
 							});
 
 							//---- largAccesParam ----
 							addParams(parametresModifPanel, "Largeur de l'acessoire", largAccesTextField, "po", posY++);
 							largAccesTextField.addActionListener(e -> {
-								controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
-								//largAccesTextField.setText(controller.getSelectedAccessoire().getLargeur().toString());
-								drawingPanel.repaint();
+								if (controller.isAccessoireSelected()) {
+									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
+									largAccesTextField.setText(controller.getSelectedAccessoire().getLargeur().toString());
+									drawingPanel.repaint();
+								}
 							});
 
 							//---- hAccesParam ----
 							addParams(parametresModifPanel, "Hauteur de l'acessoire", hAccesTextField, "po", posY++);
 							hAccesTextField.addActionListener(e -> {
-								controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
-								//hAccesTextField.setText(controller.getSelectedAccessoire().getHauteur().toString());
-								drawingPanel.repaint();
+								if (controller.isAccessoireSelected()) {
+									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
+									hAccesTextField.setText(controller.getSelectedAccessoire().getHauteur().toString());
+									drawingPanel.repaint();
+								}
 							});
 
 							//---- margeAccesParam ----
 							addParams(parametresModifPanel, "Marge de la Fenêtre", margeAccesTextField, "po", posY++);
 							margeAccesTextField.addActionListener(e -> {
-								//controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
-								//margeAccesTextField.setText(controller.getSelectedAccessoire()..toString());
-								//drawingPanel.repaint();
+								if (controller.isAccessoireSelected() && controller.getSelectedAccessoire().getType().equals("Fenêtre")) {
+									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
+									Fenetre fenetre = (Fenetre) controller.getSelectedAccessoire();
+									margeAccesTextField.setText(fenetre.getMarge().toString());
+									drawingPanel.repaint();
+								}
 							});
 
 							// ---- delete (accessoire ou separateur) ----
@@ -655,6 +684,9 @@ public class MainWindow extends JFrame {
 							deleteButton.addActionListener(e -> {
 								if (controller.isSeparateurSelected()) {
 									controller.removeSeparateur();
+								}
+								if (controller.isAccessoireSelected()) {
+									controller.removeAccessoire();
 								}
 								updater.updateButtons();
 								updater.updateParamsShown();

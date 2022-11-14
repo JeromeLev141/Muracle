@@ -423,7 +423,7 @@ public class MuracleController {
         accessoireSelected = index;
     }
 
-    private Accessoire getSelectedAccessoire() {
+    public Accessoire getSelectedAccessoire() {
         if (accessoireSelected != -1)
             return getSelectedCote().getAccessoire(accessoireSelected);
         return null;
@@ -500,14 +500,22 @@ public class MuracleController {
                     Fenetre fenetre = new Fenetre(new Pouce(18, 0, 1), new Pouce(24, 0, 1), position);
                     fenetre.setMarge(new Pouce(0, 1, 8));
                     acces = fenetre;
+                    //recentrage du clic
+                    acces.getPosition().setX(acces.getPosition().getX().sub(acces.getLargeur().div(2)));
+                    acces.getPosition().setY(acces.getPosition().getY().sub(acces.getHauteur().div(2)));
                     break;
                 case "Porte":
                     Pouce hauteurStandart = new Pouce(88, 0, 1);
                     position.setY(salle.getHauteur().sub(hauteurStandart));
                     acces = new Porte(new Pouce(38, 0, 1), hauteurStandart, position);
+                    //recentrage du clic seulement en x
+                    acces.getPosition().setX(acces.getPosition().getX().sub(acces.getLargeur().div(2)));
                     break;
                 case "Prise électrique":
                     acces = new PriseElec(new Pouce(2, 0, 1), new Pouce(4, 0, 1), position);
+                    //recentrage du clic
+                    acces.getPosition().setX(acces.getPosition().getX().sub(acces.getLargeur().div(2)));
+                    acces.getPosition().setY(acces.getPosition().getY().sub(acces.getHauteur().div(2)));
                     break;
                 default:
                     Pouce debutMur = new Pouce(0, 0, 1);
@@ -533,6 +541,7 @@ public class MuracleController {
                     acces = new RetourAir(largeurStandart, salle.getHauteurRetourAir(), position);
                     break;
             }
+
             pushNewChange();
             getSelectedCote().addAccessoire(acces);
         } catch (FractionError | PouceError | CoteError e) {
@@ -571,15 +580,27 @@ public class MuracleController {
     }
 
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
-        /*try {
-            if (!largeur.contains("-")) {
-                a continuer
+        try {
+            if (!largeur.contains("-") && !largeur.equals(getSelectedAccessoire().getLargeur().toString())) {
+                pushNewChange();
+                Pouce difLargeur = new Pouce(largeur).sub(getSelectedAccessoire().getLargeur());
+                getSelectedAccessoire().setLargeur(new Pouce(largeur));
+                if (getSelectedAccessoire().getType().equals("Retour d'air"))
+                    getSelectedAccessoire().getPosition().setX(getSelectedAccessoire().getPosition().getX().sub(difLargeur.div(2)));
             }
-            if (!hauteur.contains("-"))
-            if (!marge.contains("-"))
+            if (!hauteur.contains("-") && !hauteur.equals(getSelectedAccessoire().getHauteur().toString())) {
+                pushNewChange();
+                getSelectedAccessoire().setHauteur(new Pouce(hauteur));
+            }
+            if (!marge.contains("-") && getSelectedAccessoire().getType().equals("Fenêtre")) {
+                pushNewChange();
+                ((Fenetre) getSelectedAccessoire()).setMarge(new Pouce(marge));
+            }
         } catch (PouceError | FractionError e) {
             System.out.println(e.getMessage());
-        }*/
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void selectSeparateur (int index) {
