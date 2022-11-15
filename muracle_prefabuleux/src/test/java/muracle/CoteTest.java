@@ -29,7 +29,7 @@ public class CoteTest {
     public void addAccessoireFenetre(){
         try{
             Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
-            Accessoire accessoire = new Accessoire(new Pouce("10"), new Pouce("5"), new CoordPouce(new Pouce("0"), new Pouce("0")));
+            Accessoire accessoire = new Accessoire(new Pouce("10"), new Pouce("5"), new CoordPouce(new Pouce("1/8"), new Pouce("1/8")));
             accessoire.setType("Fenetre");
             cote.addAccessoire(accessoire);
             assertEquals(1, cote.getAccessoires().size());
@@ -91,7 +91,7 @@ public class CoteTest {
         try{
             Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
             Accessoire accessoire = new Accessoire(new Pouce("1"), new Pouce("1"), new CoordPouce(new Pouce("20"), new Pouce("20")));
-            Accessoire accessoire2 = new Accessoire(new Pouce("12"), new Pouce("12"), new CoordPouce(new Pouce("0"), new Pouce("0")));
+            Accessoire accessoire2 = new Accessoire(new Pouce("12"), new Pouce("12"), new CoordPouce(new Pouce("1/8"), new Pouce("1/8")));
             accessoire2.setType("Fenetre");
             cote.addAccessoire(accessoire2);
             accessoire.setType("Fenetre");

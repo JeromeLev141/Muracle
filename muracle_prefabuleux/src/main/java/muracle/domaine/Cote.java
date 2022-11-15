@@ -73,8 +73,12 @@ public class Cote implements java.io.Serializable{
         CoordPouce accessoire1;
         CoordPouce accessoire2;
         if(Objects.equals(accessoire.getType(), "Fenetre")){
+            if(accessoire.getPosition().getX().compare(new Pouce("0")) == 0 || accessoire.getPosition().getY().compare(new Pouce("0")) == 0){
+                return false;
+            }
             Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
-            accessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
+            accessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(jeuSupplementaire), accessoire.getPosition().getY().sub(jeuSupplementaire));
+            //accessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
             accessoire2 =new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(jeuSupplementaire)), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(jeuSupplementaire));
         }else{
             accessoire1 = accessoire.getPosition();
@@ -91,12 +95,13 @@ public class Cote implements java.io.Serializable{
 
     // Suit cet algorithme
     // https://silentmatt.com/rectangle-intersection/
-    public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) throws FractionError {
+    public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) throws FractionError, PouceError {
         CoordPouce mainAccessoire1;
         CoordPouce mainAccessoire2;
         if(Objects.equals(accessoire.getType(), "Fenetre")){
             Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
-            mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
+            mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(jeuSupplementaire), accessoire.getPosition().getY().sub(jeuSupplementaire));
+            //mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
             mainAccessoire2 = new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(jeuSupplementaire)), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(jeuSupplementaire));
         }else{
             mainAccessoire1 = accessoire.getPosition();
