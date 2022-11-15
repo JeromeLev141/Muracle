@@ -1,5 +1,6 @@
 package muracle.domaine.drawer;
 
+import muracle.domaine.Accessoire;
 import muracle.domaine.CoteDTO;
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.CoordPouce;
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class AfficheurElevationCote extends Afficheur {
@@ -39,17 +41,15 @@ public class AfficheurElevationCote extends Afficheur {
         ajustement(g2d,zoom, dim, posiCam,dimPlan);
         drawCote(g2d);
         drawSeparateur(g2d);
-        drawAccessoire(g2d);
         reset(g2d,zoom, dim, posiCam, dimPlan);
 
         drawVue(g);
     }
 
-    private void drawCote(Graphics2D g) {
+    private void drawCote(Graphics2D g) throws FractionError {
         Rectangle2D.Double rect = new Rectangle2D.Double(posX, posY, w, h);
-        g.setColor(fillColor);
-        g.fill(new Area(rect));
-        g.setColor(lineColor);
+        Area coteArea = new Area(rect);
+        drawAccessoire(g, coteArea);
         g.draw(rect);
     }
 
@@ -76,16 +76,43 @@ public class AfficheurElevationCote extends Afficheur {
         }
     }
 
-    private void drawAccessoire(Graphics2D g) throws FractionError {
-        /*Cote cote = controller.getSelectedCote();
-        for (int i = 0; i < cote.getMurs().size(); i++) {
-            posX = cote.getSeparateur(i).toDouble();
-            Mur mur = cote.getMurs().get(i);
-            for (int j = 0; j < mur.getAccessoires().length; j++) {
-                Accessoire accessoire = mur.getAccessoire(j);
-                g.draw(new Rectangle2D.Double(posX + Accessoire));
+    private void drawAccessoire(Graphics2D g, Area coteArea) throws FractionError {
+        CoteDTO cote = controller.getSelectedCoteReadOnly();
+        ArrayList<Rectangle2D.Double> rectangles = new ArrayList<>();
+        int indexAccesSelected = -1;
+        g.setColor(fillColor.darker().darker());
+        for (Accessoire acces : cote.accessoires) {
+            Rectangle2D.Double rect = null;
+            double accesPosX = acces.getPosition().getX().toDouble();
+            double accesPosY = acces.getPosition().getY().toDouble();
+            if (controller.isVueExterieur() && !acces.isInterieurOnly())
+                rect = new Rectangle2D.Double(posX + accesPosX, posY + accesPosY,
+                        acces.getLargeur().toDouble(), acces.getHauteur().toDouble());
+            else if (!controller.isVueExterieur())
+                rect = new Rectangle2D.Double(posX + w - (accesPosX + acces.getLargeur().toDouble()), posY + accesPosY,
+                        acces.getLargeur().toDouble(), acces.getHauteur().toDouble());
+            if (rect != null) {
+                coteArea.subtract(new Area(rect));
+                if (acces.isInterieurOnly())
+                    g.fill(new Area(rect));
+                rectangles.add(rect);
+                if (acces == controller.getSelectedAccessoire())
+                    indexAccesSelected = rectangles.size() - 1;
             }
-        }*/
+        }
+        g.setColor(fillColor);
+        g.fill(coteArea);
+        g.setColor(lineColor);
+        if (indexAccesSelected != -1) {
+            g.setColor(selectColor);
+            g.setStroke(new BasicStroke(4));
+            g.draw(rectangles.get(indexAccesSelected));
+            g.setStroke(new BasicStroke(2));
+            g.setColor(lineColor);
+        }
+        for (Rectangle2D.Double rect : rectangles) {
+            g.draw(rect);
+        }
     }
 
     private void drawVue(Graphics g) {

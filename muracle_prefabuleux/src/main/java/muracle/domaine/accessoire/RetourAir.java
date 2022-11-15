@@ -7,12 +7,12 @@ import muracle.utilitaire.Pouce;
 public class RetourAir extends Accessoire {
 
     public RetourAir(){
-        this.setType("RetourAir");
+        this.setType("Retour d'air");
         this.setInterieurOnly(Boolean.TRUE);
     }
 
     public RetourAir(Pouce largeur, Pouce hauteur, CoordPouce position){
-        this.setType("RetourAir");
+        this.setType("Retour d'air");
         this.setInterieurOnly(Boolean.TRUE);
         this.setLargeur(largeur);
         this.setHauteur(hauteur);

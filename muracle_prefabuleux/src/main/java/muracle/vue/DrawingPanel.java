@@ -18,7 +18,7 @@ public class DrawingPanel extends JPanel implements MouseMotionListener, MouseWh
     private Fraction zoomInc;
     private CoordPouce posiCam;
     private CoordPouce dimPlan;
-    private Color backgroundColor;
+    private final Color backgroundColor;
 
 
     public DrawingPanel(MainWindow mainWindow){

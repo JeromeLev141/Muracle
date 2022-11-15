@@ -9,12 +9,12 @@ public class Fenetre extends Accessoire {
     private Pouce marge;
 
     public Fenetre(){
-        this.setType("Fenetre");
+        this.setType("Fenêtre");
         this.setInterieurOnly(Boolean.FALSE);
     }
 
     public Fenetre(Pouce largeur, Pouce hauteur, CoordPouce position){
-        this.setType("Fenetre");
+        this.setType("Fenêtre");
         this.setInterieurOnly(Boolean.FALSE);
         this.setLargeur(largeur);
         this.setHauteur(hauteur);
