@@ -35,7 +35,7 @@ public class MuracleController {
     private Pouce distLigneGrille;
     private boolean isGrilleShown;
 
-    //private String errorMessage;
+    private String errorMessage;
     private GenerateurPlan generateurPlan;
     private Stack<String> undoPile;
     private Stack<String> redoPile;
@@ -72,13 +72,18 @@ public class MuracleController {
         creerProjet();
         distLigneGrille = new Pouce("12");
         isGrilleShown = false;
-        //errorMessage = "";
+        errorMessage = "";
         generateurPlan = new GenerateurPlan();
     }
 
-    public void creerProjet() throws FractionError, PouceError {
-        salle = new Salle(new Pouce("144"), new Pouce("144"),
-                new Pouce("144"), new Pouce("12"));
+    public void creerProjet() {
+        try {
+            salle = new Salle(new Pouce("144"), new Pouce("144"),
+                    new Pouce("144"), new Pouce("12"));
+            generateurPlan = new GenerateurPlan();
+        } catch (FractionError | PouceError e) {
+            throw new RuntimeException(e);
+        }
         coteSelected = ' ';
         murSelected = -1;
         accessoireSelected = -1;
@@ -198,7 +203,6 @@ public class MuracleController {
             } catch (IOException | XMLStreamException ex) {
                 throw new RuntimeException(ex);
             }
-            System.out.println("Exportation des plans au fichier : " + fichier.getAbsolutePath());
         }
     }
 
@@ -264,6 +268,7 @@ public class MuracleController {
     public void interactComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) {
         // manque les deux autres vues
         separateurSelected = -1;
+        accessoireSelected = -1;
         if (coordPouce != null) {
             if (isVueDessus) {
                 try {
@@ -330,9 +335,7 @@ public class MuracleController {
     }
 
     private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) throws FractionError, PouceError {
-        // add interraction avec accessoire et murs
-        separateurSelected = -1;
-        accessoireSelected = -1;
+        // add interraction avec murs
         Pouce posX = coordPouce.getX();
         Pouce posY = coordPouce.getY();
         if (!isVueExterieur) {
@@ -351,7 +354,6 @@ public class MuracleController {
         }
         if (!contientAcces && addAccesMode) {
             addAccessoire(type, coordPouce);
-            selectAccessoire(getSelectedCote().getAccessoires().size() - 1);
         }
 
         if (!addAccesMode) {
@@ -433,8 +435,8 @@ public class MuracleController {
         try {
             if (!dist.contains("-") && !dist.equals(distLigneGrille.toString()))
                 distLigneGrille = new Pouce(dist);
-        } catch (PouceError | FractionError ignored) {
-            System.out.println("valeur invalide");
+        } catch (PouceError | FractionError e) {
+            setErrorMessage(e.getMessage());
         }
     }
 
@@ -486,7 +488,8 @@ public class MuracleController {
                 pushNewChange();
                 salle.setProfondeur(new Pouce(profondeur));
             }
-        } catch (PouceError | FractionError ignored) {
+        } catch (PouceError | FractionError e) {
+            setErrorMessage(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -544,8 +547,9 @@ public class MuracleController {
 
             pushNewChange();
             getSelectedCote().addAccessoire(acces);
+            selectAccessoire(getSelectedCote().getAccessoires().size() - 1);
         } catch (FractionError | PouceError | CoteError e) {
-            System.out.println(e.getMessage());
+            setErrorMessage(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -573,7 +577,7 @@ public class MuracleController {
                 }
         }
         } catch(PouceError | FractionError e){
-            System.out.println(e.getMessage());
+            setErrorMessage(e.getMessage());
         } catch(IOException e){
             throw new RuntimeException(e);
         }
@@ -597,7 +601,7 @@ public class MuracleController {
                 ((Fenetre) getSelectedAccessoire()).setMarge(new Pouce(marge));
             }
         } catch (PouceError | FractionError e) {
-            System.out.println(e.getMessage());
+            setErrorMessage(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -618,7 +622,7 @@ public class MuracleController {
             pushNewChange();
             getSelectedCote().addSeparateur(pos);
         } catch (CoteError e) {
-            System.out.println(e.getMessage());
+            setErrorMessage(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -644,7 +648,7 @@ public class MuracleController {
                     selectSeparateur(getSelectedCote().getSeparateurs().indexOf(newSep));
                 }
             } catch (PouceError | FractionError | CoteError e) {
-                System.out.println(e.getMessage());
+                setErrorMessage(e.getMessage());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -682,7 +686,7 @@ public class MuracleController {
                 salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
             }
         } catch (PouceError | FractionError e) {
-            System.out.println(e.getMessage());
+            setErrorMessage(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -717,29 +721,37 @@ public class MuracleController {
                 pushNewChange();
                 generateurPlan.setMargeLargeurReplis(new Pouce(margeLargeur));
             }
-            double angle = Double.parseDouble(anglePlis);
-            if (0 <= angle && angle <= 90) {
-                if (angle != generateurPlan.getAnglePlis()) {
-                    pushNewChange();
-                    generateurPlan.setAnglePlis(angle);
-                }
+            try {
+                double angle = Double.parseDouble(anglePlis);
+                if (0 <= angle && angle <= 90) {
+                    if (angle != generateurPlan.getAnglePlis()) {
+                        pushNewChange();
+                        generateurPlan.setAnglePlis(angle);
+                    }
+                } else
+                    setErrorMessage("L'angle doit être entre 0 et 90 degrée");
+            } catch (NumberFormatException e) {
+                setErrorMessage("Caractères alphabétiques détectés");
             }
-            else System.out.println("valeur invalide");
             if (!longueurPlis.contains("-") && !longueurPlis.equals(generateurPlan.getLongueurPlis().toString())) {
                 pushNewChange();
                 generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
             }
         } catch (PouceError | FractionError e) {
-            System.out.println(e.getMessage());
+            setErrorMessage(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /*public String getErrorMessage() {
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public String getErrorMessage() {
         return errorMessage;
     }
     public void ackErrorMessage() {
         errorMessage = "";
-    }*/
+    }
 }

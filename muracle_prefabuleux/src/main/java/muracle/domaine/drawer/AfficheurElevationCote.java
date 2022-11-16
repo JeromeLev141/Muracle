@@ -44,6 +44,7 @@ public class AfficheurElevationCote extends Afficheur {
         reset(g2d,zoom, dim, posiCam, dimPlan);
 
         drawVue(g);
+        drawErrorMessage(g2d);
     }
 
     private void drawCote(Graphics2D g) throws FractionError {

@@ -49,6 +49,7 @@ public class AfficheurPlanSalle extends Afficheur{
 
         reset(g2d,zoom, dim, posiCam, dimPlan);
         drawVue(g);
+        drawErrorMessage(g2d);
     }
 
     private void drawSalle(Graphics2D g) {

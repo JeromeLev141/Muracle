@@ -7,6 +7,7 @@ import muracle.utilitaire.FractionError;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 
 public class Afficheur {
 
@@ -15,9 +16,9 @@ public class Afficheur {
     protected final Color lineColor;
     protected final Color fillColor;
     private final Color grilleColor;
-
     protected final Color selectColor;
-    protected final Color errorColor;
+    private final Color errorColor;
+    private final Color backErrrorColor;
 
     public Afficheur(MuracleController controller, Dimension initDim) {
         this.controller = controller;
@@ -26,7 +27,8 @@ public class Afficheur {
         fillColor = Color.white;
         grilleColor = new Color(150, 173, 233);
         selectColor = new Color(97, 255, 89);
-        errorColor = Color.red;
+        errorColor = new Color(233, 103, 104);
+        backErrrorColor = new Color(46, 52, 64);
     }
 
     public void draw(Graphics g, double zoom, Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
@@ -81,16 +83,20 @@ public class Afficheur {
         g.setColor(lineColor);
     }
 
-    /*protected void drawErrorMessage(Graphics2D g) {
-        g.setFont(new Font("TimesRoman", Font.ITALIC, 18));
-        g.setStroke(new BasicStroke(5));
-        FontMetrics fm = g.getFontMetrics();
-        int wMessage = fm.charsWidth(controller.getErrorMessage().toCharArray(), 0, controller.getErrorMessage().length());
-        System.out.println(wMessage);
-        g.drawString(controller.getErrorMessage(), (initialDimension.width + wMessage) / 2, initialDimension.height - 32);
-        g.setStroke(new BasicStroke(2));
-        g.setColor(errorColor);
-        g.drawString(controller.getErrorMessage(), (initialDimension.width + wMessage) / 2, initialDimension.height - 32);
-        controller.ackErrorMessage();
-    }*/
+    protected void drawErrorMessage(Graphics2D g) {
+        if (!controller.getErrorMessage().equals("")) {
+            g.setFont(new Font("TimesRoman", Font.ITALIC, 18));
+            int textWidth = g.getFontMetrics().stringWidth(controller.getErrorMessage());
+            int xPos = (initialDimension.width / 2) - (textWidth / 2);
+            int yPos = initialDimension.height - 40;
+            Rectangle2D.Double rect = new Rectangle2D.Double(xPos - 4, yPos - 18, textWidth + 8, 22);
+            g.setColor(backErrrorColor);
+            g.fill(rect);
+            g.setColor(lineColor);
+            g.draw(rect);
+            g.setColor(errorColor);
+            g.drawString(controller.getErrorMessage(), xPos, yPos);
+            controller.ackErrorMessage();
+        }
+    }
 }

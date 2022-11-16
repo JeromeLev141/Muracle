@@ -2,7 +2,6 @@ package muracle.vue;
 
 import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
-import muracle.domaine.CoteError;
 import muracle.domaine.MuracleController;
 import muracle.domaine.accessoire.Fenetre;
 import muracle.utilitaire.FractionError;
@@ -31,19 +30,25 @@ public class MainWindow extends JFrame {
 		void updateButtons();
 		void updateParamsShown();
 	}
-	private int murSelected = -1;
-	private Point accessoireSelected = null;
 
-	protected MuracleController controller = new MuracleController();
+	protected MuracleController controller;
 	protected boolean isDarkMode = true;
 
-	public MainWindow() throws FractionError, PouceError, CoteError {
+	public MainWindow() {
+		{
+			try {
+				controller = new MuracleController();
+			} catch (FractionError | PouceError e) {
+				throw new RuntimeException(e);
+			}
+		}
 		initComponents();
 	}
 
 	private void initComponents() {
 		//menu
 		JMenuBar menuBar = new JMenuBar();
+		JButton newProjectButton =  new JButton();
 		JButton openProjectButton = new JButton();
 		JButton saveProjectButton = new JButton();
 		JButton exportButton = new JButton();
@@ -225,6 +230,22 @@ public class MainWindow extends JFrame {
 
 			//======== menuBar ========
 			{
+				//---- nouveau projet ----
+				newProjectButton.setText("Nouveau projet");
+				newProjectButton.setPreferredSize(new Dimension(140, 22));
+				newProjectButton.setMaximumSize(new Dimension(100, 32767));
+				newProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
+				newProjectButton.setRequestFocusEnabled(false);
+				newProjectButton.setFocusPainted(false);
+				newProjectButton.addActionListener(e -> {
+					controller.creerProjet();
+					updater.updateTextFields();
+					updater.updateButtons();
+					updater.updateParamsShown();
+					drawingPanel.updateParametre();
+					drawingPanel.repaint();
+				});
+				menuBar.add(newProjectButton);
 
 				//---- ouvrir projet ----
 				openProjectButton.setText("Ouvrir projet");
@@ -475,7 +496,6 @@ public class MainWindow extends JFrame {
 						@Override
 						public void mouseClicked(MouseEvent e) {
 							boolean token = controller.isVueDessus();
-							System.out.println(drawingPanel.coordPixelToPouce(e));
 							controller.interactComponent(drawingPanel.coordPixelToPouce(e),
 									addSeparateurButton.isSelected(), addAccessoireButton.isSelected(), (String) selectionAccessoireComboBox.getSelectedItem());
 							updater.updateParamsShown();
@@ -745,6 +765,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								longPlisTextField.setText(controller.getParametrePlan(0));
+								drawingPanel.repaint();
 							});
 
 							//---- margeEpParam ----
@@ -753,6 +774,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								margeEpTextField.setText(controller.getParametrePlan(1));
+								drawingPanel.repaint();
 							});
 
 							//---- margeLargParam ----
@@ -761,6 +783,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								margeLargTextField.setText(controller.getParametrePlan(2));
+								drawingPanel.repaint();
 							});
 
 							//---- anglePlisParam ----
@@ -769,6 +792,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								anglePlisTextField.setText(controller.getParametrePlan(3));
+								drawingPanel.repaint();
 							});
 
 							sepConfig.setVisible(false);
