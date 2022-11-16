@@ -3,7 +3,6 @@ package muracle.vue;
 import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
 import muracle.domaine.MuracleController;
-import muracle.domaine.accessoire.Fenetre;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.PouceError;
 
@@ -145,12 +144,12 @@ public class MainWindow extends JFrame {
 				if (controller.isSeparateurSelected())
 					posSepTextField.setText(controller.getSelectedSeparateur().toString());
 				if (controller.isAccessoireSelected()) {
-					posXAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getX().toString());
-					posYAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getY().toString());
-					largAccesTextField.setText(controller.getSelectedAccessoire().getLargeur().toString());
-					hAccesTextField.setText(controller.getSelectedAccessoire().getHauteur().toString());
-					if (controller.getSelectedAccessoire().getType().equals("Fenêtre"))
-						margeAccesTextField.setText(((Fenetre) controller.getSelectedAccessoire()).getMarge().toString());
+					posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
+					posYAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getY().toString());
+					largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
+					hAccesTextField.setText(controller.getSelectedAccessoireReadOnly().hauteur.toString());
+					if (controller.getSelectedAccessoireReadOnly().type.equals("Fenêtre"))
+						margeAccesTextField.setText(controller.getSelectedAccessoireReadOnly().marge.toString());
 				}
 			}
 
@@ -196,10 +195,10 @@ public class MainWindow extends JFrame {
 					else if (controller.isAccessoireSelected()) {
 						for (int i = 22; i < 25; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
-						if (!controller.getSelectedAccessoire().getType().equals("Fenêtre"))
+						if (!controller.getSelectedAccessoireReadOnly().type.equals("Fenêtre"))
 							for (int i = 37; i < 40; i++)
 								parametresModifPanel.getComponent(i).setVisible(false);
-						if (controller.getSelectedAccessoire().getType().equals("Retour d'air")) {
+						if (controller.getSelectedAccessoireReadOnly().type.equals("Retour d'air")) {
 							for (int i = 25; i < 31; i++)
 								parametresModifPanel.getComponent(i).setVisible(false);
 							for (int i = 34; i < 37; i++)
@@ -650,7 +649,7 @@ public class MainWindow extends JFrame {
 							posXAccesTextField.addActionListener(e -> {
 								if (controller.isAccessoireSelected()) {
 									controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
-									posXAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getX().toString());
+									posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
 									drawingPanel.repaint();
 								}
 							});
@@ -660,7 +659,7 @@ public class MainWindow extends JFrame {
 							posYAccesTextField.addActionListener(e -> {
 								if (controller.isAccessoireSelected()) {
 									controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
-									posYAccesTextField.setText(controller.getSelectedAccessoire().getPosition().getY().toString());
+									posYAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getY().toString());
 									drawingPanel.repaint();
 								}
 							});
@@ -670,7 +669,7 @@ public class MainWindow extends JFrame {
 							largAccesTextField.addActionListener(e -> {
 								if (controller.isAccessoireSelected()) {
 									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
-									largAccesTextField.setText(controller.getSelectedAccessoire().getLargeur().toString());
+									largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
 									drawingPanel.repaint();
 								}
 							});
@@ -680,7 +679,7 @@ public class MainWindow extends JFrame {
 							hAccesTextField.addActionListener(e -> {
 								if (controller.isAccessoireSelected()) {
 									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
-									hAccesTextField.setText(controller.getSelectedAccessoire().getHauteur().toString());
+									hAccesTextField.setText(controller.getSelectedAccessoireReadOnly().hauteur.toString());
 									drawingPanel.repaint();
 								}
 							});
@@ -688,10 +687,9 @@ public class MainWindow extends JFrame {
 							//---- margeAccesParam ----
 							addParams(parametresModifPanel, "Marge de la Fenêtre", margeAccesTextField, "po", posY++);
 							margeAccesTextField.addActionListener(e -> {
-								if (controller.isAccessoireSelected() && controller.getSelectedAccessoire().getType().equals("Fenêtre")) {
+								if (controller.isAccessoireSelected() && controller.getSelectedAccessoireReadOnly().type.equals("Fenêtre")) {
 									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
-									Fenetre fenetre = (Fenetre) controller.getSelectedAccessoire();
-									margeAccesTextField.setText(fenetre.getMarge().toString());
+									margeAccesTextField.setText(controller.getSelectedAccessoireReadOnly().marge.toString());
 									drawingPanel.repaint();
 								}
 							});

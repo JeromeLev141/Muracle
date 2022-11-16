@@ -18,7 +18,7 @@ public class Afficheur {
     private final Color grilleColor;
     protected final Color selectColor;
     private final Color errorColor;
-    private final Color backErrrorColor;
+    protected final Color backErrrorColor;
 
     public Afficheur(MuracleController controller, Dimension initDim) {
         this.controller = controller;

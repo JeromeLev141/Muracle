@@ -97,7 +97,7 @@ public class AfficheurElevationCote extends Afficheur {
                 if (acces.isInterieurOnly())
                     g.fill(new Area(rect));
                 rectangles.add(rect);
-                if (acces == controller.getSelectedAccessoire())
+                if (cote.accessoires.indexOf(acces) == controller.getIndexOfSelectedAccessoire())
                     indexAccesSelected = rectangles.size() - 1;
             }
         }

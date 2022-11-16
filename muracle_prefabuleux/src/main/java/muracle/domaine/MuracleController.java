@@ -425,10 +425,17 @@ public class MuracleController {
         accessoireSelected = index;
     }
 
-    public Accessoire getSelectedAccessoire() {
+    public AccessoireDTO getSelectedAccessoireReadOnly() {
+        return new AccessoireDTO(getSelectedAccessoire());
+    }
+    private Accessoire getSelectedAccessoire() {
         if (accessoireSelected != -1)
             return getSelectedCote().getAccessoire(accessoireSelected);
         return null;
+    }
+
+    public int getIndexOfSelectedAccessoire() {
+        return accessoireSelected;
     }
 
     public void setDistLigneGrille(String dist) {
