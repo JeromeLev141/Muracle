@@ -12,6 +12,8 @@ public class Accessoire implements java.io.Serializable{
     private String type;
     private Boolean isInterieurOnly;
 
+    private Pouce marge;
+
 
     public Accessoire(){
 
@@ -68,5 +70,12 @@ public class Accessoire implements java.io.Serializable{
 
     public void setInterieurOnly(Boolean interieurOnly) {
         isInterieurOnly = interieurOnly;
+    }
+
+    public void setMarge(Pouce marge) {
+        this.marge = marge;
+    }
+    public Pouce getMarge() {
+        return marge;
     }
 }
