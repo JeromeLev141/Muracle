@@ -6,8 +6,6 @@ import muracle.utilitaire.Pouce;
 
 public class Fenetre extends Accessoire {
 
-    private Pouce marge;
-
     public Fenetre(){
         this.setType("Fenêtre");
         this.setInterieurOnly(Boolean.FALSE);
@@ -21,10 +19,4 @@ public class Fenetre extends Accessoire {
         this.setPosition(position);
     }
 
-    public void setMarge(Pouce marge) {
-        this.marge = marge;
-    }
-    public Pouce getMarge() {
-        return marge;
-    }
 }
