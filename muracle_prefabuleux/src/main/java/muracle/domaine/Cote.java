@@ -73,6 +73,7 @@ public class Cote implements java.io.Serializable{
         CoordPouce accessoire1;
         CoordPouce accessoire2;
         if(Objects.equals(accessoire.getType(), "Fenêtre")){
+            //FIX ICI BAS point peut être 0 si la marge est zero
             if(accessoire.getPosition().getX().compare(new Pouce("0")) == 0 || accessoire.getPosition().getY().compare(new Pouce("0")) == 0){
                 return false;
             }
@@ -93,14 +94,15 @@ public class Cote implements java.io.Serializable{
 
     // Suit cet algorithme
     // https://silentmatt.com/rectangle-intersection/
-    public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) throws FractionError, PouceError {
+    public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) {
         CoordPouce mainAccessoire1;
         CoordPouce mainAccessoire2;
         if(Objects.equals(accessoire.getType(), "Fenêtre")){
-            Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
-            mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(jeuSupplementaire), accessoire.getPosition().getY().sub(jeuSupplementaire));
-            //mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
-            mainAccessoire2 = new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(jeuSupplementaire)), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(jeuSupplementaire));
+            mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(accessoire.getMarge()),
+                                             accessoire.getPosition().getY().sub(accessoire.getMarge()));
+
+            mainAccessoire2 = new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(accessoire.getMarge())),
+                                             (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(accessoire.getMarge()));
         }else{
             mainAccessoire1 = accessoire.getPosition();
             mainAccessoire2 = new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
@@ -110,22 +112,15 @@ public class Cote implements java.io.Serializable{
                 CoordPouce secondAccessoire1;
                 CoordPouce secondAccessoire2;
                 if(Objects.equals(getAccessoire(i).getType(), "Fenêtre")){
-<<<<<<< Updated upstream
-                    Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
-                    secondAccessoire1 =  new CoordPouce(getAccessoire(i).getPosition().getX().add(jeuSupplementaire), getAccessoire(i).getPosition().getY().add(jeuSupplementaire));
-                    secondAccessoire2 =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(jeuSupplementaire)), (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(jeuSupplementaire));
-=======
                     secondAccessoire1 =  new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getMarge()),
                                                         getAccessoire(i).getPosition().getY().add(getAccessoire(i).getMarge()));
 
                     secondAccessoire2 =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(getAccessoire(i).getMarge())),
                                                         (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(getAccessoire(i).getMarge()));
->>>>>>> Stashed changes
                 }else{
                     secondAccessoire1 = getAccessoire(i).getPosition();
                     secondAccessoire2 = new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()), getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur()));
                 }
-
 
                 if((mainAccessoire1.getX().compare(secondAccessoire2.getX()) == -1) &&
                         mainAccessoire2.getX().compare(secondAccessoire1.getX()) == 1 &&

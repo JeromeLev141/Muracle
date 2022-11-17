@@ -29,8 +29,9 @@ public class CoteTest {
     public void addAccessoireFenetre(){
         try{
             Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
-            Accessoire accessoire = new Accessoire(new Pouce("10"), new Pouce("5"), new CoordPouce(new Pouce("1/8"), new Pouce("1/8")));
-            accessoire.setType("Fenetre");
+            Accessoire accessoire = new Accessoire(new Pouce("10"), new Pouce("5"), new CoordPouce(new Pouce("1"), new Pouce("1")));
+            accessoire.setType("Fenêtre");
+            accessoire.setMarge(new Pouce("1"));
             cote.addAccessoire(accessoire);
             assertEquals(1, cote.getAccessoires().size());
         }catch (Exception e){
@@ -90,12 +91,14 @@ public class CoteTest {
     public void AccessoireFenetre(){
         try{
             Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
-            Accessoire accessoire = new Accessoire(new Pouce("1"), new Pouce("1"), new CoordPouce(new Pouce("20"), new Pouce("20")));
-            Accessoire accessoire2 = new Accessoire(new Pouce("12"), new Pouce("12"), new CoordPouce(new Pouce("1/8"), new Pouce("1/8")));
-            accessoire2.setType("Fenetre");
-            cote.addAccessoire(accessoire2);
-            accessoire.setType("Fenetre");
-            assertTrue(cote.doesAccessoireFitWithOtherAccessoires(accessoire));
+            Accessoire accessoire = new Accessoire(new Pouce("5"), new Pouce("5"), new CoordPouce(new Pouce("5"), new Pouce("5")));
+            accessoire.setType("Fenêtre");
+            accessoire.setMarge(new Pouce("0"));
+            cote.addAccessoire(accessoire);
+            Accessoire accessoire2 = new Accessoire(new Pouce("5"), new Pouce("5"), new CoordPouce(new Pouce("20"), new Pouce("20")));
+            accessoire2.setType("Fenêtre");
+            accessoire2.setMarge(new Pouce("10"));
+            assertTrue(cote.doesAccessoireFitWithOtherAccessoires(accessoire2));
         }catch (Exception e){
             fail();
         }
