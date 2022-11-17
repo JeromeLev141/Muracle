@@ -112,8 +112,8 @@ public class Cote implements java.io.Serializable{
                 CoordPouce secondAccessoire1;
                 CoordPouce secondAccessoire2;
                 if(Objects.equals(getAccessoire(i).getType(), "Fenêtre")){
-                    secondAccessoire1 =  new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getMarge()),
-                                                        getAccessoire(i).getPosition().getY().add(getAccessoire(i).getMarge()));
+                    secondAccessoire1 =  new CoordPouce(getAccessoire(i).getPosition().getX().sub(getAccessoire(i).getMarge()),
+                                                        getAccessoire(i).getPosition().getY().sub(getAccessoire(i).getMarge()));
 
                     secondAccessoire2 =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(getAccessoire(i).getMarge())),
                                                         (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(getAccessoire(i).getMarge()));
