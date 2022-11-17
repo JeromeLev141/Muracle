@@ -189,19 +189,6 @@ public class PouceTest {
     }
 
     @Test
-    public void addRefFraction(){
-        try {
-            Pouce pouce1 = new Pouce(1,1,4);
-            assertThat(pouce1.addRef(new Fraction(2,4)).equals(new Pouce(1,3,4))).isTrue();
-            assertThat(pouce1.equals(new Pouce(1,3,4))).isTrue();
-            assertThat(pouce1.addRef(new Fraction(-1,5)).equals(new Pouce(1,11,20))).isTrue();
-            assertThat(pouce1.equals(new Pouce(1,11,20))).isTrue();
-        }catch (FractionError fractionError){
-            fail();
-        }
-    }
-
-    @Test
     public void addPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
@@ -226,19 +213,6 @@ public class PouceTest {
             assertThat(pouce1.add(2).equals(new Pouce(3,1,4))).isTrue();
             assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
             assertThat(pouce1.add(-5).equals(new Pouce(-3,3,4))).isTrue();
-            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
-        }catch (FractionError fractionError){
-            fail();
-        }
-    }
-
-    @Test
-    public void addFraction(){
-        try {
-            Pouce pouce1 = new Pouce(1,1,4);
-            assertThat(pouce1.add(new Fraction(2,4)).equals(new Pouce(1,3,4))).isTrue();
-            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
-            assertThat(pouce1.add(new Fraction(-1,5)).equals(new Pouce(1,1,20))).isTrue();
             assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
         }catch (FractionError fractionError){
             fail();
@@ -275,19 +249,6 @@ public class PouceTest {
     }
 
     @Test
-    public void subRefFraction(){
-        try {
-            Pouce pouce1 = new Pouce(1,1,4);
-            assertThat(pouce1.subRef(new Fraction(2,4)).equals(new Pouce(0,3,4))).isTrue();
-            assertThat(pouce1.equals(new Pouce(0,3,4))).isTrue();
-            assertThat(pouce1.subRef(new Fraction(-1,5)).equals(new Pouce(0,19,20))).isTrue();
-            assertThat(pouce1.equals(new Pouce(0,19,20))).isTrue();
-        }catch (FractionError fractionError){
-            fail();
-        }
-    }
-
-    @Test
     public void subPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
@@ -312,19 +273,6 @@ public class PouceTest {
             assertThat(pouce1.sub(2).equals(new Pouce(0,-3,4))).isTrue();
             assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
             assertThat(pouce1.sub(-5).equals(new Pouce(6,1,4))).isTrue();
-            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
-        }catch (FractionError fractionError){
-            fail();
-        }
-    }
-
-    @Test
-    public void subFraction(){
-        try {
-            Pouce pouce1 = new Pouce(1,1,4);
-            assertThat(pouce1.sub(new Fraction(2,4)).equals(new Pouce(0,3,4))).isTrue();
-            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
-            assertThat(pouce1.sub(new Fraction(-1,5)).equals(new Pouce(1,9,20))).isTrue();
             assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
         }catch (FractionError fractionError){
             fail();
@@ -449,20 +397,6 @@ public class PouceTest {
     }
 
     @Test
-    public void divRefFraction(){
-        try {
-            Pouce pouce1 = new Pouce(1,1,4);
-
-            assertThat(pouce1.divRef(new Fraction(1, 4)).equals(new Pouce(5,0,1))).isTrue();
-            assertThat(pouce1.equals(new Pouce(5,0,1))).isTrue();
-            assertThat(pouce1.divRef(new Fraction(-1,2)).equals(new Pouce(-10,0,1))).isTrue();
-            assertThat(pouce1.equals(new Pouce(-10,0,1))).isTrue();
-        }catch (FractionError fractionError){
-            fail();
-        }
-    }
-
-    @Test
     public void divPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
@@ -493,27 +427,5 @@ public class PouceTest {
         }
     }
 
-    @Test
-    public void divFraction(){
-        try {
-            Pouce pouce1 = new Pouce(1,1,4);
 
-            assertThat(pouce1.div(new Fraction(1, 4)).equals(new Pouce(5,0,1))).isTrue();
-            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
-            assertThat(pouce1.div(new Fraction(-1,2)).equals(new Pouce(-2,1,2))).isTrue();
-            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
-        }catch (FractionError fractionError){
-            fail();
-        }
-    }
-
-    @Test
-    public void round(){
-        try {
-            Pouce pouce1 = new Pouce(1, 456, 789);
-            assertThat(pouce1.round(128).equals(new Pouce (1,74,128)));
-        }catch (FractionError fractionError){
-            fail();
-        }
-    }
 }
