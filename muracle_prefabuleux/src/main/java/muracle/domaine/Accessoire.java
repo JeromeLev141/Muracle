@@ -14,7 +14,7 @@ public class Accessoire implements java.io.Serializable{
 
     private Pouce marge;
 
-
+    private boolean isValid;
     public Accessoire(){
 
     }
@@ -63,6 +63,9 @@ public class Accessoire implements java.io.Serializable{
     public void setType(String type) {
         this.type = type;
     }
+
+    public void isValid(){this.isValid = true;}
+    public void setIsValid(Boolean bool) {this.isValid = bool;}
 
     public Boolean isInterieurOnly() {
         return isInterieurOnly;
