@@ -26,7 +26,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         this.mainWindow = mainWindow;
         dimPlan = null;
         try {
-            zoomFactor = new Fraction(2, 1);
+            zoomFactor = new Fraction(1, 2);
             zoomInc = new Fraction(0,1);
         }catch (Exception ignored){}
         posiCam = null;
@@ -195,8 +195,8 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      * @brief remet le zoomFactor a 2 == 50%
      */
     public void resetZoomFactor() {
-        this.zoomFactor.setNum(2);
-        this.zoomFactor.setDenum(1);
+        this.zoomFactor.setNum(1);
+        this.zoomFactor.setDenum(2);
     }
 
     /**
