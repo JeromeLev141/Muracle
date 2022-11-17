@@ -72,14 +72,12 @@ public class Cote implements java.io.Serializable{
         CoordPouce cote2 = new CoordPouce(largeur, hauteur);
         CoordPouce accessoire1;
         CoordPouce accessoire2;
-        if(Objects.equals(accessoire.getType(), "Fenetre")){
+        if(Objects.equals(accessoire.getType(), "Fenêtre")){
             if(accessoire.getPosition().getX().compare(new Pouce("0")) == 0 || accessoire.getPosition().getY().compare(new Pouce("0")) == 0){
                 return false;
             }
-            Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
-            accessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(jeuSupplementaire), accessoire.getPosition().getY().sub(jeuSupplementaire));
-            //accessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
-            accessoire2 =new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(jeuSupplementaire)), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(jeuSupplementaire));
+            accessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(accessoire.getMarge()), accessoire.getPosition().getY().sub(accessoire.getMarge()));
+            accessoire2 =new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(accessoire.getMarge())), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(accessoire.getMarge()));
         }else{
             accessoire1 = accessoire.getPosition();
             accessoire2 =new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
@@ -98,7 +96,7 @@ public class Cote implements java.io.Serializable{
     public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) throws FractionError, PouceError {
         CoordPouce mainAccessoire1;
         CoordPouce mainAccessoire2;
-        if(Objects.equals(accessoire.getType(), "Fenetre")){
+        if(Objects.equals(accessoire.getType(), "Fenêtre")){
             Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
             mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(jeuSupplementaire), accessoire.getPosition().getY().sub(jeuSupplementaire));
             //mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
@@ -111,10 +109,18 @@ public class Cote implements java.io.Serializable{
             for(int i = 0; i < accessoires.size(); i++){
                 CoordPouce secondAccessoire1;
                 CoordPouce secondAccessoire2;
-                if(Objects.equals(getAccessoire(i).getType(), "Fenetre")){
+                if(Objects.equals(getAccessoire(i).getType(), "Fenêtre")){
+<<<<<<< Updated upstream
                     Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
                     secondAccessoire1 =  new CoordPouce(getAccessoire(i).getPosition().getX().add(jeuSupplementaire), getAccessoire(i).getPosition().getY().add(jeuSupplementaire));
                     secondAccessoire2 =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(jeuSupplementaire)), (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(jeuSupplementaire));
+=======
+                    secondAccessoire1 =  new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getMarge()),
+                                                        getAccessoire(i).getPosition().getY().add(getAccessoire(i).getMarge()));
+
+                    secondAccessoire2 =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(getAccessoire(i).getMarge())),
+                                                        (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(getAccessoire(i).getMarge()));
+>>>>>>> Stashed changes
                 }else{
                     secondAccessoire1 = getAccessoire(i).getPosition();
                     secondAccessoire2 = new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()), getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur()));
