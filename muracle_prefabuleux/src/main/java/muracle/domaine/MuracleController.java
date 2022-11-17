@@ -78,10 +78,19 @@ public class MuracleController {
 
     public void creerProjet() {
         try {
-            salle = new Salle(new Pouce("144"), new Pouce("144"),
+            salle = new Salle(new Pouce("288"), new Pouce("108"),
                     new Pouce("144"), new Pouce("12"));
+            for (Cote cote : salle.getTableauCote()) {
+                cote.addSeparateur(new Pouce(48, 0, 1));
+                cote.addSeparateur(new Pouce(96, 0, 1));
+                if (cote.getLargeur().getEntier() == 288) {
+                    cote.addSeparateur(new Pouce(144, 0, 1));
+                    cote.addSeparateur(new Pouce(192, 0, 1));
+                    cote.addSeparateur(new Pouce(240, 0, 1));
+                }
+            }
             generateurPlan = new GenerateurPlan();
-        } catch (FractionError | PouceError e) {
+        } catch (FractionError | PouceError | CoteError e) {
             throw new RuntimeException(e);
         }
         coteSelected = ' ';
