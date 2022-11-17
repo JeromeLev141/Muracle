@@ -5,6 +5,13 @@ public class Pouce implements java.io.Serializable{
     private int entier;
     private Fraction fraction;
 
+    /**
+     * @brief constructeur avec trois int en entré
+     * @param entier:int
+     * @param num:int
+     * @param denum:int
+     * @throws FractionError si une fraction par zero est donné
+     */
     public Pouce(int entier,int num, int denum) throws FractionError {
         this.entier = entier;
         this.fraction = new Fraction(num,denum);
@@ -14,11 +21,22 @@ public class Pouce implements java.io.Serializable{
         }
     }
 
+    /**
+     * @brief constructeur par un int et une fraction
+     * @param entier:int
+     * @param fraction:Fraction
+     */
     public Pouce(int entier, Fraction fraction){
         this.entier = entier;
         this.fraction = fraction.copy();
     }
 
+    /**
+     * @brief constructeur par une string
+     * @param mesure:String
+     * @throws PouceError: si la string est invalide
+     * @throws FractionError: si la fraction est sur 0
+     */
     public Pouce(String mesure) throws PouceError,FractionError {
         String[] subString = mesure.trim().split(" ");
 
@@ -55,27 +73,45 @@ public class Pouce implements java.io.Serializable{
             this.entier *= -1;
             this.fraction.mulRef(-1);
         }
-
-
     }
 
+    /**
+     * @brief getteur de l'entier
+     * @return this.entier
+     */
     public int getEntier() {
         return entier;
     }
 
+    /**
+     * @brief setteur de l'entier
+     * @param entier:int
+     */
     public void setEntier(int entier) {
         this.entier = entier;
     }
 
+    /**
+     * @brief getteur de la Fraction
+     * @return this.fraction
+     */
     public Fraction getFraction() {
         return fraction;
     }
 
+    /**
+     * @brief setteur de la fraction
+     * @param fraction:fraction
+     */
     public void setFraction(Fraction fraction) {
         this.fraction = fraction;
     }
 
-    //opération d'addition par référence
+    /**
+     * @brief addition modifiant l'objet
+     * @param pouce:Pouce
+     * @return Pouce
+     */
     public Pouce addRef(Pouce pouce) {
         this.fraction = pouce2Fraction();
         entier = 0;
@@ -84,11 +120,20 @@ public class Pouce implements java.io.Serializable{
         return this;
     }
 
-    //opération d'addition par référence copy
+    /**
+     * @brief addition avec un nouvel objet
+     * @param pouce:Pouce
+     * @return Pouce
+     */
     public Pouce add(Pouce pouce){
         return this.copy().addRef(pouce);
     }
 
+    /**
+     * @brief addition modifiant l'objet
+     * @param value:Int
+     * @return Pouce
+     */
     public Pouce addRef(int value){
         this.fraction = pouce2Fraction();
         entier = 0;
@@ -97,11 +142,42 @@ public class Pouce implements java.io.Serializable{
         return this;
     }
 
+    /**
+     * @brief addition avec un nouvel l'objet
+     * @param value:Int
+     * @return Pouce
+     */
     public Pouce add(int value){
         return this.copy().addRef(value);
     }
 
-    //Opération de soustraction par référence
+    /**
+     * @brief addition modifiant l'objet
+     * @param fraction:Fraction
+     * @return Pouce
+     */
+    public Pouce addRef(Fraction fraction){
+        this.fraction = pouce2Fraction();
+        entier = 0;
+        this.fraction.addRef(fraction);
+        simplifier();
+        return this;
+    }
+
+    /**
+     * @brief addition avec un nouvel l'objet
+     * @param fraction:Fraction
+     * @return Pouce
+     */
+    public Pouce add(Fraction fraction){
+        return this.copy().addRef(fraction);
+    }
+
+    /**
+     * @brief soustraction modifiant l'objet
+     * @param pouce:Pouce
+     * @return Pouce
+     */
     public Pouce subRef(Pouce pouce){
         this.fraction = pouce2Fraction();
         entier = 0;
@@ -110,27 +186,64 @@ public class Pouce implements java.io.Serializable{
         return this;
     }
 
-    //Opération de soustraction par référence copy
+    /**
+     * @brief soustraction créant un nouvel objet
+     * @param pouce:Pouce
+     * @return Pouce
+     */
     public Pouce sub(Pouce pouce){
         return this.copy().subRef(pouce);
     }
 
+    /**
+     * @brief soustraction modifiant l'objet
+     * @param value:Int
+     * @return Pouce
+     */
     public Pouce subRef(int value){
         this.fraction = pouce2Fraction();
         entier = 0;
         fraction.subRef(value);
         simplifier();
         return this;
-        //this.entier -= value;
-        //simplifier();
-        //return this;
     }
 
+    /**
+     * soustraction créant un nouvel objet
+     * @param value:Int
+     * @return Pouce
+     */
     public Pouce sub(int value){
         return this.copy().subRef(value);
     }
 
-    //Oprétation de multiplication par référence
+    /**
+     * @brief soustraction modifiant l'objet
+     * @param fraction:Fraction
+     * @return Pouce
+     */
+    public Pouce subRef(Fraction fraction){
+        this.fraction = pouce2Fraction();
+        entier = 0;
+        this.fraction.subRef(fraction);
+        simplifier();
+        return this;
+    }
+
+    /**
+     * @brief soustraction créant un nouvel objet
+     * @param fraction:Fraction
+     * @return Pouce
+     */
+    public Pouce sub(Fraction fraction){
+        return this.copy().subRef(fraction);
+    }
+
+    /**
+     * @brief multiplication modifiant l'objet
+     * @param pouce:Pouce
+     * @return Pouce
+     */
     public Pouce mulRef(Pouce pouce){
         this.fraction = pouce2Fraction();
         entier = 0;
@@ -139,7 +252,11 @@ public class Pouce implements java.io.Serializable{
         return this;
     }
 
-    //Opération de multiplication par référence
+    /**
+     * @brief multiplication modifiant l'objet
+     * @param fraction:Fraction
+     * @return Pouce
+     */
     public Pouce mulRef(Fraction fraction){
         this.fraction = pouce2Fraction();
         entier = 0;
@@ -148,6 +265,11 @@ public class Pouce implements java.io.Serializable{
         return this;
     }
 
+    /**
+     * @brief multiplication modifiant l'objet
+     * @param value:Int
+     * @return Pouce
+     */
     public Pouce mulRef(int value){
         this.fraction = pouce2Fraction();
         entier = 0;
@@ -156,21 +278,38 @@ public class Pouce implements java.io.Serializable{
         return this;
     }
 
-    //Opération de multiplication par référence copy
+    /**
+     * @brief multiplication créant un nouvel objet
+     * @param pouce:Pouce
+     * @return Pouce
+     */
     public Pouce mul(Pouce pouce){
         return this.copy().mulRef(pouce);
     }
 
-    //Opération de multiplication par référence copy
+    /**
+     * @brief multiplication créant un nouvel objet
+     * @param fraction:Fraction
+     * @return Pouce
+     */
     public Pouce mul(Fraction fraction){
         return this.copy().mulRef(fraction);
     }
 
+    /**
+     * @brief multiplication créant un nouvel objet
+     * @param value:Int
+     * @return Pouce
+     */
     public Pouce mul(int value){
         return this.copy().mulRef(value);
     }
 
-    //Opération de division par référence
+    /**
+     * @brief division modifiant l'objet
+     * @param pouce:Pouce
+     * @return Pouce
+     */
     public Pouce divRef(Pouce pouce) throws FractionError {
         this.fraction = pouce2Fraction();
         entier = 0;
@@ -179,46 +318,97 @@ public class Pouce implements java.io.Serializable{
         return this;
     }
 
-    //Opération de devision par référence copy
+    /**
+     * @brief division créant un nouvel objet
+     * @param pouce:Pouce
+     * @return Pouce
+     */
     public Pouce div(Pouce pouce) throws FractionError {
         return this.copy().divRef(pouce);
     }
 
-    //opération de division avec un int par référence
-    public Pouce divRef(int diviseur) throws PouceError {
-        if (diviseur == 0){
+    /**
+     * @brief division modifiant l'objet
+     * @param value:Int
+     * @return Pouce
+     */
+    public Pouce divRef(int value) throws PouceError {
+        if (value == 0){
             throw new PouceError("Division par 0");
         }
         else {
             this.fraction = pouce2Fraction();
             entier = 0;
-            fraction.setDenum(fraction.getDenum() * diviseur);
+            fraction.setDenum(fraction.getDenum() * value);
             simplifier();
             return this;
         }
     }
 
-    //opération de division avec un int par référence copy
-    public Pouce div(int diviseur) throws PouceError {
-        return this.copy().divRef(diviseur);
+    /**
+     * @brief division créant un nouvel objet
+     * @param value:Int
+     * @return Pouce
+     */
+    public Pouce div(int value) throws PouceError {
+        return this.copy().divRef(value);
     }
 
-    //Opération de ==
+    /**
+     * @brief division modifiant l'objet
+     * @param fraction:Fraction
+     * @return Pouce
+     */
+    public Pouce divRef(Fraction fraction) throws FractionError {
+        this.fraction = pouce2Fraction();
+        entier = 0;
+        this.fraction.divRef(fraction);
+        simplifier();
+        return this;
+    }
+
+    /**
+     * @brief division créant un nouvel objet
+     * @param fraction:Fraction
+     * @return Pouce
+     */
+    public Pouce div(Fraction fraction) throws FractionError {
+        return this.copy().divRef(fraction);
+    }
+
+    /**
+     * @brief operation ==
+     * @param pouce:Pouce
+     * @return Bool
+     */
     public boolean equals(Pouce pouce){
         return (entier + fraction.toDouble() == pouce.getEntier() + pouce.getFraction().toDouble());
     }
 
     //Opération de comparaison -1<,0==,1>
+
+    /**
+     * @brief comparaison -1 si <, 0 si ==, 1 si >
+     * @param pouce:Pouce
+     * @return Int
+     */
     public int compare(Pouce pouce){
         return Double.compare(entier + fraction.toDouble(), pouce.getEntier() + pouce.getFraction().toDouble());
     }
 
-    //Fonction de copy d'objet
+    /**
+     * @brief fait une copy en profondeur de l'objet
+     * @return Pouce
+     */
     public Pouce copy(){
         return new Pouce(this.entier, this.fraction);
     }
 
     //Fonction pour simplifier l'entier avec fraction
+
+    /**
+     * @brief Simplifie la fraction
+     */
     public void simplifier(){
         if (this.entier == 0 && this.fraction.toDouble() < 0){
             entier += fraction.getNum()/fraction.getDenum();
@@ -249,13 +439,20 @@ public class Pouce implements java.io.Serializable{
         }
     }
 
-    //Fonction qui formate pouce à Fraction
+    /**
+     * @brief Pouce -> Fraction
+     * @return Fraction
+     */
     private Fraction pouce2Fraction(){
         Fraction fract = this.fraction.copy();
         fract.setNum(fract.getNum() + entier*fract.getDenum());
         return fract;
     }
 
+    /**
+     * @brief Pouce -> Double
+     * @return Double
+     */
     public Double toDouble(){
         return pouce2Fraction().toDouble();
     }
