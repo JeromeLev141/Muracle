@@ -60,11 +60,13 @@ public class Cote implements java.io.Serializable{
         boolean fitInCote = doesAccessoireFitInCote(accessoire);
         boolean fitWithAccessories = doesAccessoireFitWithOtherAccessoires(accessoire);
         if(fitInCote && fitWithAccessories){
+            accessoire.setIsValid(true);
             accessoires.add(accessoire);
         } else if (!fitInCote) {
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         } else {
-            throw new CoteError("Accessoire intersecte avec les autres accessoires");
+            accessoire.setIsValid(false);
+            accessoires.add(accessoire);
         }
     }
     public boolean doesAccessoireFitInCote(Accessoire accessoire) throws FractionError, PouceError {
@@ -74,9 +76,9 @@ public class Cote implements java.io.Serializable{
         CoordPouce accessoire2;
         if(Objects.equals(accessoire.getType(), "Fenêtre")){
             //FIX ICI BAS point peut être 0 si la marge est zero
-            if(accessoire.getPosition().getX().compare(new Pouce("0")) == 0 || accessoire.getPosition().getY().compare(new Pouce("0")) == 0){
+            /*if(accessoire.getPosition().getX().compare(new Pouce("0")) == 0 || accessoire.getPosition().getY().compare(new Pouce("0")) == 0){
                 return false;
-            }
+            }*/
             accessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(accessoire.getMarge()), accessoire.getPosition().getY().sub(accessoire.getMarge()));
             accessoire2 =new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(accessoire.getMarge())), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(accessoire.getMarge()));
         }else{
@@ -139,11 +141,13 @@ public class Cote implements java.io.Serializable{
         boolean fitInCote = doesAccessoireFitInCote(dummyAccessoire);
         boolean fitWithAccessories = doesAccessoireFitWithOtherAccessoires(dummyAccessoire);
         if(fitInCote && fitWithAccessories){
+            accessoire.setIsValid(true);
             accessoire.setPosition(positionPost);
         } else if (!fitInCote) {
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         } else {
-            throw new CoteError("Accessoire intersecte avec les autres accessoires");
+            accessoire.setIsValid(false);
+            accessoire.setPosition(positionPost);
         }
     }
     public void removeAccessoire(Accessoire accessoire){
