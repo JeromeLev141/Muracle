@@ -111,7 +111,7 @@ public class FractionTest {
     }
 
     @Test
-    public void addRef(){
+    public void addRefFraction(){
         try{
             Fraction frac1 = new Fraction(1,5);
             Fraction frac2 = new Fraction(1,10);
@@ -127,7 +127,19 @@ public class FractionTest {
     }
 
     @Test
-    public void add(){
+    public void addRefInt(){
+        try{
+            Fraction frac1 = new Fraction(1,5);
+            assertTrue(frac1.addRef(3).equals(new Fraction(16,5)));
+            assertTrue(frac1.equals(new Fraction(16,5)));
+            assertTrue(frac1.addRef(-4).equals(new Fraction(-4,5)));
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void addFaction(){
         try{
             Fraction frac1 = new Fraction(1,5);
             Fraction frac2 = new Fraction(1,10);
@@ -147,7 +159,19 @@ public class FractionTest {
     }
 
     @Test
-    public void subRef(){
+    public void addInt(){
+        try{
+            Fraction frac1 = new Fraction(1,5);
+            assertTrue(frac1.add(3).equals(new Fraction(16,5)));
+            assertTrue(frac1.equals(new Fraction(1,5)));
+            assertTrue(frac1.add(-4).equals(new Fraction(-19,5)));
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void subRefFraction(){
         try{
             Fraction frac1 = new Fraction(1,5);
             Fraction frac2 = new Fraction(1,10);
@@ -163,7 +187,19 @@ public class FractionTest {
     }
 
     @Test
-    public void sub(){
+    public void subRefInt(){
+        try{
+            Fraction frac1 = new Fraction(1,5);
+            assertTrue(frac1.subRef(3).equals(new Fraction(-14,5)));
+            assertTrue(frac1.equals(new Fraction(-14,5)));
+            assertTrue(frac1.subRef(-4).equals(new Fraction(6,5)));
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void subFraction(){
         try{
             Fraction frac1 = new Fraction(1,5);
             Fraction frac2 = new Fraction(1,10);
@@ -184,7 +220,19 @@ public class FractionTest {
     }
 
     @Test
-    public void mulRef(){
+    public void subInt(){
+        try{
+            Fraction frac1 = new Fraction(1,5);
+            assertTrue(frac1.sub(3).equals(new Fraction(-14,5)));
+            assertTrue(frac1.equals(new Fraction(1,5)));
+            assertTrue(frac1.sub(-4).equals(new Fraction(21,5)));
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void mulRefFraction(){
         try{
             Fraction frac1 = new Fraction(1,5);
             Fraction frac2 = new Fraction(1,10);
@@ -203,7 +251,22 @@ public class FractionTest {
     }
 
     @Test
-    public void mul(){
+    public void mulRefInt(){
+        try{
+            Fraction frac1 = new Fraction(1,5);
+            assertTrue(frac1.mulRef(2).equals(new Fraction(2,5)));
+            assertTrue(frac1.equals(new Fraction(2,5)));
+            assertTrue(frac1.mulRef(5).equals(new Fraction(2,1)));
+            assertTrue(frac1.equals(new Fraction(2,1)));
+            assertTrue(frac1.mulRef(-5).equals(new Fraction(-10,1)));
+            assertTrue(frac1.equals(new Fraction(-10,1)));
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void mulFraction(){
         try{
             Fraction frac1 = new Fraction(1,5);
             Fraction frac2 = new Fraction(1,10);
@@ -224,7 +287,36 @@ public class FractionTest {
     }
 
     @Test
-    public void divRef(){
+    public void mulInt(){
+        try{
+            Fraction frac1 = new Fraction(1,5);
+            assertTrue(frac1.mul(2).equals(new Fraction(2,5)));
+            assertTrue(frac1.equals(new Fraction(1,5)));
+            assertTrue(frac1.mul(10).equals(new Fraction(2,1)));
+            assertTrue(frac1.equals(new Fraction(1,5)));
+            assertTrue(frac1.mul(-10).equals(new Fraction(-2,1)));
+            assertTrue(frac1.equals(new Fraction(1,5)));
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void divRefFraction(){
+        try{
+            Fraction frac1 = new Fraction(1,5);
+
+            assertTrue(frac1.divRef(2).equals(new Fraction(1,10)));
+            assertTrue(frac1.equals(new Fraction(1,10)));
+            assertTrue(frac1.divRef(-5).equals(new Fraction(-1,50)));
+            assertTrue(frac1.equals(new Fraction(-1,50)));
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void divRefInt(){
         try{
             Fraction frac1 = new Fraction(1,5);
             Fraction frac2 = new Fraction(1,10);
@@ -234,6 +326,20 @@ public class FractionTest {
             assertTrue(frac1.divRef(frac3).equals(new Fraction(10,1)));
             assertTrue(frac1.divRef(frac4).equals(new Fraction(-20,1)));
             assertTrue(frac1.divRef(frac4).equals(new Fraction(40,1)));
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void divFraction(){
+        try{
+            Fraction frac1 = new Fraction(1,5);
+
+            assertTrue(frac1.div(2).equals(new Fraction(1,10)));
+            assertTrue(frac1.equals(new Fraction(1,5)));
+            assertTrue(frac1.div(-5).equals(new Fraction(-1,25)));
+            assertTrue(frac1.equals(new Fraction(1,5)));
         }catch (FractionError fractionError){
             fail();
         }
@@ -256,6 +362,34 @@ public class FractionTest {
             assertTrue(frac5.equals(new Fraction(-2,5)));
             assertTrue(frac3.equals(new Fraction(2,10)));
         }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void round(){
+        try {
+            Fraction frac1 = new Fraction(5, 256);
+            Fraction frac2 = new Fraction(1, 10);
+            Fraction frac3 = new Fraction(456, 87);
+            assertTrue(frac1.round(128).equals(new Fraction(3,128)));
+            assertTrue(frac2.round(100).equals(new Fraction(1,10)));
+            assertTrue(frac2.round(128).equals(new Fraction(13,128)));
+            assertTrue(frac3.round(128).equals(new Fraction(671,128)));
+            try{
+                assertTrue(frac3.round(0).equals(new Fraction(671,128)));
+                fail();
+            }catch (FractionError fractionError){
+                assertTrue(true);
+            }
+            try{
+                assertTrue(frac3.round(-5).equals(new Fraction(671,128)));
+                fail();
+            }catch (FractionError fractionError){
+                assertTrue(true);
+            }
+        }
+        catch (FractionError fractionError){
             fail();
         }
     }

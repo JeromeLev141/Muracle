@@ -124,7 +124,7 @@ public class PouceTest {
     }
 
     @Test
-    public void setFractino(){
+    public void setFraction(){
         try {
             Pouce pouce1 = new Pouce(3, 1, 4);
             assertThat(pouce1.getFraction().toDouble()).isEqualTo(0.25);
@@ -160,20 +160,7 @@ public class PouceTest {
     }
 
     @Test
-    public void setFraction(){
-        try {
-            Pouce pouce1 = new Pouce(0, 1, 4);
-            assertThat(pouce1.getFraction().toDouble()).isEqualTo(0.25);
-            pouce1.setFraction(new Fraction(1,10));
-            assertThat(pouce1.getFraction().toDouble()).isEqualTo(0.1);
-
-        }catch (FractionError fractionError){
-            fail();
-        }
-    }
-
-    @Test
-    public void addRef(){
+    public void addRefPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
             Pouce pouce2 = new Pouce(2,1,5);
@@ -188,7 +175,21 @@ public class PouceTest {
     }
 
     @Test
-    public void add(){
+    public void addRefInt(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.addRef(2).equals(new Pouce(3,1,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(3,1,4))).isTrue();
+            assertThat(pouce1.addRef(-5).equals(new Pouce(-1,3,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(-1,3,4))).isTrue();
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void addPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
             Pouce pouce2 = new Pouce(2,1,5);
@@ -205,7 +206,21 @@ public class PouceTest {
     }
 
     @Test
-    public void subRef(){
+    public void addInt(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.add(2).equals(new Pouce(3,1,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+            assertThat(pouce1.add(-5).equals(new Pouce(-3,3,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void subRefPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
             Pouce pouce2 = new Pouce(2,1,5);
@@ -220,7 +235,21 @@ public class PouceTest {
     }
 
     @Test
-    public void sub(){
+    public void subRefInt(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.subRef(2).equals(new Pouce(0,-3,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(0,-3,4))).isTrue();
+            assertThat(pouce1.subRef(-5).equals(new Pouce(4,1,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(4,1,4))).isTrue();
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void subPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
             Pouce pouce2 = new Pouce(2,1,5);
@@ -237,7 +266,21 @@ public class PouceTest {
     }
 
     @Test
-    public void mulRef(){
+    public void subInt(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.sub(2).equals(new Pouce(0,-3,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+            assertThat(pouce1.sub(-5).equals(new Pouce(6,1,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void mulRefPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
             Pouce pouce2 = new Pouce(2,1,5);
@@ -252,7 +295,35 @@ public class PouceTest {
     }
 
     @Test
-    public void mul(){
+    public void mulRefFraction(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.mulRef(new Fraction(1, 4)).equals(new Pouce(0,5,16))).isTrue();
+            assertThat(pouce1.equals(new Pouce(0,5,16))).isTrue();
+            assertThat(pouce1.mulRef(new Fraction(-1,2)).equals(new Pouce(0,-5,32))).isTrue();
+            assertThat(pouce1.equals(new Pouce(0,-5,32))).isTrue();
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void mulRefInt(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.mulRef(2).equals(new Pouce(2,1,2))).isTrue();
+            assertThat(pouce1.equals(new Pouce(2,1,2))).isTrue();
+            assertThat(pouce1.mulRef(-5).equals(new Pouce(-12,1,2))).isTrue();
+            assertThat(pouce1.equals(new Pouce(-12,1,2))).isTrue();
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void mulPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
             Pouce pouce2 = new Pouce(2,1,5);
@@ -269,7 +340,35 @@ public class PouceTest {
     }
 
     @Test
-    public void divRef(){
+    public void mulFraction(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.mul(new Fraction(1, 4)).equals(new Pouce(0,5,16))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+            assertThat(pouce1.mul(new Fraction(-1,2)).equals(new Pouce(0,-5,8))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void mulInt(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.mul(2).equals(new Pouce(2,1,2))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+            assertThat(pouce1.mul(-5).equals(new Pouce(-6,1,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+        }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void divRefPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
             Pouce pouce2 = new Pouce(2,1,5);
@@ -284,7 +383,21 @@ public class PouceTest {
     }
 
     @Test
-    public void div(){
+    public void divRefInt(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.divRef(2).equals(new Pouce(0,5,8))).isTrue();
+            assertThat(pouce1.equals(new Pouce(0,5,8))).isTrue();
+            assertThat(pouce1.divRef(-5).equals(new Pouce(0,-1,8))).isTrue();
+            assertThat(pouce1.equals(new Pouce(0,-1,8))).isTrue();
+        }catch (FractionError | PouceError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void divPouce(){
         try {
             Pouce pouce1 = new Pouce(1,1,4);
             Pouce pouce2 = new Pouce(2,1,5);
@@ -296,6 +409,20 @@ public class PouceTest {
             assertThat(pouce4.equals(new Pouce(0,25,44))).isTrue();
             assertThat(pouce5.equals(new Pouce(-1,3,22))).isTrue();
         }catch (FractionError fractionError){
+            fail();
+        }
+    }
+
+    @Test
+    public void divInt(){
+        try {
+            Pouce pouce1 = new Pouce(1,1,4);
+
+            assertThat(pouce1.div(2).equals(new Pouce(0,5,8))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+            assertThat(pouce1.div(-5).equals(new Pouce(0,-1,4))).isTrue();
+            assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+        }catch (FractionError | PouceError fractionError){
             fail();
         }
     }

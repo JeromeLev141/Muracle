@@ -26,7 +26,11 @@ public class CoordPouce implements java.io.Serializable{
         this.y = y;
     }
 
-
+    public CoordPouce round(int value) throws FractionError {
+        x.round(value);
+        y.round(value);
+        return this;
+    }
     //à implémenter dans pouce calcule de la racide carré
     //Fonction incomplet
     public static Pouce distance(CoordPouce pts1, CoordPouce pts2) throws FractionError {

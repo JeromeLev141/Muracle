@@ -3,6 +3,7 @@ package muracle.domaine.drawer;
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
+import muracle.utilitaire.PouceError;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -48,7 +49,7 @@ public class Afficheur {
         try{
             at.translate((-1*zoom * posiCam.getX().sub(dimPlan.getX().div(2)).toDouble()) + (-1*(zoom-1)*dim.getWidth()/2),
                     (-1*zoom * posiCam.getY().sub(dimPlan.getY().div(2)).toDouble()) + (-1*(zoom-1)*dim.getHeight()/2));
-        }catch (FractionError ignored){}
+        }catch (PouceError ignored){}
 
         at.scale(zoom,zoom);
         g2d.transform(at);
@@ -60,7 +61,7 @@ public class Afficheur {
         try {
             at.translate((1 * zoom * posiCam.getX().sub(dimPlan.getX().div(2)).toDouble()) + (1 * (zoom - 1) * dim.getWidth() / 2),
                     (1 * zoom * posiCam.getY().sub(dimPlan.getY().div(2)).toDouble()) + (1 * (zoom - 1) * dim.getHeight() / 2));
-        }catch (FractionError ignored){}
+        }catch (PouceError ignored){}
         g2d.transform(at);
     }
 
