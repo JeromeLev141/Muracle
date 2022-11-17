@@ -494,6 +494,10 @@ public class MainWindow extends JFrame {
 					drawingPanel.addMouseListener(new MouseListener() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
+						}
+
+						@Override
+						public void mousePressed(MouseEvent e) {
 							boolean token = controller.isVueDessus();
 							controller.interactComponent(drawingPanel.coordPixelToPouce(e),
 									addSeparateurButton.isSelected(), addAccessoireButton.isSelected(), (String) selectionAccessoireComboBox.getSelectedItem());
@@ -503,11 +507,6 @@ public class MainWindow extends JFrame {
 							if (token != controller.isVueDessus())
 								drawingPanel.updateParametre();
 							drawingPanel.repaint();
-						}
-
-						@Override
-						public void mousePressed(MouseEvent e) {
-
 						}
 
 						@Override
