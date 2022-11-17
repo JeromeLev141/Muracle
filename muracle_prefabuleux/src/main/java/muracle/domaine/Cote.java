@@ -112,6 +112,7 @@ public class Cote implements java.io.Serializable{
                 CoordPouce secondAccessoireUpperLeftPoint;
                 CoordPouce secondAccessoireLowerRightPoint;
                 if(Objects.equals(getAccessoire(i).getType(), "Fenêtre")){
+
                     secondAccessoireUpperLeftPoint =  new CoordPouce(getAccessoire(i).getPosition().getX().sub(getAccessoire(i).getMarge()),
                                                         getAccessoire(i).getPosition().getY().sub(getAccessoire(i).getMarge()));
 
