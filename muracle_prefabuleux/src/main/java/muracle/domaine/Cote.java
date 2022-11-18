@@ -57,15 +57,93 @@ public class Cote implements java.io.Serializable{
     }
 
     public void addAccessoire(Accessoire accessoire) throws FractionError, PouceError, CoteError {
-        boolean fitInCote = doesAccessoireFitInCote(accessoire);
-        boolean fitWithAccessories = doesAccessoireFitWithOtherAccessoires(accessoire);
-        if(fitInCote){
-            accessoire.setIsValid(fitWithAccessories);
+
+        if(doesAccessoireFitInCote(accessoire)){
             accessoires.add(accessoire);
+            CheckValidityForEveryAccessoire();
         } else{
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         }
     }
+    public void moveAccessoire(Accessoire accessoire, CoordPouce positionPost) throws FractionError, PouceError, CoteError {
+        Accessoire dummyAccessoire = new Accessoire(accessoire);
+        dummyAccessoire.setPosition(positionPost);
+        if(doesAccessoireFitInCote(dummyAccessoire)){
+            accessoire.setPosition(positionPost);
+            CheckValidityForEveryAccessoire();
+        }else{
+            throw new CoteError("Accessoire ne rentre pas dans le côté");
+        }
+    }
+    public void setAccessoire(Accessoire accessoire, Pouce largeur, Pouce hauteur, Pouce marge) throws FractionError, PouceError, CoteError {
+        Accessoire dummyAccessoire = new Accessoire(largeur, hauteur, accessoire.getPosition());
+        if (Objects.equals(accessoire.getType(), "Fenêtre")){
+            dummyAccessoire.setMarge(marge);
+        }
+        if(doesAccessoireFitInCote(dummyAccessoire)){
+            accessoire.setLargeur(largeur);
+            accessoire.setHauteur(hauteur);
+            if(Objects.equals(accessoire.getType(), "Fenêtre")){
+                accessoire.setMarge(marge);
+            }
+            CheckValidityForEveryAccessoire();
+        }else{
+            throw new CoteError("Accessoire ne rentre pas dans le côté");
+        }
+    }
+    public void removeAccessoire(Accessoire accessoire){
+        accessoires.remove(accessoire);
+        CheckValidityForEveryAccessoire();
+    }
+
+    private void CheckValidityForEveryAccessoire() {
+        for (int i = 0; i< accessoires.size(); i++){
+            getAccessoire(i).setIsValid(doesAccessoireFitWithOtherAccessoires(getAccessoire(i)));
+        }
+    }
+
+    // Suit cet algorithme
+    // https://silentmatt.com/rectangle-intersection/
+    public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) {
+        CoordPouce mainAccessoireUpperLeftPoint;
+        CoordPouce mainAccessoireLowerRightPoint;
+        if(Objects.equals(accessoire.getType(), "Fenêtre")){
+            mainAccessoireUpperLeftPoint = new CoordPouce(accessoire.getPosition().getX().sub(accessoire.getMarge()),
+                    accessoire.getPosition().getY().sub(accessoire.getMarge()));
+
+            mainAccessoireLowerRightPoint = new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(accessoire.getMarge())),
+                    (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(accessoire.getMarge()));
+        }else{
+            mainAccessoireUpperLeftPoint = accessoire.getPosition();
+            mainAccessoireLowerRightPoint = new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
+        }
+        if(!accessoires.isEmpty()){
+            for(int i = 0; i < accessoires.size(); i++){
+                if(accessoire != getAccessoire(i)){
+                    CoordPouce secondAccessoireUpperLeftPoint;
+                    CoordPouce secondAccessoireLowerRightPoint;
+                    if(Objects.equals(getAccessoire(i).getType(), "Fenêtre")){
+                        secondAccessoireUpperLeftPoint =  new CoordPouce(getAccessoire(i).getPosition().getX().sub(getAccessoire(i).getMarge()),
+                                getAccessoire(i).getPosition().getY().sub(getAccessoire(i).getMarge()));
+
+                        secondAccessoireLowerRightPoint =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(getAccessoire(i).getMarge())),
+                                (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(getAccessoire(i).getMarge()));
+                    }else{
+                        secondAccessoireUpperLeftPoint = getAccessoire(i).getPosition();
+                        secondAccessoireLowerRightPoint = new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()), getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur()));
+                    }
+                    if((mainAccessoireUpperLeftPoint.getX().compare(secondAccessoireLowerRightPoint.getX()) == -1) &&
+                            mainAccessoireLowerRightPoint.getX().compare(secondAccessoireUpperLeftPoint.getX()) == 1 &&
+                            mainAccessoireUpperLeftPoint.getY().compare(secondAccessoireLowerRightPoint.getY()) == -1 &&
+                            mainAccessoireLowerRightPoint.getY().compare(secondAccessoireUpperLeftPoint.getY()) == 1 ){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean doesAccessoireFitInCote(Accessoire accessoire) throws FractionError, PouceError {
         CoordPouce cote1 = new CoordPouce(new Pouce("0"), new Pouce("0"));
         CoordPouce cote2 = new CoordPouce(largeur, hauteur);
@@ -91,65 +169,10 @@ public class Cote implements java.io.Serializable{
         return isRightValid && isLeftValid && isBotValid && isTopValid;
     }
 
-    // Suit cet algorithme
-    // https://silentmatt.com/rectangle-intersection/
-    public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) {
-        boolean answer = true;
-        CoordPouce mainAccessoireUpperLeftPoint;
-        CoordPouce mainAccessoireLowerRightPoint;
-        if(Objects.equals(accessoire.getType(), "Fenêtre")){
-            mainAccessoireUpperLeftPoint = new CoordPouce(accessoire.getPosition().getX().sub(accessoire.getMarge()),
-                                             accessoire.getPosition().getY().sub(accessoire.getMarge()));
 
-            mainAccessoireLowerRightPoint = new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(accessoire.getMarge())),
-                                             (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(accessoire.getMarge()));
-        }else{
-            mainAccessoireUpperLeftPoint = accessoire.getPosition();
-            mainAccessoireLowerRightPoint = new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
-        }
-        if(!accessoires.isEmpty()){
-            for(int i = 0; i < accessoires.size(); i++){
-                CoordPouce secondAccessoireUpperLeftPoint;
-                CoordPouce secondAccessoireLowerRightPoint;
-                if(Objects.equals(getAccessoire(i).getType(), "Fenêtre")){
 
-                    secondAccessoireUpperLeftPoint =  new CoordPouce(getAccessoire(i).getPosition().getX().sub(getAccessoire(i).getMarge()),
-                                                        getAccessoire(i).getPosition().getY().sub(getAccessoire(i).getMarge()));
 
-                    secondAccessoireLowerRightPoint =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(getAccessoire(i).getMarge())),
-                                                        (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(getAccessoire(i).getMarge()));
-                }else{
-                    secondAccessoireUpperLeftPoint = getAccessoire(i).getPosition();
-                    secondAccessoireLowerRightPoint = new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()), getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur()));
-                }
 
-                if((mainAccessoireUpperLeftPoint.getX().compare(secondAccessoireLowerRightPoint.getX()) == -1) &&
-                        mainAccessoireLowerRightPoint.getX().compare(secondAccessoireUpperLeftPoint.getX()) == 1 &&
-                        mainAccessoireUpperLeftPoint.getY().compare(secondAccessoireLowerRightPoint.getY()) == -1 &&
-                        mainAccessoireLowerRightPoint.getY().compare(secondAccessoireUpperLeftPoint.getY()) == 1 ){
-                    answer = false;
-                    getAccessoire(i).setIsValid(false);
-                }
-            }
-        }
-        return answer;
-    }
-    public void moveAccessoire(Accessoire accessoire, CoordPouce positionPost) throws FractionError, PouceError, CoteError {
-
-        Accessoire dummyAccessoire = new Accessoire(accessoire);
-        dummyAccessoire.setPosition(positionPost);
-        boolean fitInCote = doesAccessoireFitInCote(dummyAccessoire);
-        boolean fitWithAccessories = doesAccessoireFitWithOtherAccessoires(dummyAccessoire);
-        if(fitInCote){
-            accessoire.setIsValid(fitWithAccessories);
-            accessoire.setPosition(positionPost);
-        } else {
-            throw new CoteError("Accessoire ne rentre pas dans le côté");
-        }
-    }
-    public void removeAccessoire(Accessoire accessoire){
-        accessoires.remove(accessoire);
-    }
 
 
     public void setHauteur(Pouce hauteur) {
