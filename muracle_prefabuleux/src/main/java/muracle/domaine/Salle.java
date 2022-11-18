@@ -63,7 +63,7 @@ public class Salle implements java.io.Serializable{
 
     public void setEpaisseurTrouRetourAir(Pouce epaisseurTrouRetourAir) throws SalleError {
         if (epaisseurTrouRetourAir.compare(profondeur) == 1 || epaisseurTrouRetourAir.compare(profondeur) == 0){
-            throw new SalleError("L'épaisseur trou retour d'air ne peut pas être plus grande que la profondeur de la salle: " + profondeur);
+            throw new SalleError("L'épaisseur trou retour d'air ne peut pas être plus grande ou égale à l'épaisseur de la salle: " + profondeur);
         }else{
             this.epaisseurTrouRetourAir = epaisseurTrouRetourAir;
         }
