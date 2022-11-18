@@ -23,12 +23,13 @@ public class Accessoire implements java.io.Serializable{
         this.largeur = largeur;
         this.hauteur = hauteur;
         this.position = position;
-
+        this.isValid = true;
     }
     public Accessoire(Accessoire accessoire){
         this.largeur = accessoire.largeur;
         this.hauteur = accessoire.hauteur;
         this.position = accessoire.position;
+        this.marge = accessoire.marge;
         this.type = accessoire.type;
         this.isInterieurOnly = accessoire.isInterieurOnly;
     }
@@ -64,7 +65,7 @@ public class Accessoire implements java.io.Serializable{
         this.type = type;
     }
 
-    public void isValid(){this.isValid = true;}
+    public boolean isValid(){ return isValid; }
     public void setIsValid(Boolean bool) {this.isValid = bool;}
 
     public Boolean isInterieurOnly() {

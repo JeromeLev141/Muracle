@@ -80,6 +80,7 @@ public class AfficheurElevationCote extends Afficheur {
     private void drawAccessoire(Graphics2D g, Area coteArea) throws FractionError {
         CoteDTO cote = controller.getSelectedCoteReadOnly();
         ArrayList<Rectangle2D.Double> rectangles = new ArrayList<>();
+        ArrayList<Integer> indexOfInvalidAcces = new ArrayList<>();
         int indexAccesSelected = -1;
         g.setColor(fillColor.darker().darker());
         for (Accessoire acces : cote.accessoires) {
@@ -99,6 +100,8 @@ public class AfficheurElevationCote extends Afficheur {
                 rectangles.add(rect);
                 if (cote.accessoires.indexOf(acces) == controller.getIndexOfSelectedAccessoire())
                     indexAccesSelected = rectangles.size() - 1;
+                if (!acces.isValid())
+                    indexOfInvalidAcces.add(rectangles.size() -1);
             }
         }
         g.setColor(fillColor);
@@ -111,8 +114,21 @@ public class AfficheurElevationCote extends Afficheur {
             g.setStroke(new BasicStroke(2));
             g.setColor(lineColor);
         }
-        for (Rectangle2D.Double rect : rectangles) {
-            g.draw(rect);
+        for (int i = 0; i < rectangles.size(); i++) {
+            if (indexOfInvalidAcces.contains(i)) {
+                g.setColor(errorColor);
+                Composite compoInit = g.getComposite();
+                AlphaComposite alcom = AlphaComposite.getInstance(
+                        AlphaComposite.SRC_OVER, 0.5f);
+                g.setComposite(alcom);
+                g.fill(rectangles.get(i));
+                g.setComposite(compoInit);
+                g.setColor(backErrrorColor);
+                g.draw(rectangles.get(i));
+                g.setColor(lineColor);
+            }
+            else
+                g.draw(rectangles.get(i));
         }
     }
 

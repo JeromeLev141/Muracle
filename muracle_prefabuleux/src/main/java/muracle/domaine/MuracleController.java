@@ -379,6 +379,7 @@ public class MuracleController {
             for (Pouce sep : getSelectedCote().getSeparateurs()) {
                 Pouce jeu = new Pouce(1, 0, 1); // la largeur des lignes est de deux pouces (pixels) en zoom x1
                 if (posX.compare(sep.sub(jeu)) == 1 && posX.compare(sep.add(jeu)) == -1) {
+                    accessoireSelected = -1;
                     selectSeparateur(getSelectedCote().getSeparateurs().indexOf(sep));
                     contientSep = true;
                 }
