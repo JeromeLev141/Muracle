@@ -1,6 +1,6 @@
 package muracle.vue;
 
-import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.FractionError;
@@ -54,7 +54,7 @@ public class MainWindow extends JFrame {
 		JToggleButton showGrilleButton = new JToggleButton();
 		JToggleButton addSeparateurButton = new JToggleButton();
 		JToggleButton addAccessoireButton = new JToggleButton();
-		JComboBox<String> selectionAccessoireComboBox = new JComboBox<>(new String[] {"Fenêtre", "Porte", "Prise électrique", "Retour d'air"});
+		JComboBox<String> selectionAccessoireComboBox = new JComboBox<>(new String[] {"Fenêtre", "Porte"});
 		JButton retourVueHautButton = new JButton();
 		JToggleButton changeVueButton = new JToggleButton();
 		JButton lookButton = new JButton();
@@ -85,6 +85,10 @@ public class MainWindow extends JFrame {
 		JTextField longSalleTextField = new JTextField();
 		JTextField hSalleTextField = new JTextField();
 		JTextField epMursTextField = new JTextField();
+
+		//params cote
+		JTextField largCoteTextField = new JTextField();
+		JTextField hCoteTextField = new JTextField();
 
 		JSeparator sepParam1 = new JSeparator();
 
@@ -141,6 +145,10 @@ public class MainWindow extends JFrame {
 				margeEpTextField.setText(controller.getParametrePlan(1));
 				margeLargTextField.setText(controller.getParametrePlan(2));
 				anglePlisTextField.setText(controller.getParametrePlan(3));
+				if (controller.isVueCote()) {
+					largCoteTextField.setText(controller.getSelectedCoteReadOnly().largeur.toString());
+					hCoteTextField.setText(controller.getSelectedCoteReadOnly().hauteur.toString());
+				}
 				if (controller.isSeparateurSelected())
 					posSepTextField.setText(controller.getSelectedSeparateur().toString());
 				if (controller.isAccessoireSelected()) {
@@ -171,45 +179,55 @@ public class MainWindow extends JFrame {
 
 			@Override
 			public void updateParamsShown() {
+				hAccesTextField.setEnabled(true);
+				posXAccesTextField.setEnabled(true);
+				posYAccesTextField.setEnabled(true);
+
 				for (int i = 0; i < parametresModifPanel.getComponentCount(); i++)
 					parametresModifPanel.getComponent(i).setVisible(true);
 				if (controller.isVueDessus()) {
 					if (controller.isSeparateurSelected()) {
-						for (int i = 0; i < 22; i++)
+						for (int i = 0; i < 28; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
-						for (int i = 25; i < parametresModifPanel.getComponentCount() - 4; i++)
+						for (int i = 31; i < parametresModifPanel.getComponentCount() - 4; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 						deleteButton.setVisible(true);
 					}
-					else
-						for (int i = 22; i < parametresModifPanel.getComponentCount() - 4; i++)
+					else {
+						for (int i = 12; i < 18; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
+						for (int i = 28; i < parametresModifPanel.getComponentCount() - 4; i++)
+							parametresModifPanel.getComponent(i).setVisible(false);
+					}
 				}
 				else {
-					for (int i = 0; i < 22; i++)
+					for (int i = 0; i < 28; i++)
 						parametresModifPanel.getComponent(i).setVisible(false);
 					if (controller.isSeparateurSelected()) {
-						for (int i = 25; i < parametresModifPanel.getComponentCount() - 4; i++)
+						for (int i = 31; i < parametresModifPanel.getComponentCount() - 4; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 						deleteButton.setVisible(true);
 					}
 					else if (controller.isAccessoireSelected()) {
-						for (int i = 22; i < 25; i++)
+						for (int i = 28; i < 31; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 						if (!controller.getSelectedAccessoireReadOnly().type.equals("Fenêtre"))
-							for (int i = 37; i < 40; i++)
+							for (int i = 43; i < 46; i++)
 								parametresModifPanel.getComponent(i).setVisible(false);
 						if (controller.getSelectedAccessoireReadOnly().type.equals("Retour d'air")) {
-							for (int i = 25; i < 31; i++)
-								parametresModifPanel.getComponent(i).setVisible(false);
-							for (int i = 34; i < 37; i++)
-								parametresModifPanel.getComponent(i).setVisible(false);
+							hAccesTextField.setEnabled(false);
+							posXAccesTextField.setEnabled(false);
+							posYAccesTextField.setEnabled(false);
 						}
+						if (controller.getSelectedAccessoireReadOnly().type.equals("Porte"))
+							posYAccesTextField.setEnabled(false);
 						deleteButton.setVisible(true);
 					}
 					else {
 						for (int i = 22; i < parametresModifPanel.getComponentCount() - 3; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
+						for (int i = 12; i < 19; i++)
+							parametresModifPanel.getComponent(i).setVisible(true);
 						if (controller.isMurSelected()) {
 							sepConfig.setVisible(true);
 							voirPlanButton.setVisible(true);
@@ -347,6 +365,15 @@ public class MainWindow extends JFrame {
 					changeVueButton.setSelected(changeVueButton.isSelected());
 					controller.setIsVueExterieur(!changeVueButton.isSelected());
 					drawingPanel.repaint();
+					if (changeVueButton.isSelected()) {
+						selectionAccessoireComboBox.addItem("Prise électrique");
+						selectionAccessoireComboBox.addItem("Retour d'air");
+					}
+					else {
+						selectionAccessoireComboBox.setSelectedItem("Fenêtre");
+						selectionAccessoireComboBox.removeItem("Prise électrique");
+						selectionAccessoireComboBox.removeItem("Retour d'air");
+					}
 				});
 				menuBar.add(changeVueButton);
 
@@ -400,7 +427,7 @@ public class MainWindow extends JFrame {
 						String rev = "rev";
 						String mode = "moon";
 						if (!isDarkMode) {
-							UIManager.setLookAndFeel(new FlatCyanLightIJTheme());
+							UIManager.setLookAndFeel(new FlatLightFlatIJTheme());
 							rev = "";
 							mode = "sun";
 						}
@@ -601,6 +628,14 @@ public class MainWindow extends JFrame {
 								drawingPanel.repaint();
 							});
 
+							//---- largCoteParam ----
+							addParams(parametresModifPanel, "Largeur du côté", largCoteTextField, "po", posY++);
+							largCoteTextField.setEnabled(false);
+
+							//---- hCoteParam ----
+							addParams(parametresModifPanel, "Hauteur du côté", hCoteTextField, "po", posY++);
+							hCoteTextField.setEnabled(false);
+
 							//separateur
 							parametresModifPanel.add(sepParam1, new GridBagConstraints(0, posY++, 3, 1, 0, 0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -727,7 +762,9 @@ public class MainWindow extends JFrame {
 								drawingPanel.repaint();
 							});
 						}
-						for (int i = 22; i < parametresModifPanel.getComponentCount() - 4; i++)
+						for (int i = 12; i < 18; i++)
+							parametresModifPanel.getComponent(i).setVisible(false);
+						for (int i = 28; i < parametresModifPanel.getComponentCount() - 4; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 						parametresPanel.add(parametresModifPanel);
 					}

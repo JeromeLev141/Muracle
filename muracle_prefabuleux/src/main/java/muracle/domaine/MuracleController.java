@@ -34,8 +34,9 @@ public class MuracleController {
     private boolean isVueExterieur;
     private Pouce distLigneGrille;
     private boolean isGrilleShown;
-
     private String errorMessage;
+
+    private String currentStateSave;
     private GenerateurPlan generateurPlan;
     private Stack<String> undoPile;
     private Stack<String> redoPile;
@@ -285,6 +286,11 @@ public class MuracleController {
 
     public void interactComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) {
         // manque les deux autres vues
+        try {
+            currentStateSave = makeSaveString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         separateurSelected = -1;
         accessoireSelected = -1;
         if (coordPouce != null) {
@@ -524,7 +530,6 @@ public class MuracleController {
 
     public void addAccessoire(String type, CoordPouce position) {
         try {
-            String save = makeSaveString();
             Accessoire acces;
             switch (type) {
                 case "Fenêtre":
@@ -575,7 +580,7 @@ public class MuracleController {
 
             getSelectedCote().addAccessoire(acces);
             selectAccessoire(getSelectedCote().getAccessoires().size() - 1);
-            pushNewChange(save);
+            pushNewChange(currentStateSave);
         } catch (FractionError | PouceError | CoteError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -651,9 +656,8 @@ public class MuracleController {
 
     public void addSeparateur(Pouce pos) {
         try {
-            String save = makeSaveString();
             getSelectedCote().addSeparateur(pos);
-            pushNewChange(save);
+            pushNewChange(currentStateSave);
         } catch (CoteError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
