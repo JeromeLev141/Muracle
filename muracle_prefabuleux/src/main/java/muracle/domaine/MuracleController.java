@@ -521,7 +521,7 @@ public class MuracleController {
                 salle.setProfondeur(new Pouce(profondeur));
                 pushNewChange(save);
             }
-        } catch (PouceError | FractionError e) {
+        } catch (SalleError | PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);

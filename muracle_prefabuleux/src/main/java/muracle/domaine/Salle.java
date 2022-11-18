@@ -2,6 +2,8 @@ package muracle.domaine;
 
 import muracle.utilitaire.*;
 
+import java.util.Objects;
+
 public class Salle implements java.io.Serializable{
     private Cote[] tableauCote;
     private Pouce largeur;
@@ -43,8 +45,12 @@ public class Salle implements java.io.Serializable{
         return distanceTrouRetourAir;
     }
 
-    public void setDistanceTrouRetourAir(Pouce distanceTrouRetourAir) {
-        this.distanceTrouRetourAir = distanceTrouRetourAir;
+    public void setDistanceTrouRetourAir(Pouce distanceTrouRetourAir) throws SalleError {
+        if(hauteurRetourAir.add(distanceTrouRetourAir).compare(hauteur) == -1){
+            this.distanceTrouRetourAir = distanceTrouRetourAir;
+        }else{
+            throw new SalleError("La distance du sol des retours d'air additionné à la hauteur des retours d'air ne peut pas être plus grande que la hauteur");
+        }
     }
 
     public Pouce getLargeur(){
@@ -73,21 +79,37 @@ public class Salle implements java.io.Serializable{
         return hauteur;
     }
 
-    public void setHauteur(Pouce hauteur) {
-        this.hauteur = hauteur;
-        getCote('E').setHauteur(hauteur);
-        getCote('W').setHauteur(hauteur);
-        getCote('N').setHauteur(hauteur);
-        getCote('S').setHauteur(hauteur);
+    public void setHauteur(Pouce hauteur) throws SalleError {
+        if(hauteurRetourAir.add(distanceTrouRetourAir).compare(hauteur) == -1){
+            this.hauteur = hauteur;
+            getCote('E').setHauteur(hauteur);
+            getCote('W').setHauteur(hauteur);
+            getCote('N').setHauteur(hauteur);
+            getCote('S').setHauteur(hauteur);
+        }else{
+            throw new SalleError("La distance du sol des retours d'air additionné à la hauteur des retours d'air ne peut pas être plus grande que la hauteur");
+        }
+
     }
 
     public Pouce getHauteurRetourAir() {
         return hauteurRetourAir;
     }
 
-    public void setHauteurRetourAir(Pouce hauteurRetourAir) {
+    public void setHauteurRetourAir(Pouce hauteurRetourAir) throws SalleError {
+        if (hauteurRetourAir.add(distanceTrouRetourAir).compare(hauteur) == -1){
+            for (Cote cote : tableauCote) {
+                for (int e = 0; e < cote.getAccessoires().size(); e++) {
+                    if (Objects.equals(cote.getAccessoire(e).getType(), "Retour d'air")) {
+                        cote.getAccessoire(e).setHauteur(hauteurRetourAir);
+                    }
+                }
+            }
+            this.hauteurRetourAir = hauteurRetourAir;
+        }else {
+            throw new SalleError("La distance du sol des retours d'air additionné à la hauteur des retours d'air ne peut pas être plus grande que la hauteur");
+        }
 
-        this.hauteurRetourAir = hauteurRetourAir;
     }
 
     public Pouce getLongueur() {
