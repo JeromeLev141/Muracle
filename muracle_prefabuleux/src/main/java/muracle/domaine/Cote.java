@@ -59,77 +59,80 @@ public class Cote implements java.io.Serializable{
     public void addAccessoire(Accessoire accessoire) throws FractionError, PouceError, CoteError {
         boolean fitInCote = doesAccessoireFitInCote(accessoire);
         boolean fitWithAccessories = doesAccessoireFitWithOtherAccessoires(accessoire);
-        if(fitInCote && fitWithAccessories){
+        if(fitInCote){
+            accessoire.setIsValid(fitWithAccessories);
             accessoires.add(accessoire);
-        } else if (!fitInCote) {
+        } else{
             throw new CoteError("Accessoire ne rentre pas dans le côté");
-        } else {
-            throw new CoteError("Accessoire intersecte avec les autres accessoires");
         }
     }
     public boolean doesAccessoireFitInCote(Accessoire accessoire) throws FractionError, PouceError {
         CoordPouce cote1 = new CoordPouce(new Pouce("0"), new Pouce("0"));
         CoordPouce cote2 = new CoordPouce(largeur, hauteur);
-        CoordPouce accessoire1;
-        CoordPouce accessoire2;
+        CoordPouce accessoireUpperLeftPoint;
+        CoordPouce accessoireLowerRightPoint;
         if(Objects.equals(accessoire.getType(), "Fenêtre")){
-            if(accessoire.getPosition().getX().compare(new Pouce("0")) == 0 || accessoire.getPosition().getY().compare(new Pouce("0")) == 0){
+            //FIX ICI BAS point peut être 0 si la marge est zero
+            /*if(accessoire.getPosition().getX().compare(new Pouce("0")) == 0 || accessoire.getPosition().getY().compare(new Pouce("0")) == 0){
                 return false;
-            }
-            Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
-            accessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(jeuSupplementaire), accessoire.getPosition().getY().sub(jeuSupplementaire));
-            //accessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
-            accessoire2 =new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(jeuSupplementaire)), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(jeuSupplementaire));
+            }*/
+            accessoireUpperLeftPoint = new CoordPouce(accessoire.getPosition().getX().sub(accessoire.getMarge()), accessoire.getPosition().getY().sub(accessoire.getMarge()));
+            accessoireLowerRightPoint =new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(accessoire.getMarge())), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(accessoire.getMarge()));
         }else{
-            accessoire1 = accessoire.getPosition();
-            accessoire2 =new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
+            accessoireUpperLeftPoint = accessoire.getPosition();
+            accessoireLowerRightPoint =new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
         }
 
-        boolean isLeftValid = (cote1.getX().compare(accessoire1.getX()) == -1) || (cote1.getX().compare(accessoire1.getX()) == 0);
-        boolean isRightValid = (cote2.getX().compare(accessoire2.getX()) == 1) ||  (cote2.getX().compare(accessoire2.getX()) == 0);
-        boolean isTopValid = (cote1.getY().compare(accessoire1.getY()) == -1) || (cote1.getY().compare(accessoire1.getY()) == 0);
-        boolean isBotValid = (cote2.getY().compare(accessoire2.getY()) == 1) || (cote2.getY().compare(accessoire2.getY()) == 0);
+        boolean isLeftValid = (cote1.getX().compare(accessoireUpperLeftPoint.getX()) == -1) || (cote1.getX().compare(accessoireUpperLeftPoint.getX()) == 0);
+        boolean isRightValid = (cote2.getX().compare(accessoireLowerRightPoint.getX()) == 1) ||  (cote2.getX().compare(accessoireLowerRightPoint.getX()) == 0);
+        boolean isTopValid = (cote1.getY().compare(accessoireUpperLeftPoint.getY()) == -1) || (cote1.getY().compare(accessoireUpperLeftPoint.getY()) == 0);
+        boolean isBotValid = (cote2.getY().compare(accessoireLowerRightPoint.getY()) == 1) || (cote2.getY().compare(accessoireLowerRightPoint.getY()) == 0);
 
         return isRightValid && isLeftValid && isBotValid && isTopValid;
     }
 
     // Suit cet algorithme
     // https://silentmatt.com/rectangle-intersection/
-    public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) throws FractionError, PouceError {
-        CoordPouce mainAccessoire1;
-        CoordPouce mainAccessoire2;
+    public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) {
+        boolean answer = true;
+        CoordPouce mainAccessoireUpperLeftPoint;
+        CoordPouce mainAccessoireLowerRightPoint;
         if(Objects.equals(accessoire.getType(), "Fenêtre")){
-            Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
-            mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().sub(jeuSupplementaire), accessoire.getPosition().getY().sub(jeuSupplementaire));
-            //mainAccessoire1 = new CoordPouce(accessoire.getPosition().getX().add(jeuSupplementaire), accessoire.getPosition().getY().add(jeuSupplementaire));
-            mainAccessoire2 = new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(jeuSupplementaire)), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(jeuSupplementaire));
+            mainAccessoireUpperLeftPoint = new CoordPouce(accessoire.getPosition().getX().sub(accessoire.getMarge()),
+                                             accessoire.getPosition().getY().sub(accessoire.getMarge()));
+
+            mainAccessoireLowerRightPoint = new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(accessoire.getMarge())),
+                                             (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(accessoire.getMarge()));
         }else{
-            mainAccessoire1 = accessoire.getPosition();
-            mainAccessoire2 = new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
+            mainAccessoireUpperLeftPoint = accessoire.getPosition();
+            mainAccessoireLowerRightPoint = new CoordPouce(accessoire.getPosition().getX().add(accessoire.getLargeur()), accessoire.getPosition().getY().add(accessoire.getHauteur()));
         }
         if(!accessoires.isEmpty()){
             for(int i = 0; i < accessoires.size(); i++){
-                CoordPouce secondAccessoire1;
-                CoordPouce secondAccessoire2;
+                CoordPouce secondAccessoireUpperLeftPoint;
+                CoordPouce secondAccessoireLowerRightPoint;
                 if(Objects.equals(getAccessoire(i).getType(), "Fenêtre")){
-                    Pouce jeuSupplementaire = new Pouce(0, new Fraction(1,8));
-                    secondAccessoire1 =  new CoordPouce(getAccessoire(i).getPosition().getX().add(jeuSupplementaire), getAccessoire(i).getPosition().getY().add(jeuSupplementaire));
-                    secondAccessoire2 =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(jeuSupplementaire)), (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(jeuSupplementaire));
+
+                    secondAccessoireUpperLeftPoint =  new CoordPouce(getAccessoire(i).getPosition().getX().sub(getAccessoire(i).getMarge()),
+                                                        getAccessoire(i).getPosition().getY().sub(getAccessoire(i).getMarge()));
+
+                    secondAccessoireLowerRightPoint =  new CoordPouce((getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()).add(getAccessoire(i).getMarge())),
+                                                        (getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur())).add(getAccessoire(i).getMarge()));
                 }else{
-                    secondAccessoire1 = getAccessoire(i).getPosition();
-                    secondAccessoire2 = new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()), getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur()));
+                    secondAccessoireUpperLeftPoint = getAccessoire(i).getPosition();
+                    secondAccessoireLowerRightPoint = new CoordPouce(getAccessoire(i).getPosition().getX().add(getAccessoire(i).getLargeur()), getAccessoire(i).getPosition().getY().add(getAccessoire(i).getHauteur()));
                 }
 
-
-                if((mainAccessoire1.getX().compare(secondAccessoire2.getX()) == -1) &&
-                        mainAccessoire2.getX().compare(secondAccessoire1.getX()) == 1 &&
-                        mainAccessoire1.getY().compare(secondAccessoire2.getY()) == -1 &&
-                        mainAccessoire2.getY().compare(secondAccessoire1.getY()) == 1 ){
-                    return false;
+                if((mainAccessoireUpperLeftPoint.getX().compare(secondAccessoireLowerRightPoint.getX()) == -1) &&
+                        mainAccessoireLowerRightPoint.getX().compare(secondAccessoireUpperLeftPoint.getX()) == 1 &&
+                        mainAccessoireUpperLeftPoint.getY().compare(secondAccessoireLowerRightPoint.getY()) == -1 &&
+                        mainAccessoireLowerRightPoint.getY().compare(secondAccessoireUpperLeftPoint.getY()) == 1 ){
+                    answer = false;
+                    getAccessoire(i).setIsValid(false);
                 }
             }
         }
-        return true;
+        return answer;
     }
     public void moveAccessoire(Accessoire accessoire, CoordPouce positionPost) throws FractionError, PouceError, CoteError {
 
@@ -137,12 +140,11 @@ public class Cote implements java.io.Serializable{
         dummyAccessoire.setPosition(positionPost);
         boolean fitInCote = doesAccessoireFitInCote(dummyAccessoire);
         boolean fitWithAccessories = doesAccessoireFitWithOtherAccessoires(dummyAccessoire);
-        if(fitInCote && fitWithAccessories){
+        if(fitInCote){
+            accessoire.setIsValid(fitWithAccessories);
             accessoire.setPosition(positionPost);
-        } else if (!fitInCote) {
-            throw new CoteError("Accessoire ne rentre pas dans le côté");
         } else {
-            throw new CoteError("Accessoire intersecte avec les autres accessoires");
+            throw new CoteError("Accessoire ne rentre pas dans le côté");
         }
     }
     public void removeAccessoire(Accessoire accessoire){
