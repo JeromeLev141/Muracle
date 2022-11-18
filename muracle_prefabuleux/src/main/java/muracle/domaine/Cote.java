@@ -95,13 +95,23 @@ public class Cote implements java.io.Serializable{
         accessoires.remove(accessoire);
         CheckValidityForEveryAccessoire();
     }
-
     private void CheckValidityForEveryAccessoire() {
         for (int i = 0; i< accessoires.size(); i++){
-            getAccessoire(i).setIsValid(doesAccessoireFitWithOtherAccessoires(getAccessoire(i)));
+            getAccessoire(i).setIsValid(doesAccessoireFitWithOtherAccessoires(getAccessoire(i)) && doesAccessoireFitWithSeparateur(getAccessoire(i)));
         }
     }
+    public boolean doesAccessoireFitWithSeparateur(Accessoire accessoire){
 
+        Double upperLeftPoint = accessoire.getPosition().getX().toDouble();
+        Double upperRightPoint = accessoire.getPosition().getX().add(accessoire.getLargeur()).toDouble();
+        for (int e = 0; e < separateurs.size(); e++) {
+            double separateur = getSeparateur(e).toDouble();
+            if (upperLeftPoint <= separateur && separateur <= upperRightPoint) {
+                return false;
+            }
+        }
+        return true;
+    }
     // Suit cet algorithme
     // https://silentmatt.com/rectangle-intersection/
     public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) {
@@ -169,12 +179,6 @@ public class Cote implements java.io.Serializable{
         return isRightValid && isLeftValid && isBotValid && isTopValid;
     }
 
-
-
-
-
-
-
     public void setHauteur(Pouce hauteur) {
         this.hauteur = hauteur;
     }
@@ -190,6 +194,7 @@ public class Cote implements java.io.Serializable{
         if(position.compare(largeur) == -1 || !separateurs.contains(position)){
             separateurs.add(position);
             sortSeparateur();
+            CheckValidityForEveryAccessoire();
         }else{
             throw new CoteError("Position en dehors du côté");
         }

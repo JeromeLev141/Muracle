@@ -202,4 +202,18 @@ public class CoteTest {
             fail();
         }
     }
+    @Test
+    public void doesAccessoireFitWithSeparateur(){
+        try{
+            Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
+            cote.addSeparateur(new Pouce("10"));
+            cote.addSeparateur(new Pouce("20"));
+            cote.addSeparateur(new Pouce("25"));
+            Accessoire accessoire = new Accessoire(new Pouce("10"), new Pouce("10"), new CoordPouce(new Pouce("5"), new Pouce("5")));
+            cote.addAccessoire(accessoire);
+            assertFalse(accessoire.isValid());
+        }catch (Exception e){
+            fail();
+        }
+    }
 }
