@@ -725,7 +725,7 @@ public class MuracleController {
                 salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
                 pushNewChange(save);
             }
-        } catch (PouceError | FractionError e) {
+        } catch (SalleError | PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
