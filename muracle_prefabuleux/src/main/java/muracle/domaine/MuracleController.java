@@ -226,6 +226,15 @@ public class MuracleController {
         }
     }
 
+    public String makeSaveString() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(new Save(salle, generateurPlan, coteSelected, murSelected, accessoireSelected,
+                separateurSelected, isVueDessus, isVueExterieur));
+        oos.close();
+        return Base64.getEncoder().encodeToString(baos.toByteArray());
+    }
+
     private void pushChange(Stack<String> pile) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -235,8 +244,8 @@ public class MuracleController {
         pile.push(Base64.getEncoder().encodeToString(baos.toByteArray()));
     }
 
-    private void pushNewChange() throws IOException {
-        pushChange(undoPile);
+    private void pushNewChange(String saveString) throws IOException {
+        undoPile.push(saveString);
         redoPile.clear();
     }
 
@@ -488,21 +497,22 @@ public class MuracleController {
     }
     public void setDimensionSalle(String largeur, String longueur, String hauteur, String profondeur) {
         try {
+            String save = makeSaveString();
             if (!largeur.contains("-") && !largeur.equals(salle.getLargeur().toString())) {
-                pushNewChange();
                 salle.setLargeur(new Pouce(largeur));
+                pushNewChange(save);
             }
             if (!longueur.contains("-") && !longueur.equals(salle.getLongueur().toString())) {
-                pushNewChange();
                 salle.setLongueur(new Pouce(longueur));
+                pushNewChange(save);
             }
             if (!hauteur.contains("-") && !hauteur.equals(salle.getHauteur().toString())) {
-                pushNewChange();
                 salle.setHauteur(new Pouce(hauteur));
+                pushNewChange(save);
             }
             if (!profondeur.contains("-") && !profondeur.equals(salle.getProfondeur().toString())) {
-                pushNewChange();
                 salle.setProfondeur(new Pouce(profondeur));
+                pushNewChange(save);
             }
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
@@ -513,6 +523,7 @@ public class MuracleController {
 
     public void addAccessoire(String type, CoordPouce position) {
         try {
+            String save = makeSaveString();
             Accessoire acces;
             switch (type) {
                 case "Fenêtre":
@@ -561,9 +572,9 @@ public class MuracleController {
                     break;
             }
 
-            pushNewChange();
             getSelectedCote().addAccessoire(acces);
             selectAccessoire(getSelectedCote().getAccessoires().size() - 1);
+            pushNewChange(save);
         } catch (FractionError | PouceError | CoteError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -573,9 +584,10 @@ public class MuracleController {
 
     public void removeAccessoire() {
         try {
-            pushNewChange();
+            String save = makeSaveString();
             getSelectedCote().removeAccessoire(getSelectedAccessoire());
             accessoireSelected = -1;
+            pushNewChange(save);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -583,16 +595,18 @@ public class MuracleController {
 
     public void moveAccessoire(String posX, String posY) {
         try {
+            String save = makeSaveString();
             if (!posX.contains("-") && !posY.contains("-")) {
                 Pouce pouceX = new Pouce(posX);
                 Pouce pouceY = new Pouce(posY);
                 if (!pouceX.equals(getSelectedAccessoire().getPosition().getX()) ||
                         !pouceY.equals(getSelectedAccessoire().getPosition().getY())) {
-                    pushNewChange();
-                    getSelectedAccessoire().setPosition(new CoordPouce(pouceX, pouceY));
+                    getSelectedCote().moveAccessoire(getSelectedAccessoire(), new CoordPouce(pouceX, pouceY));
+                    //getSelectedAccessoire().setPosition(new CoordPouce(pouceX, pouceY));
+                    pushNewChange(save);
                 }
         }
-        } catch(PouceError | FractionError e){
+        } catch(PouceError | FractionError | CoteError e){
             setErrorMessage(e.getMessage());
         } catch(IOException e){
             throw new RuntimeException(e);
@@ -601,20 +615,21 @@ public class MuracleController {
 
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
         try {
+            String save = makeSaveString();
             if (!largeur.contains("-") && !largeur.equals(getSelectedAccessoire().getLargeur().toString())) {
-                pushNewChange();
                 Pouce difLargeur = new Pouce(largeur).sub(getSelectedAccessoire().getLargeur());
                 getSelectedAccessoire().setLargeur(new Pouce(largeur));
                 if (getSelectedAccessoire().getType().equals("Retour d'air"))
                     getSelectedAccessoire().getPosition().setX(getSelectedAccessoire().getPosition().getX().sub(difLargeur.div(2)));
+                pushNewChange(save);
             }
             if (!hauteur.contains("-") && !hauteur.equals(getSelectedAccessoire().getHauteur().toString())) {
-                pushNewChange();
                 getSelectedAccessoire().setHauteur(new Pouce(hauteur));
+                pushNewChange(save);
             }
             if (!marge.contains("-") && getSelectedAccessoire().getType().equals("Fenêtre")) {
-                pushNewChange();
-                ((Fenetre) getSelectedAccessoire()).setMarge(new Pouce(marge));
+                getSelectedAccessoire().setMarge(new Pouce(marge));
+                pushNewChange(save);
             }
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
@@ -635,8 +650,9 @@ public class MuracleController {
 
     public void addSeparateur(Pouce pos) {
         try {
-            pushNewChange();
+            String save = makeSaveString();
             getSelectedCote().addSeparateur(pos);
+            pushNewChange(save);
         } catch (CoteError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -646,9 +662,10 @@ public class MuracleController {
 
     public void removeSeparateur() {
         try {
-            pushNewChange();
+            String save = makeSaveString();
             getSelectedCote().deleteSeparateur(getSelectedCote().getSeparateurs().indexOf(getSelectedSeparateur()));
             separateurSelected = -1;
+            pushNewChange(save);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -657,11 +674,12 @@ public class MuracleController {
     public void moveSeparateur(String position) {
         if (!position.contains("-")) {
             try {
+                String save = makeSaveString();
                 Pouce newSep = new Pouce(position);
                 if (!getSelectedCote().getSeparateur(separateurSelected).equals(newSep)) {
-                    pushNewChange();
                     getSelectedCote().setSeparateur(separateurSelected, newSep);
                     selectSeparateur(getSelectedCote().getSeparateurs().indexOf(newSep));
+                    pushNewChange(save);
                 }
             } catch (PouceError | FractionError | CoteError e) {
                 setErrorMessage(e.getMessage());
@@ -689,17 +707,18 @@ public class MuracleController {
 
     public void setParametreRetourAir(String hauteur, String epaisseur, String distanceSol) {
         try {
+            String save = makeSaveString();
             if (!hauteur.contains("-") && !hauteur.equals(salle.getHauteurRetourAir().toString())) {
-                pushNewChange();
                 salle.setHauteurRetourAir(new Pouce(hauteur));
+                pushNewChange(save);
             }
             if (!epaisseur.contains("-") && !epaisseur.equals(salle.getEpaisseurTrouRetourAir().toString())) {
-                pushNewChange();
                 salle.setEpaisseurTrouRetourAir(new Pouce(epaisseur));
+                pushNewChange(save);
             }
             if (!distanceSol.contains("-") && !distanceSol.equals(salle.getDistanceTrouRetourAir().toString())) {
-                pushNewChange();
                 salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
+                pushNewChange(save);
             }
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
@@ -729,20 +748,21 @@ public class MuracleController {
 
     public void setParametrePlan(String margeEpaisseur, String margeLargeur, String anglePlis, String longueurPlis) {
         try {
+            String save = makeSaveString();
             if (!margeEpaisseur.contains("-") && !margeEpaisseur.equals(generateurPlan.getMargeEpaisseurMateriaux().toString())) {
-                pushNewChange();
                 generateurPlan.setMargeEpaisseurMateriaux(new Pouce(margeEpaisseur));
+                pushNewChange(save);
             }
             if (!margeLargeur.contains("-") && !margeLargeur.equals(generateurPlan.getMargeLargeurReplis().toString())) {
-                pushNewChange();
                 generateurPlan.setMargeLargeurReplis(new Pouce(margeLargeur));
+                pushNewChange(save);
             }
             try {
                 double angle = Double.parseDouble(anglePlis);
                 if (0 <= angle && angle <= 90) {
                     if (angle != generateurPlan.getAnglePlis()) {
-                        pushNewChange();
                         generateurPlan.setAnglePlis(angle);
+                        pushNewChange(save);
                     }
                 } else
                     setErrorMessage("L'angle doit être entre 0 et 90 degrée");
@@ -750,8 +770,8 @@ public class MuracleController {
                 setErrorMessage("Caractères alphabétiques détectés");
             }
             if (!longueurPlis.contains("-") && !longueurPlis.equals(generateurPlan.getLongueurPlis().toString())) {
-                pushNewChange();
                 generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
+                pushNewChange(save);
             }
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
