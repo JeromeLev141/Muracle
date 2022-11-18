@@ -148,8 +148,9 @@ public class MainWindow extends JFrame {
 					posYAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getY().toString());
 					largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
 					hAccesTextField.setText(controller.getSelectedAccessoireReadOnly().hauteur.toString());
-					if (controller.getSelectedAccessoireReadOnly().type.equals("Fenêtre"))
+					if (controller.getSelectedAccessoireReadOnly().type.equals("Fenêtre")) {
 						margeAccesTextField.setText(controller.getSelectedAccessoireReadOnly().marge.toString());
+					}
 				}
 			}
 

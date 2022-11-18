@@ -20,7 +20,7 @@ public class AccessoireDTO {
         hauteur = accessoire.getHauteur();
         position = accessoire.getPosition();
         type = accessoire.getType();
-        if(type == "Fenêtre"){
+        if(type.equals("Fenêtre")){
             marge = accessoire.getMarge();
         }
         isInterieurOnly = accessoire.isInterieurOnly();
