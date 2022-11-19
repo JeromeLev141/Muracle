@@ -156,9 +156,7 @@ public class MainWindow extends JFrame {
 					posYAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getY().toString());
 					largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
 					hAccesTextField.setText(controller.getSelectedAccessoireReadOnly().hauteur.toString());
-					if (controller.getSelectedAccessoireReadOnly().type.equals("Fenêtre")) {
-						margeAccesTextField.setText(controller.getSelectedAccessoireReadOnly().marge.toString());
-					}
+					margeAccesTextField.setText(controller.getSelectedAccessoireReadOnly().marge.toString());
 				}
 			}
 
@@ -705,6 +703,7 @@ public class MainWindow extends JFrame {
 								if (controller.isAccessoireSelected()) {
 									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
 									largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
+									posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString()); //affecte parfois
 									drawingPanel.repaint();
 								}
 							});
@@ -715,6 +714,7 @@ public class MainWindow extends JFrame {
 								if (controller.isAccessoireSelected()) {
 									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
 									hAccesTextField.setText(controller.getSelectedAccessoireReadOnly().hauteur.toString());
+									posYAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getY().toString()); //affecte parfois
 									drawingPanel.repaint();
 								}
 							});

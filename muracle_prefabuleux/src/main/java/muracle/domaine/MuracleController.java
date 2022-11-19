@@ -620,24 +620,26 @@ public class MuracleController {
     }
 
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
+        System.out.println(largeur + " " + hauteur + " " + marge);
         try {
             String save = makeSaveString();
             if (!largeur.contains("-") && !largeur.equals(getSelectedAccessoire().getLargeur().toString())) {
-                Pouce difLargeur = new Pouce(largeur).sub(getSelectedAccessoire().getLargeur());
-                getSelectedAccessoire().setLargeur(new Pouce(largeur));
-                if (getSelectedAccessoire().getType().equals("Retour d'air"))
+                /*if (getSelectedAccessoire().getType().equals("Retour d'air")) {
+                    Pouce difLargeur = new Pouce(largeur).sub(getSelectedAccessoire().getLargeur());
                     getSelectedAccessoire().getPosition().setX(getSelectedAccessoire().getPosition().getX().sub(difLargeur.div(2)));
+                }*/
+                getSelectedCote().setAccessoire(getSelectedAccessoire(), new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
                 pushNewChange(save);
             }
             if (!hauteur.contains("-") && !hauteur.equals(getSelectedAccessoire().getHauteur().toString())) {
-                getSelectedAccessoire().setHauteur(new Pouce(hauteur));
+                getSelectedCote().setAccessoire(getSelectedAccessoire(), new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
                 pushNewChange(save);
             }
             if (!marge.contains("-") && getSelectedAccessoire().getType().equals("Fenêtre")) {
-                getSelectedAccessoire().setMarge(new Pouce(marge));
+                getSelectedCote().setAccessoire(getSelectedAccessoire(), new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
                 pushNewChange(save);
             }
-        } catch (PouceError | FractionError e) {
+        } catch (PouceError | FractionError | CoteError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);

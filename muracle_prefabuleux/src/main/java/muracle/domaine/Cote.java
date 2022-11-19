@@ -1,6 +1,9 @@
 package muracle.domaine;
 
-import muracle.utilitaire.*;
+import muracle.utilitaire.CoordPouce;
+import muracle.utilitaire.FractionError;
+import muracle.utilitaire.Pouce;
+import muracle.utilitaire.PouceError;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -76,15 +79,32 @@ public class Cote implements java.io.Serializable{
         }
     }
     public void setAccessoire(Accessoire accessoire, Pouce largeur, Pouce hauteur, Pouce marge) throws FractionError, PouceError, CoteError {
-        Accessoire dummyAccessoire = new Accessoire(largeur, hauteur, accessoire.getPosition());
+        Pouce posX = accessoire.getPosition().getX();
+        Pouce posY = accessoire.getPosition().getY();
+        CoordPouce positionCopie = new CoordPouce(new Pouce(posX.getEntier(), posX.getFraction().copy()), new Pouce(posY.getEntier(), posY.getFraction().copy()));
+        Accessoire dummyAccessoire = new Accessoire(largeur, hauteur, positionCopie);
         if (Objects.equals(accessoire.getType(), "Fenêtre")){
             dummyAccessoire.setMarge(marge);
+        }
+        Pouce difLargeur = largeur.sub(accessoire.getLargeur());
+        if (accessoire.getType().equals("Retour d'air")) {
+            dummyAccessoire.getPosition().setX(dummyAccessoire.getPosition().getX().sub(difLargeur.div(2)));
+        }
+        Pouce difHauteur = hauteur.sub(accessoire.getHauteur());
+        if (accessoire.getType().equals("Porte")) {
+            dummyAccessoire.getPosition().setY(dummyAccessoire.getPosition().getY().sub(difHauteur));
         }
         if(doesAccessoireFitInCote(dummyAccessoire)){
             accessoire.setLargeur(largeur);
             accessoire.setHauteur(hauteur);
             if(Objects.equals(accessoire.getType(), "Fenêtre")){
                 accessoire.setMarge(marge);
+            }
+            if (accessoire.getType().equals("Retour d'air")) {
+                accessoire.getPosition().setX(accessoire.getPosition().getX().sub(difLargeur.div(2)));
+            }
+            if (accessoire.getType().equals("Porte")) {
+                accessoire.getPosition().setY(accessoire.getPosition().getY().sub(difHauteur));
             }
             CheckValidityForEveryAccessoire();
         }else{

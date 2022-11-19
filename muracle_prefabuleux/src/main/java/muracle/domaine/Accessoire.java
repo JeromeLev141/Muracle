@@ -1,6 +1,7 @@
 package muracle.domaine;
 
 import muracle.utilitaire.CoordPouce;
+import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
 
 
@@ -16,13 +17,22 @@ public class Accessoire implements java.io.Serializable{
 
     private boolean isValid;
     public Accessoire(){
-
+        try {
+            this.marge = new Pouce(0, 0, 1);
+        } catch (FractionError e) {
+            throw new RuntimeException(e);
+        }
     }
     public Accessoire(Pouce largeur,Pouce hauteur,CoordPouce position){
 
         this.largeur = largeur;
         this.hauteur = hauteur;
         this.position = position;
+        try {
+            this.marge = new Pouce(0, 0, 1);
+        } catch (FractionError e) {
+            throw new RuntimeException(e);
+        }
         this.isValid = true;
     }
     public Accessoire(Accessoire accessoire){
