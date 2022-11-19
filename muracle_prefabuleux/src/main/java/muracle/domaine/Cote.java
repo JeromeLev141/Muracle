@@ -184,6 +184,36 @@ public class Cote implements java.io.Serializable{
     }
 
     public ArrayList<Mur> getMurs() {
+        ArrayList<Pouce> separateurs = getSeparateurs();
+        ArrayList<Mur> murs = new ArrayList<>();
+        ArrayList<Accessoire> accessoires = getAccessoires();
+        boolean FirstTime = true;
+        Pouce hauteur = this.getHauteur();
+
+        if(separateurs.size() == 0){
+            Mur m = new Mur(this.getLargeur(),hauteur);
+            m.setEstCoinGauche(true);
+            m.setEstCoinGauche(true);
+            murs.add(m);
+        }
+        else {
+            for (int i = 0 ; i < separateurs.size(); i++) {
+                Pouce separateur1 = separateurs.get(i);
+                Mur m = new Mur(separateur1,hauteur);
+                m.setHauteur(hauteur);
+                if(FirstTime){
+                    FirstTime = false;
+                    m.setLargeur(separateur1);
+
+                }else if(i + 1 == separateurs.size()){
+                   Pouce separateur2 = separateurs.get(i+1);
+                    m.setLargeur(separateur2.sub(separateur1));
+                }else {
+                    m.setLargeur(this.getLargeur().sub(separateur1));
+                }
+                murs.add(m);
+            }
+        }
         return murs;
     }
 
