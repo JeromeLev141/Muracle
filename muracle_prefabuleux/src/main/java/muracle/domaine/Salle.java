@@ -47,6 +47,15 @@ public class Salle implements java.io.Serializable{
 
     public void setDistanceTrouRetourAir(Pouce distanceTrouRetourAir) throws SalleError {
         if(hauteurRetourAir.add(distanceTrouRetourAir).compare(hauteur) == -1){
+            for (Cote cote : tableauCote) {
+                for (int e = 0; e < cote.getAccessoires().size(); e++) {
+                    if (Objects.equals(cote.getAccessoire(e).getType(), "Retour d'air")) {
+                        Pouce accesH = cote.getAccessoire(e).getHauteur();
+                        Pouce posY = cote.getHauteur().sub(distanceTrouRetourAir.add(accesH));
+                        cote.getAccessoire(e).getPosition().setY(posY);
+                    }
+                }
+            }
             this.distanceTrouRetourAir = distanceTrouRetourAir;
         }else{
             throw new SalleError("La distance du sol des retours d'air additionné à la hauteur des retours d'air ne peut pas être plus grande que la hauteur");
@@ -101,7 +110,11 @@ public class Salle implements java.io.Serializable{
             for (Cote cote : tableauCote) {
                 for (int e = 0; e < cote.getAccessoires().size(); e++) {
                     if (Objects.equals(cote.getAccessoire(e).getType(), "Retour d'air")) {
+                        Pouce ancienneH = cote.getAccessoire(e).getHauteur();
                         cote.getAccessoire(e).setHauteur(hauteurRetourAir);
+                        Pouce posY = cote.getAccessoire(e).getPosition().getY();
+                        Pouce decalemetY = ancienneH.sub(hauteurRetourAir);
+                        cote.getAccessoire(e).getPosition().setY(posY.add(decalemetY));
                     }
                 }
             }
@@ -126,8 +139,12 @@ public class Salle implements java.io.Serializable{
         return profondeur;
     }
 
-    public void setProfondeur(Pouce profondeur) {
-        this.profondeur = profondeur;
+    public void setProfondeur(Pouce profondeur) throws SalleError {
+        if (epaisseurTrouRetourAir.compare(profondeur) == 1 || epaisseurTrouRetourAir.compare(profondeur) == 0){
+            throw new SalleError("L'épaisseur trou retour d'air ne peut pas être plus grande ou égale à l'épaisseur de la salle: " + profondeur);
+        }else{
+            this.profondeur = profondeur;
+        }
     }
 
     public CoordPouce getDimension() throws FractionError {

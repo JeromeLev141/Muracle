@@ -12,6 +12,7 @@ public class Fenetre extends Accessoire {
     }
 
     public Fenetre(Pouce largeur, Pouce hauteur, CoordPouce position){
+
         this.setType("Fenêtre");
         this.setInterieurOnly(Boolean.FALSE);
         this.setLargeur(largeur);
