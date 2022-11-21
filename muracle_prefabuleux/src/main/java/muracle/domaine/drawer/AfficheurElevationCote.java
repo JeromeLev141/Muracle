@@ -35,7 +35,7 @@ public class AfficheurElevationCote extends Afficheur {
         h = cote.hauteur.toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setStroke(new BasicStroke(2));
+        g2d.setStroke(ligneStroke);
 
 
         ajustement(g2d,zoom, dim, posiCam,dimPlan);
@@ -68,9 +68,9 @@ public class AfficheurElevationCote extends Afficheur {
             }
             if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g2d.setColor(selectColor);
-                g2d.setStroke(new BasicStroke(4));
-                g2d.draw(new Line2D.Double(ligne.x1, ligne.y1 + 3, ligne.x2, ligne.y2 - 3));
-                g2d.setStroke(new BasicStroke(2));
+                g2d.setStroke(selectedStroke);
+                g2d.draw(new Line2D.Double(ligne.x1, ligne.y1 + 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 - 1.5 * ligneStroke.getLineWidth()));
+                g2d.setStroke(ligneStroke);
                 g2d.setColor(lineColor);
             }
             g2d.draw(ligne);
@@ -115,9 +115,9 @@ public class AfficheurElevationCote extends Afficheur {
         g2d.setColor(lineColor);
         if (indexAccesSelected != -1) {
             g2d.setColor(selectColor);
-            g2d.setStroke(new BasicStroke(4));
+            g2d.setStroke(selectedStroke);
             g2d.draw(rectangles.get(indexAccesSelected));
-            g2d.setStroke(new BasicStroke(2));
+            g2d.setStroke(ligneStroke);
             g2d.setColor(lineColor);
         }
         for (int i = 0; i < rectangles.size(); i++) {

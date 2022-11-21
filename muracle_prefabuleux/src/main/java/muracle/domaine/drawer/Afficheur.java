@@ -14,6 +14,10 @@ public class Afficheur {
 
     protected final MuracleController controller;
     protected Dimension initialDimension;
+
+    protected BasicStroke ligneStroke;
+
+    protected BasicStroke selectedStroke;
     protected final Color lineColor;
     protected final Color fillColor;
     private final Color grilleColor;
@@ -33,18 +37,21 @@ public class Afficheur {
     }
 
     public void draw(Graphics g, double zoom, Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
+        ligneStroke = new BasicStroke(3 / (float) zoom);
+        selectedStroke = new BasicStroke(6 / (float) zoom);
         g.setColor(lineColor);
         if (controller.isGrilleShown()) {
             Graphics2D g2d = (Graphics2D) g;
+            g2d.setStroke(ligneStroke);
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             ajustement(g2d, zoom, dim, posiCam, dimPlan);
-            drawGrille(g2d, zoom);
+            drawGrille(g2d);
             reset(g2d, zoom, dim, posiCam, dimPlan);
         }
     }
 
 
-    private void drawGrille(Graphics2D g, double zoom) {
+    private void drawGrille(Graphics2D g) {
         g.setColor(grilleColor);
         double decalX = (int) (2 * initialDimension.width / controller.getDistLigneGrille().toDouble())
                 * controller.getDistLigneGrille().toDouble();
@@ -66,10 +73,12 @@ public class Afficheur {
     protected void drawErrorMessage(Graphics2D g2d) {
         if (!controller.getErrorMessage().equals("")) {
             g2d.setFont(new Font("TimesRoman", Font.ITALIC, 18));
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             int textWidth = g2d.getFontMetrics().stringWidth(controller.getErrorMessage());
             int xPos = (initialDimension.width / 2) - (textWidth / 2);
             int yPos = initialDimension.height - 40;
-            Rectangle2D.Double rect = new Rectangle2D.Double(xPos - 4, yPos - 18, textWidth + 8, 22);
+            Rectangle2D.Double rect = new Rectangle2D.Double(xPos - 6, yPos - 20, textWidth + 12, 28);
             g2d.setColor(backErrorColor);
             g2d.fill(rect);
             g2d.setColor(lineColor);

@@ -38,7 +38,7 @@ public class AfficheurPlanSalle extends Afficheur{
 
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.setStroke(new BasicStroke(2));
+        g2d.setStroke(ligneStroke);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         ajustement(g2d,zoom, dim, posiCam, dimPlan);
@@ -79,9 +79,9 @@ public class AfficheurPlanSalle extends Afficheur{
                     posX + cote.separateurs.get(i).toDouble(), posY + h + ep);
             if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g.setColor(selectColor);
-                g.setStroke(new BasicStroke(4));
-                g.draw(new Line2D.Double(ligne.x1, ligne.y1 + 3, ligne.x2, ligne.y2 - 3));
-                g.setStroke(new BasicStroke(2));
+                g.setStroke(selectedStroke);
+                g.draw(new Line2D.Double(ligne.x1, ligne.y1 + 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 - 1.5 * ligneStroke.getLineWidth()));
+                g.setStroke(ligneStroke);
                 g.setColor(lineColor);
             }
             g.draw(ligne);
@@ -94,9 +94,9 @@ public class AfficheurPlanSalle extends Afficheur{
                     posX + w - cote.separateurs.get(i).toDouble(), posY - ep);
             if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g.setColor(selectColor);
-                g.setStroke(new BasicStroke(4));
-                g.draw(new Line2D.Double(ligne.x1, ligne.y1 - 3, ligne.x2, ligne.y2 + 3));
-                g.setStroke(new BasicStroke(2));
+                g.setStroke(selectedStroke);
+                g.draw(new Line2D.Double(ligne.x1, ligne.y1 - 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 + 1.5 * ligneStroke.getLineWidth()));
+                g.setStroke(ligneStroke);
                 g.setColor(lineColor);
             }
             g.draw(ligne);
@@ -109,9 +109,9 @@ public class AfficheurPlanSalle extends Afficheur{
                     posX + w + ep, posY + h - cote.separateurs.get(i).toDouble());
             if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g.setColor(selectColor);
-                g.setStroke(new BasicStroke(4));
-                g.draw(new Line2D.Double(ligne.x1 + 3, ligne.y1, ligne.x2 - 3, ligne.y2));
-                g.setStroke(new BasicStroke(2));
+                g.setStroke(selectedStroke);
+                g.draw(new Line2D.Double(ligne.x1 + 1.5 * ligneStroke.getLineWidth(), ligne.y1, ligne.x2 - 1.5 * ligneStroke.getLineWidth(), ligne.y2));
+                g.setStroke(ligneStroke);
                 g.setColor(lineColor);
             }
             g.draw(ligne);
@@ -124,9 +124,9 @@ public class AfficheurPlanSalle extends Afficheur{
                     posX - ep, posY + cote.separateurs.get(i).toDouble());
             if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
                 g.setColor(selectColor);
-                g.setStroke(new BasicStroke(4));
-                g.draw(new Line2D.Double(ligne.x1 - 3, ligne.y1, ligne.x2 + 3, ligne.y2));
-                g.setStroke(new BasicStroke(2));
+                g.setStroke(selectedStroke);
+                g.draw(new Line2D.Double(ligne.x1 - 1.5 * ligneStroke.getLineWidth(), ligne.y1, ligne.x2 + 1.5 * ligneStroke.getLineWidth(), ligne.y2));
+                g.setStroke(ligneStroke);
                 g.setColor(lineColor);
             }
             g.draw(ligne);

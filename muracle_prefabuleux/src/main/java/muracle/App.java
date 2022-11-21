@@ -2,9 +2,6 @@ package muracle;
 
 
 import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
-import muracle.domaine.CoteError;
-import muracle.utilitaire.FractionError;
-import muracle.utilitaire.PouceError;
 import muracle.vue.MainWindow;
 
 import javax.swing.*;
@@ -12,7 +9,7 @@ import javax.swing.*;
 
 public class App {
 
-    public static void main(String[] args) throws FractionError, PouceError, CoteError {
+    public static void main(String[] args) {
         MainWindow mainWindow = new MainWindow();
         try {
             UIManager.setLookAndFeel(new FlatNordIJTheme());
