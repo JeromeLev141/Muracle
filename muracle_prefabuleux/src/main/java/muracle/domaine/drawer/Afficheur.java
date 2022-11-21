@@ -34,11 +34,15 @@ public class Afficheur {
         selectColor = new Color(97, 255, 89);
         errorColor = new Color(233, 103, 104);
         backErrorColor = new Color(46, 52, 64);
+        ligneStroke = new BasicStroke(1.5f);
+        selectedStroke = new BasicStroke(3);
     }
 
     public void draw(Graphics g, double zoom, Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
-        ligneStroke = new BasicStroke(3 / (float) zoom);
-        selectedStroke = new BasicStroke(6 / (float) zoom);
+        if (zoom >= 2) {
+            ligneStroke = new BasicStroke(3 / (float) zoom);
+            selectedStroke = new BasicStroke(6 / (float) zoom);
+        }
         g.setColor(lineColor);
         if (controller.isGrilleShown()) {
             Graphics2D g2d = (Graphics2D) g;

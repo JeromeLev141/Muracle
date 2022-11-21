@@ -63,10 +63,10 @@ public class AfficheurPlanSalle extends Afficheur{
         g2d.setColor(lineColor);
         g2d.draw(rectInt);
         g2d.draw(rectExt);
-        g2d.draw(new Line2D.Double(posX, posY, posX - ep + 1, posY - ep + 1));
-        g2d.draw(new Line2D.Double(posX + w, posY, posX + w - 1 + ep , posY - ep + 1));
-        g2d.draw(new Line2D.Double(posX, posY + h, posX - ep + 1, posY + h + ep - 1));
-        g2d.draw(new Line2D.Double(posX + w, posY + h, posX + w + ep - 1, posY + h + ep - 1));
+        g2d.draw(new Line2D.Double(posX, posY, posX - ep + 0.5 * ligneStroke.getLineWidth(), posY - ep + 0.5 * ligneStroke.getLineWidth()));
+        g2d.draw(new Line2D.Double(posX + w, posY, posX + w - 0.5 * ligneStroke.getLineWidth() + ep , posY - ep + 0.5 * ligneStroke.getLineWidth()));
+        g2d.draw(new Line2D.Double(posX, posY + h, posX - ep + 0.5 * ligneStroke.getLineWidth(), posY + h + ep - 0.5 * ligneStroke.getLineWidth()));
+        g2d.draw(new Line2D.Double(posX + w, posY + h, posX + w + ep - 0.5 * ligneStroke.getLineWidth(), posY + h + ep - 0.5 * ligneStroke.getLineWidth()));
     }
 
     private void drawSeparateur(Graphics2D g) {
