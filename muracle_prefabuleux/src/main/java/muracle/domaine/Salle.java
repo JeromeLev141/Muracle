@@ -1,6 +1,8 @@
 package muracle.domaine;
 
-import muracle.utilitaire.*;
+import muracle.utilitaire.FractionError;
+import muracle.utilitaire.Pouce;
+import muracle.utilitaire.PouceError;
 
 import java.util.Objects;
 
@@ -145,10 +147,5 @@ public class Salle implements java.io.Serializable{
         }else{
             this.profondeur = profondeur;
         }
-    }
-
-    public CoordPouce getDimension() throws FractionError {
-        return new CoordPouce(this.largeur.add(this.profondeur.mul(new Fraction(2,1))),
-                this.longueur.add(this.profondeur.mul(new Fraction(2,1))));
     }
 }

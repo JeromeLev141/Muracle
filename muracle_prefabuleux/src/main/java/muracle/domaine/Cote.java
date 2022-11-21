@@ -250,7 +250,6 @@ public class Cote implements java.io.Serializable{
     }
 
     public ArrayList<Mur> getMurs() {
-        /*
         ArrayList<Pouce> separateurs = getSeparateurs();
         ArrayList<Mur> murs = new ArrayList<>();
         ArrayList<Accessoire> accessoires = getAccessoires();
@@ -281,7 +280,28 @@ public class Cote implements java.io.Serializable{
                 murs.add(m);
             }
         }
-        return murs;*/
+        Mur First = murs.get(0);
+        Mur Last = murs.get(murs.size()-1);
+        First.setEstCoinGauche(true);
+        Last.setEstCoinDroit(true);
+        if(First == Last){
+
+        }
+        else {
+            for (Mur m:
+                    murs) {
+                if(m.GetEstCoinGauche()){
+
+                } else if (m.GetEstCoinDroit()) {
+
+                }else {
+                    Panneau interieur = new Panneau();
+                    Panneau exterieur = new Panneau();
+                }
+
+            }
+        }
+         /*return murs;*/
         return null;
     }
 
@@ -316,6 +336,4 @@ public class Cote implements java.io.Serializable{
         }
 
     }
-    public CoordPouce getDimension(){return new CoordPouce(this.largeur,this.hauteur);}
-
 }

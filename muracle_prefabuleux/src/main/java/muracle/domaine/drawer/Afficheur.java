@@ -14,12 +14,16 @@ public class Afficheur {
 
     protected final MuracleController controller;
     protected Dimension initialDimension;
+
+    protected BasicStroke ligneStroke;
+
+    protected BasicStroke selectedStroke;
     protected final Color lineColor;
     protected final Color fillColor;
     private final Color grilleColor;
     protected final Color selectColor;
     protected final Color errorColor;
-    protected final Color backErrrorColor;
+    protected final Color backErrorColor;
 
     public Afficheur(MuracleController controller, Dimension initDim) {
         this.controller = controller;
@@ -29,19 +33,66 @@ public class Afficheur {
         grilleColor = new Color(150, 173, 233);
         selectColor = new Color(97, 255, 89);
         errorColor = new Color(233, 103, 104);
-        backErrrorColor = new Color(46, 52, 64);
+        backErrorColor = new Color(46, 52, 64);
+        ligneStroke = new BasicStroke(1.5f);
+        selectedStroke = new BasicStroke(3);
     }
 
     public void draw(Graphics g, double zoom, Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
+        if (zoom >= 2) {
+            ligneStroke = new BasicStroke(3 / (float) zoom);
+            selectedStroke = new BasicStroke(6 / (float) zoom);
+        }
         g.setColor(lineColor);
         if (controller.isGrilleShown()) {
             Graphics2D g2d = (Graphics2D) g;
+            g2d.setStroke(ligneStroke);
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             ajustement(g2d, zoom, dim, posiCam, dimPlan);
-            drawGrille(g2d, zoom);
+            drawGrille(g2d);
             reset(g2d, zoom, dim, posiCam, dimPlan);
         }
     }
+
+
+    private void drawGrille(Graphics2D g) {
+        g.setColor(grilleColor);
+        double decalX = (int) (2 * initialDimension.width / controller.getDistLigneGrille().toDouble())
+                * controller.getDistLigneGrille().toDouble();
+        double decalY = (int) (2 * initialDimension.height / controller.getDistLigneGrille().toDouble())
+                * controller.getDistLigneGrille().toDouble();
+        double posX = initialDimension.width % controller.getDistLigneGrille().toDouble() / 2 - decalX;
+        double posY = initialDimension.height % controller.getDistLigneGrille().toDouble() / 2 - decalY;
+        while (posX < 3 * initialDimension.width) {
+            g.draw(new Line2D.Double(posX, -2 * initialDimension.height, posX, 3 * initialDimension.height));
+            posX += controller.getDistLigneGrille().toDouble();
+        }
+        while (posY < 3 * initialDimension.height) {
+            g.draw(new Line2D.Double(-2 * initialDimension.width, posY, 3 * initialDimension.width, posY));
+            posY += controller.getDistLigneGrille().toDouble();
+        }
+        g.setColor(lineColor);
+    }
+
+    protected void drawErrorMessage(Graphics2D g2d) {
+        if (!controller.getErrorMessage().equals("")) {
+            g2d.setFont(new Font("TimesRoman", Font.ITALIC, 18));
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            int textWidth = g2d.getFontMetrics().stringWidth(controller.getErrorMessage());
+            int xPos = (initialDimension.width / 2) - (textWidth / 2);
+            int yPos = initialDimension.height - 40;
+            Rectangle2D.Double rect = new Rectangle2D.Double(xPos - 6, yPos - 20, textWidth + 12, 28);
+            g2d.setColor(backErrorColor);
+            g2d.fill(rect);
+            g2d.setColor(lineColor);
+            g2d.draw(rect);
+            g2d.setColor(errorColor);
+            g2d.drawString(controller.getErrorMessage(), xPos, yPos);
+            controller.ackErrorMessage();
+        }
+    }
+
 
     protected void ajustement(Graphics2D g2d,double zoom,Dimension dim, CoordPouce posiCam, CoordPouce dimPlan){
         AffineTransform at = new AffineTransform();
@@ -63,41 +114,5 @@ public class Afficheur {
                     (1 * zoom * posiCam.getY().sub(dimPlan.getY().div(2)).toDouble()) + (1 * (zoom - 1) * dim.getHeight() / 2));
         }catch (PouceError ignored){}
         g2d.transform(at);
-    }
-
-    private void drawGrille(Graphics2D g, double zoom) throws FractionError {
-        g.setColor(grilleColor);
-        double decalX = (int) (2 * initialDimension.width / controller.getDistLigneGrille().toDouble())
-                * controller.getDistLigneGrille().toDouble();
-        double decalY = (int) (2 * initialDimension.height / controller.getDistLigneGrille().toDouble())
-                * controller.getDistLigneGrille().toDouble();
-        double posX = initialDimension.width % controller.getDistLigneGrille().toDouble() / 2 - decalX;
-        double posY = initialDimension.height % controller.getDistLigneGrille().toDouble() / 2 - decalY;
-        while (posX < 3 * initialDimension.width) {
-            g.draw(new Line2D.Double(posX, -2 * initialDimension.height, posX, 3 * initialDimension.height));
-            posX += controller.getDistLigneGrille().toDouble();
-        }
-        while (posY < 3 * initialDimension.height) {
-            g.draw(new Line2D.Double(-2 * initialDimension.width, posY, 3 * initialDimension.width, posY));
-            posY += controller.getDistLigneGrille().toDouble();
-        }
-        g.setColor(lineColor);
-    }
-
-    protected void drawErrorMessage(Graphics2D g) {
-        if (!controller.getErrorMessage().equals("")) {
-            g.setFont(new Font("TimesRoman", Font.ITALIC, 18));
-            int textWidth = g.getFontMetrics().stringWidth(controller.getErrorMessage());
-            int xPos = (initialDimension.width / 2) - (textWidth / 2);
-            int yPos = initialDimension.height - 40;
-            Rectangle2D.Double rect = new Rectangle2D.Double(xPos - 4, yPos - 18, textWidth + 8, 22);
-            g.setColor(backErrrorColor);
-            g.fill(rect);
-            g.setColor(lineColor);
-            g.draw(rect);
-            g.setColor(errorColor);
-            g.drawString(controller.getErrorMessage(), xPos, yPos);
-            controller.ackErrorMessage();
-        }
     }
 }

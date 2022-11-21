@@ -35,7 +35,7 @@ public class AfficheurElevationCote extends Afficheur {
         h = cote.hauteur.toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setStroke(new BasicStroke(2));
+        g2d.setStroke(ligneStroke);
 
 
         ajustement(g2d,zoom, dim, posiCam,dimPlan);
@@ -47,14 +47,14 @@ public class AfficheurElevationCote extends Afficheur {
         drawErrorMessage(g2d);
     }
 
-    private void drawCote(Graphics2D g) throws FractionError {
+    private void drawCote(Graphics2D g2d) {
         Rectangle2D.Double rect = new Rectangle2D.Double(posX, posY, w, h);
         Area coteArea = new Area(rect);
-        drawAccessoire(g, coteArea);
-        g.draw(rect);
+        drawAccessoire(g2d, coteArea);
+        g2d.draw(rect);
     }
 
-    private void drawSeparateur(Graphics2D g) throws FractionError {
+    private void drawSeparateur(Graphics2D g2d) {
         CoteDTO cote = controller.getSelectedCoteReadOnly();
         for (int i = 0; i < cote.separateurs.size(); i++) {
             Line2D.Double ligne;
@@ -67,22 +67,23 @@ public class AfficheurElevationCote extends Afficheur {
                         posX + w - cote.separateurs.get(i).toDouble(), posY + h);
             }
             if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
-                g.setColor(selectColor);
-                g.setStroke(new BasicStroke(4));
-                g.draw(new Line2D.Double(ligne.x1, ligne.y1 + 3, ligne.x2, ligne.y2 - 3));
-                g.setStroke(new BasicStroke(2));
-                g.setColor(lineColor);
+                g2d.setColor(selectColor);
+                g2d.setStroke(selectedStroke);
+                g2d.draw(new Line2D.Double(ligne.x1, ligne.y1 + 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 - 1.5 * ligneStroke.getLineWidth()));
+                g2d.setStroke(ligneStroke);
+                g2d.setColor(lineColor);
             }
-            g.draw(ligne);
+            g2d.draw(ligne);
         }
     }
 
-    private void drawAccessoire(Graphics2D g, Area coteArea) throws FractionError {
+    private void drawAccessoire(Graphics2D g2d, Area coteArea) {
         CoteDTO cote = controller.getSelectedCoteReadOnly();
         ArrayList<Rectangle2D.Double> rectangles = new ArrayList<>();
+        ArrayList<Rectangle2D.Double> rectanglesMarge = new ArrayList<>();
         ArrayList<Integer> indexOfInvalidAcces = new ArrayList<>();
         int indexAccesSelected = -1;
-        g.setColor(fillColor.darker().darker());
+        g2d.setColor(fillColor.darker().darker());
         for (Accessoire acces : cote.accessoires) {
             Rectangle2D.Double rect = null;
             double accesPosX = acces.getPosition().getX().toDouble();
@@ -96,40 +97,46 @@ public class AfficheurElevationCote extends Afficheur {
             if (rect != null) {
                 coteArea.subtract(new Area(rect));
                 if (acces.isInterieurOnly())
-                    g.fill(new Area(rect));
+                    g2d.fill(new Area(rect));
                 rectangles.add(rect);
                 if (cote.accessoires.indexOf(acces) == controller.getIndexOfSelectedAccessoire())
                     indexAccesSelected = rectangles.size() - 1;
                 if (!acces.isValid())
                     indexOfInvalidAcces.add(rectangles.size() -1);
+                if (acces.getType().equals("Fenêtre")) {
+                    double marge = acces.getMarge().toDouble();
+                    Rectangle2D.Double rectMarge = new Rectangle2D.Double(rect.x - marge, rect.y - marge, rect.width + 2 * marge, rect.height + 2 * marge);
+                    rectanglesMarge.add(rectMarge);
+                }
             }
         }
-        g.setColor(fillColor);
-        g.fill(coteArea);
-        g.setColor(lineColor);
+        g2d.setColor(fillColor);
+        g2d.fill(coteArea);
+        g2d.setColor(lineColor);
         if (indexAccesSelected != -1) {
-            g.setColor(selectColor);
-            g.setStroke(new BasicStroke(4));
-            g.draw(rectangles.get(indexAccesSelected));
-            g.setStroke(new BasicStroke(2));
-            g.setColor(lineColor);
+            g2d.setColor(selectColor);
+            g2d.setStroke(selectedStroke);
+            g2d.draw(rectangles.get(indexAccesSelected));
+            g2d.setStroke(ligneStroke);
+            g2d.setColor(lineColor);
         }
         for (int i = 0; i < rectangles.size(); i++) {
             if (indexOfInvalidAcces.contains(i)) {
-                g.setColor(errorColor);
-                Composite compoInit = g.getComposite();
+                g2d.setColor(errorColor);
+                Composite compoInit = g2d.getComposite();
                 AlphaComposite alcom = AlphaComposite.getInstance(
                         AlphaComposite.SRC_OVER, 0.5f);
-                g.setComposite(alcom);
-                g.fill(rectangles.get(i));
-                g.setComposite(compoInit);
-                g.setColor(backErrrorColor);
-                g.draw(rectangles.get(i));
-                g.setColor(lineColor);
+                g2d.setComposite(alcom);
+                g2d.fill(rectangles.get(i));
+                g2d.setComposite(compoInit);
+                g2d.setColor(backErrorColor);
+                g2d.draw(rectangles.get(i));
+                g2d.setColor(lineColor);
             }
             else
-                g.draw(rectangles.get(i));
+                g2d.draw(rectangles.get(i));
         }
+        for (Rectangle2D.Double aDouble : rectanglesMarge) g2d.draw(aDouble);
     }
 
     private void drawVue(Graphics g) {

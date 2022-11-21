@@ -409,6 +409,7 @@ public class MainWindow extends JFrame {
 				lookButton.setMaximumSize(new Dimension(30, 32767));
 				lookButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				lookButton.setRequestFocusEnabled(false);
+				lookButton.setContentAreaFilled(false);
 				try {
 					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/moon.png")));
 					image = image.getScaledInstance( 16, 16,  Image.SCALE_SMOOTH ) ;
@@ -419,7 +420,7 @@ public class MainWindow extends JFrame {
 				lookButton.addActionListener(e -> {
 					isDarkMode = !isDarkMode;
 					try {
-						String rev = "rev";
+						String rev = "Rev";
 						String mode = "moon";
 						if (!isDarkMode) {
 							UIManager.setLookAndFeel(new FlatLightFlatIJTheme());
@@ -438,7 +439,9 @@ public class MainWindow extends JFrame {
 						image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/redo" + rev + ".png")));
 						image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
 						redoButton.setIcon(new ImageIcon(image));
-					}catch (Exception ignored){}
+					}catch (Exception exception){
+						exception.printStackTrace();
+					}
 				});
 				menuBar.add(lookButton);
 
@@ -447,6 +450,7 @@ public class MainWindow extends JFrame {
 				undoButton.setMaximumSize(new Dimension(50, 32767));
 				undoButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				undoButton.setRequestFocusEnabled(false);
+				undoButton.setContentAreaFilled(false);
 				try {
 					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/undoRev.png")));
 					image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
@@ -473,6 +477,7 @@ public class MainWindow extends JFrame {
 				redoButton.setMaximumSize(new Dimension(50, 32767));
 				redoButton.setRequestFocusEnabled(false);
 				redoButton.setHorizontalTextPosition(SwingConstants.CENTER);
+				redoButton.setContentAreaFilled(false);
 				try {
 					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/redoRev.png")));
 					image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;

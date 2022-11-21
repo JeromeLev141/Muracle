@@ -53,18 +53,18 @@ public class MuracleController {
 
         public int saveSeparateurSelected;
 
-        public boolean isVueDessus;
+        public boolean saveIsVueDessus;
 
         public boolean saveIsVueExterieur;
         public Save(Salle saveSalle, GenerateurPlan saveGenerateurPlan, char saveCoteSelected,
-                    int saveMurSelected, int saveAccessoireSelected, int saveSeparateurSelected, boolean isVueDessus, boolean saveIsVueExterieur) {
+                    int saveMurSelected, int saveAccessoireSelected, int saveSeparateurSelected, boolean saveIsVueDessus, boolean saveIsVueExterieur) {
             this.saveSalle = saveSalle;
             this.saveGenerateurPlan = saveGenerateurPlan;
             this.saveCoteSelected =saveCoteSelected;
             this.saveMurSelected = saveMurSelected;
             this.saveAccessoireSelected = saveAccessoireSelected;
             this.saveSeparateurSelected = saveSeparateurSelected;
-            this.isVueDessus = isVueDessus;
+            this.saveIsVueDessus = saveIsVueDessus;
             this.saveIsVueExterieur = saveIsVueExterieur;
         }
     }
@@ -227,7 +227,7 @@ public class MuracleController {
         }
     }
 
-    public String makeSaveString() throws IOException {
+    private String makeSaveString() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(new Save(salle, generateurPlan, coteSelected, murSelected, accessoireSelected,
@@ -250,8 +250,8 @@ public class MuracleController {
         redoPile.clear();
     }
 
-    private void readChange(String salleEnString) throws IOException, ClassNotFoundException {
-        byte [] bytes = Base64.getDecoder().decode(salleEnString);
+    private void readChange(String saveString) throws IOException, ClassNotFoundException {
+        byte [] bytes = Base64.getDecoder().decode(saveString);
         ObjectInputStream ois = new ObjectInputStream( new ByteArrayInputStream(bytes) );
         Save save = (Save) ois .readObject();
         salle = save.saveSalle;
@@ -260,7 +260,7 @@ public class MuracleController {
         murSelected = save.saveMurSelected;
         accessoireSelected = save.saveAccessoireSelected;
         separateurSelected = save.saveSeparateurSelected;
-        isVueDessus = save.isVueDessus;
+        isVueDessus = save.saveIsVueDessus;
         isVueExterieur = save.saveIsVueExterieur;
         ois.close();
     }
@@ -341,7 +341,7 @@ public class MuracleController {
         if (coteSelected != ' ') {
             boolean contientSep = false;
             for (Pouce sep : getSelectedCote().getSeparateurs()) {
-                Pouce jeu = new Pouce(1, 0, 1); // la largeur des lignes est de deux pouces (pixels) en zoom x1
+                Pouce jeu = new Pouce(1, 1, 2); // la largeur des lignes est de deux pouces (pixels) en zoom x1 + jeu de 1 sur 2
                 if (posXVueCote.compare(sep.sub(jeu)) == 1 &&
                         posXVueCote.compare(sep.add(jeu)) == -1) {
                     selectSeparateur(getSelectedCote().getSeparateurs().indexOf(sep));
@@ -359,6 +359,7 @@ public class MuracleController {
     }
 
     private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) throws FractionError, PouceError {
+        Pouce jeu = new Pouce(1, 1, 2); // la largeur des lignes est de deux pouces (pixels) en zoom x1 + jeu de 1 sur 2
         // add interraction avec murs
         Pouce posX = coordPouce.getX();
         Pouce posY = coordPouce.getY();
@@ -369,8 +370,9 @@ public class MuracleController {
 
         boolean contientAcces = false;
         for (Accessoire acces : getSelectedCote().getAccessoires()) {
-            if (posX.compare(acces.getPosition().getX()) == 1 && posX.compare(acces.getPosition().getX().add(acces.getLargeur())) == -1) {
-                if (posY.compare(acces.getPosition().getY()) == 1 && posY.compare(acces.getPosition().getY().add(acces.getHauteur())) == -1) {
+            Pouce jeuAcces = jeu.add(acces.getMarge());
+            if (posX.compare(acces.getPosition().getX().sub(jeuAcces)) == 1 && posX.compare(acces.getPosition().getX().add(acces.getLargeur()).add(jeuAcces)) == -1) {
+                if (posY.compare(acces.getPosition().getY().sub(jeuAcces)) == 1 && posY.compare(acces.getPosition().getY().add(acces.getHauteur()).add(jeuAcces)) == -1) {
                     selectAccessoire(getSelectedCote().getAccessoires().indexOf(acces));
                     contientAcces = true;
                 }
@@ -383,7 +385,6 @@ public class MuracleController {
         if (!addAccesMode) {
             boolean contientSep = false;
             for (Pouce sep : getSelectedCote().getSeparateurs()) {
-                Pouce jeu = new Pouce(1, 0, 1); // la largeur des lignes est de deux pouces (pixels) en zoom x1
                 if (posX.compare(sep.sub(jeu)) == 1 && posX.compare(sep.add(jeu)) == -1) {
                     accessoireSelected = -1;
                     selectSeparateur(getSelectedCote().getSeparateurs().indexOf(sep));
@@ -397,7 +398,7 @@ public class MuracleController {
         }
     }
 
-    public void selectCote(char orientation) {
+    private void selectCote(char orientation) {
         coteSelected = orientation;
     }
 
@@ -406,14 +407,6 @@ public class MuracleController {
         if (coteSelected != ' ')
             return salle.getCote(coteSelected);
         return null;
-    }
-
-    public void setIsVueExterieur(boolean exterieur) {
-        isVueExterieur = exterieur;
-    }
-
-    public boolean isVueExterieur() {
-        return isVueExterieur;
     }
 
     public void setIsVueDessus(boolean dessus) {
@@ -427,6 +420,14 @@ public class MuracleController {
     }
     public boolean isVueDessus() {return isVueDessus; }
 
+    public void setIsVueExterieur(boolean exterieur) {
+        isVueExterieur = exterieur;
+    }
+
+    public boolean isVueExterieur() {
+        return isVueExterieur;
+    }
+
     public boolean isVueCote() { return !isVueDessus();}
 
     public boolean isMurSelected() { return murSelected != -1; }
@@ -435,7 +436,7 @@ public class MuracleController {
 
     public boolean isSeparateurSelected() { return separateurSelected != -1; }
 
-    public void selectMur(int index) {
+    private void selectMur(int index) {
         murSelected = index;
     }
 
@@ -446,7 +447,7 @@ public class MuracleController {
         return null;
     }
 
-    public void selectAccessoire(int index) {
+    private void selectAccessoire(int index) {
         accessoireSelected = index;
     }
 
@@ -528,7 +529,7 @@ public class MuracleController {
         }
     }
 
-    public void addAccessoire(String type, CoordPouce position) {
+    private void addAccessoire(String type, CoordPouce position) {
         try {
             Accessoire acces;
             switch (type) {
@@ -620,7 +621,6 @@ public class MuracleController {
     }
 
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
-        System.out.println(largeur + " " + hauteur + " " + marge);
         try {
             String save = makeSaveString();
             if (!largeur.contains("-") && !largeur.equals(getSelectedAccessoire().getLargeur().toString())) {
@@ -656,7 +656,7 @@ public class MuracleController {
         return null;
     }
 
-    public void addSeparateur(Pouce pos) {
+    private void addSeparateur(Pouce pos) {
         try {
             getSelectedCote().addSeparateur(pos);
             pushNewChange(currentStateSave);
