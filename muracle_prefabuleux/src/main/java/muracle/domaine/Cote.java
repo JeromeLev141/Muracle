@@ -1,5 +1,6 @@
 package muracle.domaine;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
@@ -12,7 +13,6 @@ public class Cote implements java.io.Serializable{
     private char orientation;
     private Pouce largeur;
     private Pouce hauteur;
-    private ArrayList<Mur> murs;
     private ArrayList<Pouce> separateurs;
     private ArrayList<Accessoire> accessoires;
 
@@ -23,7 +23,6 @@ public class Cote implements java.io.Serializable{
         this.orientation = orientation;
         this.largeur = largeur;
         this.hauteur = hauteur;
-        murs = new ArrayList<>();
         separateurs = new ArrayList<>();
         accessoires = new ArrayList<>();
     }
@@ -40,8 +39,39 @@ public class Cote implements java.io.Serializable{
         return largeur;
     }
 
-    public void setLargeur(Pouce largeur) {
-        this.largeur = largeur;
+    public boolean setLargeur(Pouce largeur) throws CoteError {
+        if(!doesLargeurFitWithSeparateurs(largeur)){
+            throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un séparateur.");
+        } else if (!doesLargeurFitWithAccessories(largeur)) {
+            throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
+        }else{
+            this.largeur = largeur;
+            return true;
+        }
+    }
+
+    private boolean doesLargeurFitWithAccessories(Pouce largeur) {
+        for(int i = 0; i < this.accessoires.size(); i++){
+            Double oldLargeurDouble = this.largeur.toDouble();
+            Double newLargeurDouble = largeur.toDouble();
+            Double UpperRightPointX = getAccessoire(i).getPosition().getX().toDouble() + getAccessoire(i).getLargeur().toDouble();
+            if(newLargeurDouble <= UpperRightPointX && UpperRightPointX <= oldLargeurDouble){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Boolean doesLargeurFitWithSeparateurs(Pouce largeur){
+        for (int i = 0; i <this.separateurs.size();i++){
+            Double separateurDouble = getSeparateur(i).toDouble();
+            Double oldLargeurDouble = this.largeur.toDouble();
+            Double newLargeurDouble = largeur.toDouble();
+            if(newLargeurDouble <= separateurDouble && separateurDouble <= oldLargeurDouble){
+                return false;
+            }
+        }
+        return true;
     }
 
     public Pouce getHauteur() {
@@ -199,8 +229,24 @@ public class Cote implements java.io.Serializable{
         return isRightValid && isLeftValid && isBotValid && isTopValid;
     }
 
-    public void setHauteur(Pouce hauteur) {
-        this.hauteur = hauteur;
+    public boolean setHauteur(Pouce hauteur) throws CoteError {
+        if(!doesHauteurfitWithAccessories(hauteur)){
+            throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
+        }else{
+            this.hauteur = hauteur;
+            return true;
+        }
+    }
+    private boolean doesHauteurfitWithAccessories(Pouce hauteur){
+        for(int i = 0; i < this.accessoires.size(); i++){
+            Double oldHauteurDouble = this.hauteur.toDouble();
+            Double newHauteurDouble = hauteur.toDouble();
+            Double LowerY = getAccessoire(i).getPosition().getY().toDouble() + getAccessoire(i).getHauteur().toDouble();
+            if(newHauteurDouble <= LowerY && LowerY <= oldHauteurDouble){
+                return false;
+            }
+        }
+        return true;
     }
 
     public ArrayList<Mur> getMurs() {

@@ -66,10 +66,11 @@ public class Salle implements java.io.Serializable{
         return largeur;
     }
 
-    public void setLargeur(Pouce largeur) {
-        this.largeur = largeur;
-        getCote('N').setLargeur(largeur);
-        getCote('S').setLargeur(largeur);
+    public void setLargeur(Pouce largeur) throws CoteError {
+        if (getCote('N').setLargeur(largeur) && getCote('S').setLargeur(largeur)){
+            this.largeur = largeur;
+        }
+
     }
 
     public Pouce getEpaisseurTrouRetourAir() {
@@ -88,13 +89,12 @@ public class Salle implements java.io.Serializable{
         return hauteur;
     }
 
-    public void setHauteur(Pouce hauteur) throws SalleError {
+    public void setHauteur(Pouce hauteur) throws SalleError, CoteError {
         if(hauteurRetourAir.add(distanceTrouRetourAir).compare(hauteur) == -1){
-            this.hauteur = hauteur;
-            getCote('E').setHauteur(hauteur);
-            getCote('W').setHauteur(hauteur);
-            getCote('N').setHauteur(hauteur);
-            getCote('S').setHauteur(hauteur);
+            if(getCote('E').setHauteur(hauteur) && getCote('W').setHauteur(hauteur) &&
+                    getCote('N').setHauteur(hauteur) &&getCote('S').setHauteur(hauteur)){
+                this.hauteur = hauteur;
+            }
         }else{
             throw new SalleError("La distance du sol des retours d'air additionné à la hauteur des retours d'air ne peut pas être plus grande que la hauteur");
         }
@@ -129,7 +129,7 @@ public class Salle implements java.io.Serializable{
         return longueur;
     }
 
-    public void setLongueur(Pouce longueur) {
+    public void setLongueur(Pouce longueur) throws CoteError {
         this.longueur = longueur;
         getCote('E').setLargeur(longueur);
         getCote('W').setLargeur(longueur);
