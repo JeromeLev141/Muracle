@@ -52,24 +52,24 @@ public class AfficheurPlanSalle extends Afficheur{
         drawErrorMessage(g2d);
     }
 
-    private void drawSalle(Graphics2D g) {
+    private void drawSalle(Graphics2D g2d) {
         Rectangle2D.Double rectInt = new Rectangle2D.Double(posX, posY, w, h);
         Rectangle2D.Double rectExt = new Rectangle2D.Double(posX - ep, posY - ep, w + 2 * ep, h + 2 * ep);
         Area exterieur = new Area(rectExt);
         Area interieur = new Area(rectInt);
         exterieur.subtract(interieur);
-        g.setColor(fillColor);
-        g.fill(exterieur);
-        g.setColor(lineColor);
-        g.draw(rectInt);
-        g.draw(rectExt);
-        g.draw(new Line2D.Double(posX, posY, posX - ep + 1, posY - ep + 1));
-        g.draw(new Line2D.Double(posX + w, posY, posX + w - 1 + ep , posY - ep + 1));
-        g.draw(new Line2D.Double(posX, posY + h, posX - ep + 1, posY + h + ep - 1));
-        g.draw(new Line2D.Double(posX + w, posY + h, posX + w + ep - 1, posY + h + ep - 1));
+        g2d.setColor(fillColor);
+        g2d.fill(exterieur);
+        g2d.setColor(lineColor);
+        g2d.draw(rectInt);
+        g2d.draw(rectExt);
+        g2d.draw(new Line2D.Double(posX, posY, posX - ep + 1, posY - ep + 1));
+        g2d.draw(new Line2D.Double(posX + w, posY, posX + w - 1 + ep , posY - ep + 1));
+        g2d.draw(new Line2D.Double(posX, posY + h, posX - ep + 1, posY + h + ep - 1));
+        g2d.draw(new Line2D.Double(posX + w, posY + h, posX + w + ep - 1, posY + h + ep - 1));
     }
 
-    private void drawSeparateur(Graphics2D g) throws FractionError {
+    private void drawSeparateur(Graphics2D g) {
         CoteDTO cote;
         // south
         cote = controller.getSalleReadOnly().getCote('S');
@@ -133,7 +133,7 @@ public class AfficheurPlanSalle extends Afficheur{
         }
     }
 
-    private void drawTrouRetourAir(Graphics2D g) throws FractionError {
+    private void drawTrouRetourAir(Graphics2D g2d) {
         CoteDTO cote;
 
         // south
@@ -144,26 +144,26 @@ public class AfficheurPlanSalle extends Afficheur{
                 double retourPosY = h + (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
                 Rectangle2D.Double rect = new Rectangle2D.Double(posX + retourPosX, posY + retourPosY,
                         acces.getLargeur().toDouble(), controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble());
-                g.setColor(fillColor.darker().darker());
-                g.fill(new Area(rect));
-                g.setColor(lineColor);
-                g.draw(rect);
+                g2d.setColor(fillColor.darker().darker());
+                g2d.fill(new Area(rect));
+                g2d.setColor(lineColor);
+                g2d.draw(rect);
             }
         }
 
         // north
         cote = controller.getSalleReadOnly().getCote('N');
-        g.setColor(fillColor.darker().darker());
+        g2d.setColor(fillColor.darker().darker());
         for (Accessoire acces : cote.accessoires) {
             if (acces.getType().equals("Retour d'air")) {
                 double retourPosX = w - acces.getPosition().getX().toDouble() - acces.getLargeur().toDouble();
                 double retourPosY = (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
                 Rectangle2D.Double rect = new Rectangle2D.Double(posX + retourPosX, posY - ep + retourPosY,
                         acces.getLargeur().toDouble(), controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble());
-                g.setColor(fillColor.darker().darker());
-                g.fill(new Area(rect));
-                g.setColor(lineColor);
-                g.draw(rect);
+                g2d.setColor(fillColor.darker().darker());
+                g2d.fill(new Area(rect));
+                g2d.setColor(lineColor);
+                g2d.draw(rect);
             }
         }
 
@@ -175,10 +175,10 @@ public class AfficheurPlanSalle extends Afficheur{
                 double retourPosY = h - acces.getPosition().getX().toDouble() - acces.getLargeur().toDouble();
                 Rectangle2D.Double rect = new Rectangle2D.Double(posX + retourPosX, posY + retourPosY,
                         controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble(), acces.getLargeur().toDouble());
-                g.setColor(fillColor.darker().darker());
-                g.fill(new Area(rect));
-                g.setColor(lineColor);
-                g.draw(rect);
+                g2d.setColor(fillColor.darker().darker());
+                g2d.fill(new Area(rect));
+                g2d.setColor(lineColor);
+                g2d.draw(rect);
             }
         }
 
@@ -190,10 +190,10 @@ public class AfficheurPlanSalle extends Afficheur{
                 double retourPosY = acces.getPosition().getX().toDouble();
                 Rectangle2D.Double rect = new Rectangle2D.Double(posX - ep + retourPosX, posY + retourPosY,
                         controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble(), acces.getLargeur().toDouble());
-                g.setColor(fillColor.darker().darker());
-                g.fill(new Area(rect));
-                g.setColor(lineColor);
-                g.draw(rect);
+                g2d.setColor(fillColor.darker().darker());
+                g2d.fill(new Area(rect));
+                g2d.setColor(lineColor);
+                g2d.draw(rect);
             }
         }
     }

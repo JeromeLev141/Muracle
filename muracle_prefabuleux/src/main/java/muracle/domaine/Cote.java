@@ -204,7 +204,7 @@ public class Cote implements java.io.Serializable{
     }
 
     public ArrayList<Mur> getMurs() {
-        ArrayList<Pouce> separateurs = getSeparateurs();
+        /*ArrayList<Pouce> separateurs = getSeparateurs();
         ArrayList<Mur> murs = new ArrayList<>();
         ArrayList<Accessoire> accessoires = getAccessoires();
         boolean FirstTime = true;
@@ -234,7 +234,8 @@ public class Cote implements java.io.Serializable{
                 murs.add(m);
             }
         }
-        return murs;
+        return murs;*/
+        return null;
     }
 
     public ArrayList<Pouce> getSeparateurs() {
@@ -268,6 +269,4 @@ public class Cote implements java.io.Serializable{
         }
 
     }
-    public CoordPouce getDimension(){return new CoordPouce(this.largeur,this.hauteur);}
-
 }
