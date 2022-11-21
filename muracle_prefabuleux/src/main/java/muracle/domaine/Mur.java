@@ -13,10 +13,44 @@ public class Mur implements java.io.Serializable{
     private Panneau panneauExt;
     private Panneau panneauInt;
 
+    private static final double PoidsMatiere  = 6.3;
+
     public Mur(){
     }
+
+
+
     public Mur(Pouce largeur, Pouce hauteur){
 
+    }
+    public Mur(Pouce largeur, Pouce hauteur,Pouce epaisseur, Pouce margeLargeurReplis,Pouce LongeurPlis){
+        Pouce margeLarReplis = margeLargeurReplis.mul(2);
+        this.largeur = largeur;
+        this.hauteur = hauteur;
+        Panneau panExt = new Panneau();
+        Panneau panInt = new Panneau();
+        panInt.setHauteur(hauteur);
+        panInt.setLargeur(largeur);
+        panExt.setLargeur(largeur);
+        panExt.setHauteur(hauteur);
+
+        Pouce surfaceEnPouceCarre = largeur.mul(hauteur);
+        Pouce largeurReplisInt = largeur.sub(margeLarReplis);
+        Pouce surfaceReplisInt = largeurReplisInt.mul(epaisseur);
+        Pouce surfaceInterieur = surfaceEnPouceCarre.add(surfaceReplisInt.mul(2));
+
+        panInt.setPoids((surfaceInterieur.getEntier() + 1)* PoidsMatiere);
+
+        Pouce hauteurReplisExt = hauteur.sub(margeLarReplis);
+        Pouce surfaceReplisExt = hauteurReplisExt.mul(epaisseur);
+        Pouce surfaceExterieur = surfaceEnPouceCarre.add(surfaceReplisExt.mul(2));
+
+        panExt.setPoids((surfaceExterieur.getEntier() + 1)* PoidsMatiere);
+
+
+
+        this.panneauExt = panExt;
+        this.panneauInt = panInt;
     }
 
     public Pouce getLargeur() {
@@ -56,6 +90,14 @@ public class Mur implements java.io.Serializable{
     }
     public Panneau getPanneauInt() {
         return panneauInt;
+    }
+
+    public void setPanneauExt(Panneau panneauExt) {
+        this.panneauExt = panneauExt;
+    }
+
+    public void setPanneauInt(Panneau panneauInt) {
+        this.panneauInt = panneauInt;
     }
     private boolean ContainRetourAir(){
         return false;
