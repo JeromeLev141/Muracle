@@ -11,10 +11,7 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -517,6 +514,17 @@ public class MainWindow extends JFrame {
 					((GridBagLayout) drawingPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
 					((GridBagLayout) drawingPanel.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
+					drawingPanel.addMouseMotionListener(new MouseMotionListener() {
+						@Override
+						public void mouseDragged(MouseEvent e) {
+							drawingPanel.moved(e);
+						}
+
+						@Override
+						public void mouseMoved(MouseEvent e) {
+
+						}
+					});
 					drawingPanel.addMouseListener(new MouseListener() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
@@ -524,19 +532,27 @@ public class MainWindow extends JFrame {
 
 						@Override
 						public void mousePressed(MouseEvent e) {
-							boolean token = controller.isVueDessus();
-							controller.interactComponent(drawingPanel.coordPixelToPouce(e),
-									addSeparateurButton.isSelected(), addAccessoireButton.isSelected(), (String) selectionAccessoireComboBox.getSelectedItem());
-							updater.updateParamsShown();
-							updater.updateButtons();
-							updater.updateTextFields();
-							if (token != controller.isVueDessus())
-								drawingPanel.updateParametre();
-							drawingPanel.repaint();
+
+							if (e.getButton() == 3){//click droit
+								drawingPanel.press(e);
+							}
+							else  if (e.getButton() == 1) {//click gauche
+
+								boolean token = controller.isVueDessus();
+								controller.interactComponent(drawingPanel.coordPixelToPouce(e),
+										addSeparateurButton.isSelected(), addAccessoireButton.isSelected(), (String) selectionAccessoireComboBox.getSelectedItem());
+								updater.updateParamsShown();
+								updater.updateButtons();
+								updater.updateTextFields();
+								if (token != controller.isVueDessus())
+									drawingPanel.updateParametre();
+								drawingPanel.repaint();
+							}
 						}
 
 						@Override
 						public void mouseReleased(MouseEvent e) {
+							drawingPanel.release(e);
 
 						}
 

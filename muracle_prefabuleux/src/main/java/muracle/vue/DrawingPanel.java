@@ -14,8 +14,12 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     private Fraction zoomFactor;
     private Fraction zoomInc;
     private CoordPouce posiCam;
+    private CoordPouce posiCamTempo;
     private CoordPouce dimPlan;
     private final Color backgroundColor;
+    private Point mouse_pt;
+    private boolean clip;
+    private int clock;
 
 
     /**
@@ -30,8 +34,12 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
             zoomInc = new Fraction(0,1);
         }catch (Exception ignored){}
         posiCam = null;
+        posiCamTempo = null;
         backgroundColor = new Color(89, 100, 124);
         addMouseWheelListener(this);
+        mouse_pt = null;
+        clip = false;
+        clock = 0;
     }
 
     /**
@@ -216,6 +224,62 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         try {
             zoomInc = zoomFactor.mul(zoomFactor).mulRef(new Fraction(1, 10)).addRef(new Fraction(1,100)).round(1024);
         }catch (FractionError ignored){}
+    }
+
+
+    /**
+     * @brief mouse drag fonction
+     * @param e:MouseMotionEvent
+     */
+    public void moved(MouseEvent e){
+        clock++;
+        System.out.println(clip);
+        if (clip) {
+            System.out.println("---------------------------------------");
+            System.out.println("Position souris X : " + e.getX() + " | Y : " + e.getY());
+            Fraction zoom = zoomFactor.copy();
+            System.out.println("Zoom : " + zoom);
+            Fraction dx = zoom.mul(mouse_pt.x-e.getX());
+            Fraction dy = zoom.mul(mouse_pt.y-e.getY());
+            System.out.println("dx : " + dx + "|dy : " + dy);
+            posiCam.setX(posiCamTempo.getX().add(new Pouce(0,dx)));
+            posiCam.setY(posiCamTempo.getY().add(new Pouce(0,dy)));
+
+
+            //zoom = this.zoomFactor.copy();
+
+            //posiCam.getX().addRef(new Pouce(0,dx));
+            //posiCam.getY().addRef(new Pouce(0,dy));
+            //System.out.println("Dx : " + dx + "| dy : " + dy);
+
+            //System.out.println(cord);
+            System.out.println(mouse_pt);
+
+
+
+            //mouse_pt = cord;
+            //clock = 0 ;
+            this.repaint();
+        }
+
+    }
+
+    public void press(MouseEvent e){
+        System.out.println("Cliped");
+        clip = true;
+        mouse_pt = e.getPoint();
+        posiCamTempo = new CoordPouce(posiCam.getX().copy(), posiCam.getY().copy());
+    }
+
+    public void release(MouseEvent e){
+
+        clock = 2;
+        moved(e);
+        System.out.println("Uncliped");
+        clip = false;
+        mouse_pt = null;
+        posiCamTempo = null;
+
     }
 
     /**

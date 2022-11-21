@@ -5,7 +5,12 @@ public class Fraction implements java.io.Serializable{
     private long num;
     private long denum;
 
-    //Constructeur de la class
+    /**
+     * @brief constructeur de la classe Fractino
+     * @param numerateur: int
+     * @param denonimateur: int
+     * @throws FractionError si denum = 0
+     */
     public Fraction(int numerateur, int denonimateur) throws FractionError {
         if (denonimateur == 0)
             throw new FractionError("Fraction sur 0");
@@ -14,7 +19,14 @@ public class Fraction implements java.io.Serializable{
         checkNeg();
     }
 
-    public Fraction(long numerateur, long denonimateur) throws FractionError {
+    /**
+     * @brief constructeur prive de la fonction
+     * @param numerateur:long
+     * @param denonimateur:long
+     * @throws FractionError si denum = 0
+     */
+    private Fraction(long numerateur, long denonimateur) throws FractionError {
+
         if (denonimateur == 0)
             throw new FractionError("Fraction sur 0");
         num = numerateur;
@@ -22,7 +34,10 @@ public class Fraction implements java.io.Serializable{
         checkNeg();
     }
 
-    //Génère une copy de la Fraction
+    /**
+     * @brief fait une copy en profondeur de l'objet
+     * @return Fraction
+     */
     public Fraction copy(){
         try {
             return new Fraction(this.num, this.denum);
@@ -31,25 +46,45 @@ public class Fraction implements java.io.Serializable{
         }
     }
 
+    /**
+     * @brief getteur du numerateur
+     * @return this.num
+     */
     public long getNum() {
         return num;
     }
 
+    /**
+     * @brief setteur du numerateur
+     * @param num:long
+     */
     public void setNum(long num) {
         this.num = num;
         checkNeg();
     }
 
+    /**
+     * @brief getteur du denominateur
+     * @return this.denum
+     */
     public long getDenum() {
         return denum;
     }
 
+    /**
+     * @brief setteur du denominateur
+     * @param denum:long
+     */
     public void setDenum(long denum) {
         this.denum = denum;
         checkNeg();
     }
 
-    //fait une addition par reference
+    /**
+     * @brief addition modifiant l'objet
+     * @param fraction:Fraction
+     * @return Fraction
+     */
     public Fraction addRef(Fraction fraction){
         long numfraction = fraction.num * this.denum;
         this.num *= fraction.denum;
@@ -59,36 +94,62 @@ public class Fraction implements java.io.Serializable{
         return this;
     }
 
-    //fait une addition par reference copy
+    /**
+     * @brief addition créant un nouvel objet
+     * @param fraction:Fraction
+     * @return Fraction
+     */
     public Fraction add(Fraction fraction){
         return this.copy().addRef(fraction);
     }
 
-    public Fraction addRef(int val){
-        val *= this.denum;
-        this.num += val;
+    /**
+     * @brief addition modifiant l'objet
+     * @param value:Int
+     * @return Fraction
+     */
+    public Fraction addRef(int value){
+        value *= this.denum;
+        this.num += value;
         simplifier();
         return this;
     }
 
-    //fait une addition par reference copy
-    public Fraction add(int val){
-        return this.copy().addRef(val);
+    /**
+     * @brief addition créant un nouvel objet
+     * @param value:Int
+     * @return Fraction
+     */
+    public Fraction add(int value){
+        return this.copy().addRef(value);
     }
 
-    public Fraction subRef(int val){
-        val *= this.denum;
-        this.num -= val;
+    /**
+     * @brief soustraction modifiant l'objet
+     * @param value:Int
+     * @return Fraction
+     */
+    public Fraction subRef(int value){
+        value *= this.denum;
+        this.num -= value;
         simplifier();
         return this;
     }
 
-    //fait une addition par reference copy
-    public Fraction sub(int val){
-        return this.copy().subRef(val);
+    /**
+     * @brief soustraction créant un nouvel objet
+     * @param value:Int
+     * @return Fraction
+     */
+    public Fraction sub(int value){
+        return this.copy().subRef(value);
     }
 
-    //fait une soustraction par reference
+    /**
+     * @brief soustraction modifiant l'objet
+     * @param fraction:Fraction
+     * @return Fraction
+     */
     public Fraction subRef(Fraction fraction){
         long numfraction = fraction.num * this.denum;
         this.num *= fraction.denum;
@@ -98,12 +159,20 @@ public class Fraction implements java.io.Serializable{
         return this;
     }
 
-    //fait une soustraction par reference copy
+    /**
+     * @brief soustraction créant un nouvel objet
+     * @param fraction:Fraction
+     * @return Fraction
+     */
     public Fraction sub(Fraction fraction){
         return this.copy().subRef(fraction);
     }
 
-    //fait une multiplication par reference
+    /**
+     * @brief multiplication modifiant l'objet
+     * @param fraction:Fraction
+     * @return Fraction
+     */
     public Fraction mulRef(Fraction fraction){
         this.num *= fraction.num;
         this.denum *= fraction.denum;
@@ -111,21 +180,40 @@ public class Fraction implements java.io.Serializable{
         return this;
     }
 
-    //fait une multiplication par reference copy
+    /**
+     * @brief multiplication créant un nouvel objet
+     * @param fraction:Fraction
+     * @return Fraction
+     */
     public Fraction mul(Fraction fraction){
         return this.copy().mulRef(fraction);
     }
 
+    /**
+     * @brief multiplication modifiant l'objet
+     * @param value:Int
+     * @return Fraction
+     */
     public Fraction mulRef(int value){
         this.num *= value;
         return this;
     }
 
+    /**
+     * @brief multiplication créant un nouvel objet
+     * @param value:Int
+     * @return Fraction
+     */
     public Fraction mul(int value){
         return this.copy().mulRef(value);
     }
 
-    //fait une division par reference
+    /**
+     * @brief division modifiant l'objet
+     * @param fraction:Fraction
+     * @return Fraction
+     * @throws FractionError si division par 0
+     */
     public Fraction divRef(Fraction fraction) throws FractionError {
         if (fraction.num == 0)
             throw  new FractionError("Division par zero");
@@ -135,24 +223,40 @@ public class Fraction implements java.io.Serializable{
         return this;
     }
 
-    //fait une division par reference copy
+    /**
+     * @brief division créent un nouvel objet
+     * @param fraction:Fraction
+     * @return Fraction
+     * @throws FractionError si division par 0
+     */
     public Fraction div(Fraction fraction) throws FractionError {
         return this.copy().divRef(fraction);
     }
 
-    public Fraction divRef(int diviseur) throws FractionError{
-        if (diviseur == 0){
+    /**
+     * @brief division modifiant l'objet
+     * @param value:Int
+     * @return Fraction
+     * @throws FractionError si division par 0
+     */
+    public Fraction divRef(int value) throws FractionError{
+        if (value == 0){
             throw new FractionError("Division par zero");
         }
-        this.denum *= diviseur;
+        this.denum *= value;
         simplifier();
         return this;
     }
 
-    public Fraction div(int diviseur) throws FractionError{
-        return this.copy().divRef(diviseur);
+    /**
+     * @brief division créent un nouvel objet
+     * @param value:Int
+     * @return Fraction
+     * @throws FractionError si division par 0
+     */
+    public Fraction div(int value) throws FractionError{
+        return this.copy().divRef(value);
     }
-
 
     /**
      @brief arroudie la fraction au dénominateur donnée.
@@ -166,29 +270,48 @@ public class Fraction implements java.io.Serializable{
         return this;
     }
 
-    // equivalent a ==
+    /**
+     * @brief opration ==
+     * @param fraction: Fraction
+     * @return Booleen
+     */
     public boolean equals(Fraction fraction){
         return this.toDouble() == fraction.toDouble();
     }
 
-    //compare deux Fractions -1 <, 0 ==, 1 >
+    /**
+     * @brief comparaison -1 si <, 0 si ==, 1 si >
+     * @param fraction: Fraction
+     * @return Int
+     */
     public int compare(Fraction fraction){
         return Double.compare(toDouble(), fraction.toDouble());
     }
 
-    //retourne la valuer double de la fraction
+    /**
+     * @brief Fraction -> Double
+     * @return Double
+     */
     public double toDouble(){
         return (double) this.num / this.denum;
     }
 
-    //calcule le pgcd de la fraction
-    //source: https://stackoverflow.com/questions/4009198/java-get-greatest-common-divisor
+    /**
+     * @brief calcule du pgdc
+     *        source : https://stackoverflow.com/questions/4009198/java-get-greatest-common-divisor
+     * @param num:Long
+     * @param denum:Long
+     * @return Long
+     */
     private long pgcd(long num, long denum){
         if (denum == 0)
             return num;
         return pgcd(denum, num%denum);
     }
 
+    /**
+     * @brief simplifie la fraction
+     */
     public void simplifier(){
         long pgcd = pgcd(num,denum);
         num /= pgcd;
@@ -196,6 +319,9 @@ public class Fraction implements java.io.Serializable{
         checkNeg();
     }
 
+    /**
+     * @brief verif les valeurs negatives
+     */
     private void checkNeg(){
         if (denum < 0){
             num *= -1;
