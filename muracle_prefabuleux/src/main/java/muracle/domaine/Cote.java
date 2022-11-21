@@ -204,6 +204,7 @@ public class Cote implements java.io.Serializable{
     }
 
     public ArrayList<Mur> getMurs() {
+        /*
         ArrayList<Pouce> separateurs = getSeparateurs();
         ArrayList<Mur> murs = new ArrayList<>();
         ArrayList<Accessoire> accessoires = getAccessoires();
@@ -234,7 +235,8 @@ public class Cote implements java.io.Serializable{
                 murs.add(m);
             }
         }
-        return murs;
+        return murs;*/
+        return null;
     }
 
     public ArrayList<Pouce> getSeparateurs() {
