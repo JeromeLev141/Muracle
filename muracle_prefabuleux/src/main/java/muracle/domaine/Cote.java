@@ -267,8 +267,7 @@ public class Cote implements java.io.Serializable{
                     m.setLargeur(separateur1);
 
                 }else if(i + 1 == separateurs.size()){
-                   Pouce separateur2 = separateurs.get(i+1);
-                    m.setLargeur(separateur2.sub(separateur1));
+                    m.setLargeur(this.largeur.sub(separateur1));
                 }else {
                     m.setLargeur(this.getLargeur().sub(separateur1));
                 }
