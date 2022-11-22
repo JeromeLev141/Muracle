@@ -1,9 +1,6 @@
 package muracle.domaine;
 
-import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.Pouce;
-
-import java.util.Objects;
 
 public class Mur implements java.io.Serializable{
     private Pouce largeur;
@@ -13,13 +10,10 @@ public class Mur implements java.io.Serializable{
     private Panneau panneauExt;
     private Panneau panneauInt;
 
-    private static final double PoidsMatiere  = 6.3;
+    private static final double poidsMatiere = 6.3;
 
     public Mur(){
     }
-
-
-
     public Mur(Pouce largeur, Pouce hauteur){
 
     }
@@ -39,13 +33,13 @@ public class Mur implements java.io.Serializable{
         Pouce surfaceReplisInt = largeurReplisInt.mul(epaisseur);
         Pouce surfaceInterieur = surfaceEnPouceCarre.add(surfaceReplisInt.mul(2));
 
-        panInt.setPoids((surfaceInterieur.getEntier() + 1)* PoidsMatiere);
+        panInt.setPoids((surfaceInterieur.getEntier() + 1)* poidsMatiere);
 
         Pouce hauteurReplisExt = hauteur.sub(margeLarReplis);
         Pouce surfaceReplisExt = hauteurReplisExt.mul(epaisseur);
         Pouce surfaceExterieur = surfaceEnPouceCarre.add(surfaceReplisExt.mul(2));
 
-        panExt.setPoids((surfaceExterieur.getEntier() + 1)* PoidsMatiere);
+        panExt.setPoids((surfaceExterieur.getEntier() + 1)* poidsMatiere);
 
 
 
@@ -98,8 +92,5 @@ public class Mur implements java.io.Serializable{
 
     public void setPanneauInt(Panneau panneauInt) {
         this.panneauInt = panneauInt;
-    }
-    private boolean ContainRetourAir(){
-        return false;
     }
 }

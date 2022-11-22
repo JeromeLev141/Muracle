@@ -1,6 +1,5 @@
 package muracle.domaine;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 import muracle.utilitaire.Pouce;
@@ -49,7 +48,6 @@ public class Cote implements java.io.Serializable{
             return true;
         }
     }
-
     private boolean doesLargeurFitWithAccessories(Pouce largeur) {
         for(int i = 0; i < this.accessoires.size(); i++){
             Double oldLargeurDouble = this.largeur.toDouble();
@@ -61,8 +59,7 @@ public class Cote implements java.io.Serializable{
         }
         return true;
     }
-
-    public Boolean doesLargeurFitWithSeparateurs(Pouce largeur){
+    public boolean doesLargeurFitWithSeparateurs(Pouce largeur){
         for (int i = 0; i <this.separateurs.size();i++){
             Double separateurDouble = getSeparateur(i).toDouble();
             Double oldLargeurDouble = this.largeur.toDouble();
@@ -80,11 +77,9 @@ public class Cote implements java.io.Serializable{
     public Accessoire getAccessoire(int index){
         return accessoires.get(index);
     }
-
     public ArrayList<Accessoire> getAccessoires() {
         return accessoires;
     }
-
     public void setAccessoires(ArrayList<Accessoire> accessoires){
         this.accessoires = accessoires;
     }
@@ -203,7 +198,6 @@ public class Cote implements java.io.Serializable{
         }
         return true;
     }
-
     public boolean doesAccessoireFitInCote(Accessoire accessoire) throws FractionError, PouceError {
         CoordPouce cote1 = new CoordPouce(new Pouce("0"), new Pouce("0"));
         CoordPouce cote2 = new CoordPouce(largeur, hauteur);
@@ -230,14 +224,15 @@ public class Cote implements java.io.Serializable{
     }
 
     public boolean setHauteur(Pouce hauteur) throws CoteError {
-        if(!doesHauteurfitWithAccessories(hauteur)){
+        if(!doesHauteurfitWithAccessoires(hauteur)){
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
         }else{
             this.hauteur = hauteur;
             return true;
         }
     }
-    private boolean doesHauteurfitWithAccessories(Pouce hauteur){
+    // TODO ici
+    private boolean doesHauteurfitWithAccessoires(Pouce hauteur){
         for(int i = 0; i < this.accessoires.size(); i++){
             Double oldHauteurDouble = this.hauteur.toDouble();
             Double newHauteurDouble = hauteur.toDouble();
@@ -326,6 +321,7 @@ public class Cote implements java.io.Serializable{
     public Pouce getSeparateur(int index){
         return this.separateurs.get(index);
     }
+
     public void setSeparateur(int index, Pouce position) throws CoteError {
         if(!separateurs.contains(position) || (position.compare(largeur) == -1)){
             separateurs.remove(index);

@@ -72,7 +72,6 @@ public class Salle implements java.io.Serializable{
         if (getCote('N').setLargeur(largeur) && getCote('S').setLargeur(largeur)){
             this.largeur = largeur;
         }
-
     }
 
     public Pouce getEpaisseurTrouRetourAir() {
@@ -100,7 +99,6 @@ public class Salle implements java.io.Serializable{
         }else{
             throw new SalleError("La distance du sol des retours d'air additionné à la hauteur des retours d'air ne peut pas être plus grande que la hauteur");
         }
-
     }
 
     public Pouce getHauteurRetourAir() {
@@ -124,7 +122,6 @@ public class Salle implements java.io.Serializable{
         }else {
             throw new SalleError("La distance du sol des retours d'air additionné à la hauteur des retours d'air ne peut pas être plus grande que la hauteur");
         }
-
     }
 
     public Pouce getLongueur() {
