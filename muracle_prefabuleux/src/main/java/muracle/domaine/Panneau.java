@@ -82,5 +82,32 @@ public class Panneau {
         return (this.poids <= 250);
     }
 
+    public void soustrairePoidsAccessoire(Pouce hauteur,Pouce largeur,Pouce marge,String type,Pouce hauteurRetourAir){
+        double poids = this.poids;
+
+        switch (type){
+            case "Fenêtre":
+                Pouce deuxFoisMarge = marge.mul(2);
+                Pouce hauteurAccessoireAvecMarge = hauteur.add(deuxFoisMarge);
+                Pouce largeurAccessoireAvecMarge = largeur.add(deuxFoisMarge);
+                Pouce aireAccessoireFenetre = hauteurAccessoireAvecMarge.mul(largeurAccessoireAvecMarge);
+                this.poids = poids - (aireAccessoireFenetre.toDouble() * poidsMatiere);
+                break;
+            case "Prise électrique":
+            case "Porte":
+                Pouce aireAccessoirePrise = hauteur.mul(largeur);
+                this.poids = poids - (aireAccessoirePrise.toDouble() * poidsMatiere);
+                break;
+            case "Retour d'air":
+                Pouce aireAccessoireMurRetourAir = hauteur.mul(largeur);
+                Pouce aireAccessoirePlafondRetourAir =  hauteurRetourAir.mul(largeur);
+                this.poids = poids - ((aireAccessoireMurRetourAir.toDouble() * poidsMatiere)+(aireAccessoirePlafondRetourAir.toDouble()*poidsMatiere));
+                break;
+            default:
+                break;
+        }
+
+    }
+
 
 }
