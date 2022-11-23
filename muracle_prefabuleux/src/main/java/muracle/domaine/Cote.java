@@ -244,55 +244,31 @@ public class Cote implements java.io.Serializable{
         return true;
     }
 
-    public ArrayList<Mur> getMurs() {
+    public ArrayList<Mur> getMurs(Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis) {
         ArrayList<Pouce> separateurs = getSeparateurs();
         ArrayList<Mur> murs = new ArrayList<>();
         ArrayList<Accessoire> accessoires = getAccessoires();
-        boolean FirstTime = true;
-        Pouce hauteur = this.getHauteur();
 
         if(separateurs.size() == 0){
             Mur m = new Mur(this.getLargeur(),hauteur);
             m.setEstCoinGauche(true);
-            m.setEstCoinGauche(true);
+            m.setEstCoinDroit(true);
             murs.add(m);
         }
         else {
             for (int i = 0 ; i < separateurs.size(); i++) {
-                Pouce separateur1 = separateurs.get(i);
-                Mur m = new Mur(separateur1,hauteur);
-                m.setHauteur(hauteur);
-                if(FirstTime){
-                    FirstTime = false;
-                    m.setLargeur(separateur1);
-
+                if(i == 0){
+                    Mur m = new Mur(separateurs.get(i),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true);
+                    m.setEstCoinGauche(true);
+                    murs.add(m);
                 }else if(i + 1 == separateurs.size()){
-                    m.setLargeur(this.largeur.sub(separateur1));
+                    Mur m = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true);
+                    m.setEstCoinDroit(true);
+                    murs.add(m);
                 }else {
-                    m.setLargeur(this.getLargeur().sub(separateur1));
+                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false);
+                    murs.add(m);
                 }
-                murs.add(m);
-            }
-        }
-        Mur First = murs.get(0);
-        Mur Last = murs.get(murs.size()-1);
-        First.setEstCoinGauche(true);
-        Last.setEstCoinDroit(true);
-        if(First == Last){
-
-        }
-        else {
-            for (Mur m:
-                    murs) {
-                if(m.GetEstCoinGauche()){
-
-                } else if (m.GetEstCoinDroit()) {
-
-                }else {
-                    Panneau interieur = new Panneau();
-                    Panneau exterieur = new Panneau();
-                }
-
             }
         }
          /*return murs;*/

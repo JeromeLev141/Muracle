@@ -10,7 +10,7 @@ public class Panneau {
     private Pouce hauteur;
     private double  poids;
     public UUID id;
-
+    private static final double poidsMatiere = 6.3;
     public Panneau() {
 
     }
@@ -19,6 +19,39 @@ public class Panneau {
         this.largeur = largeur;
         this.hauteur = hauteur;
         this.poids = poids;
+    }
+
+    public Panneau(Pouce hauteur,Pouce largeur, Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis, char type,boolean isCoin){
+        Pouce margeLarReplis = margeLargeurReplis.mul(2);
+        this.largeur = largeur;
+        this.hauteur = hauteur;
+        Double largeurPlis = Math.tan(45)*longeurPlis.toDouble();
+        Pouce airCoinTriangle = longeurPlis.mul(largeurPlis.intValue() + 1);
+
+        Pouce surfaceEnPouceCarre = largeur.mul(hauteur);
+        if(type == 'i'){
+            Pouce largeurReplisInt = largeur.sub(margeLarReplis);
+            Pouce surfaceReplisInt = largeurReplisInt.mul(epaisseur);
+            Pouce surfaceInterieur = surfaceEnPouceCarre.add(surfaceReplisInt.mul(2));
+
+            Pouce longeurPlisAddMargeReplis = longeurPlis.add(margeLargeurReplis);
+            Pouce aireRectangle = longeurPlis.mul(largeur.sub(longeurPlisAddMargeReplis.mul(2)));
+
+            surfaceInterieur.add(aireRectangle.mul(2));
+            surfaceInterieur.add(airCoinTriangle);
+
+            this.poids = (surfaceInterieur.getEntier() + 1) * poidsMatiere;
+        } else if (type == 'e') {
+            Pouce hauteurReplisExt = hauteur.sub(margeLarReplis);
+            Pouce surfaceReplisExt = hauteurReplisExt.mul(epaisseur);
+            Pouce surfaceExterieur = surfaceEnPouceCarre.add(surfaceReplisExt.mul(2));
+            Pouce longeurPlisAddMargeReplis = longeurPlis.add(margeLargeurReplis);
+            Pouce aireRectangle = longeurPlis.mul(hauteur.sub(longeurPlisAddMargeReplis.mul(2)));
+
+            surfaceExterieur.add(aireRectangle.mul(2));
+            surfaceExterieur.add(airCoinTriangle);
+            this.poids = (surfaceExterieur.getEntier() + 1)* poidsMatiere;
+        }
     }
 
     public Pouce getLargeur() {
