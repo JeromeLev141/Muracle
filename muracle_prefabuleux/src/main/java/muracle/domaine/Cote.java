@@ -260,11 +260,12 @@ public class Cote implements java.io.Serializable{
                     m.setEstCoinGauche(true);
                     murs.add(m);
                 }else if(i + 1 == separateurs.size()){
-                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false,angleReplis);
-                    murs.add(m);
+                    if(separateurs.size() != 1 ){
+                        Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false,angleReplis);
+                        murs.add(m);
+                    }
                     Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true,angleReplis);
                     m2.setEstCoinDroit(true);
-                    murs.add(m);
                     murs.add(m2);
                 }else {
                     Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false,angleReplis);

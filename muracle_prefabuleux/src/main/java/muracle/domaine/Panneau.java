@@ -27,7 +27,7 @@ public class Panneau {
         this.hauteur = hauteur;
         Double largeurPlis = longeurPlis.toDouble()/Math.tan(angleReplis);
         Double airCoinTriangle = longeurPlis.toDouble() * largeurPlis;
-        double surfaceInterieurDouble = 0;
+        double surfaceInterieurDouble;
 
         Pouce surfaceEnPouceCarre = largeur.mul(hauteur);
         if(type == 'i'){
