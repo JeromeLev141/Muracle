@@ -1,8 +1,6 @@
 package muracle.domaine.drawer;
 
-import muracle.domaine.Accessoire;
-import muracle.domaine.CoteDTO;
-import muracle.domaine.MuracleController;
+import muracle.domaine.*;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 
@@ -40,6 +38,7 @@ public class AfficheurElevationCote extends Afficheur {
 
         ajustement(g2d,zoom, dim, posiCam,dimPlan);
         drawCote(g2d);
+        drawMurs(g2d);
         drawSeparateur(g2d);
         reset(g2d,zoom, dim, posiCam, dimPlan);
 
@@ -74,6 +73,56 @@ public class AfficheurElevationCote extends Afficheur {
                 g2d.setColor(lineColor);
             }
             g2d.draw(ligne);
+        }
+    }
+
+    private void drawMurs(Graphics2D g2d) {
+        System.out.println(controller.getIndexOfSelectedMur());
+        CoteDTO cote = controller.getSelectedCoteReadOnly();
+        if (controller.isMurSelected()) {
+            MurDTO murSelected = controller.getSelectedMurReadOnly();
+            double murPosX = 0;
+            if (!murSelected.EstCoinGauche)
+                murPosX = cote.separateurs.get(controller.getIndexOfSelectedMur() - 1).toDouble();
+            if (!controller.isVueExterieur())
+                murPosX = cote.largeur.toDouble() - (murPosX + murSelected.Largeur.toDouble());
+            Rectangle2D.Double rect = new Rectangle2D.Double(posX + murPosX, posY, murSelected.Largeur.toDouble(), murSelected.Hauteur.toDouble());
+            g2d.setColor(selectColor);
+            g2d.setStroke(selectedStroke);
+            g2d.draw(rect);
+            g2d.setStroke(ligneStroke);
+            g2d.setColor(lineColor);
+            g2d.draw(rect);
+        }
+
+        int indexMur = 0;
+        for (Mur mur : controller.getSelectedCoteReadOnly().murs) {
+            Rectangle2D.Double rect = null;
+            if (!mur.getPanneauExt().isPoidsValid() && controller.isVueExterieur()) {
+                double murPosX = 0;
+                if (!mur.GetEstCoinGauche())
+                    murPosX = cote.separateurs.get(indexMur - 1).toDouble();
+                rect = new Rectangle2D.Double(posX + murPosX, posY, mur.getLargeur().toDouble(), mur.getHauteur().toDouble());
+            }
+            else if (!mur.getPanneauInt().isPoidsValid() && !controller.isVueExterieur()) {
+                double murPosX = cote.largeur.toDouble() - mur.getLargeur().toDouble();
+                if (!mur.GetEstCoinGauche())
+                    murPosX = cote.largeur.toDouble() - (cote.separateurs.get(indexMur - 1).toDouble() + mur.getLargeur().toDouble());
+                rect = new Rectangle2D.Double(posX + murPosX, posY, mur.getLargeur().toDouble(), mur.getHauteur().toDouble());
+            }
+            if (rect != null) {
+                g2d.setColor(errorColor);
+                Composite compoInit = g2d.getComposite();
+                AlphaComposite alcom = AlphaComposite.getInstance(
+                        AlphaComposite.SRC_OVER, 0.5f);
+                g2d.setComposite(alcom);
+                g2d.fill(rect);
+                g2d.setComposite(compoInit);
+                g2d.setColor(backErrorColor);
+                g2d.draw(rect);
+                g2d.setColor(lineColor);
+            }
+            indexMur++;
         }
     }
 

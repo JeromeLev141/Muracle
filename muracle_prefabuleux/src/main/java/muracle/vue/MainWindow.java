@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Objects;
 
 
@@ -161,7 +162,13 @@ public class MainWindow extends JFrame {
 					margeAccesTextField.setText(controller.getSelectedAccessoireReadOnly().marge.toString());
 				}
 				if (controller.isMurSelected()) {
-					// to something
+					largMurTextField.setText(controller.getSelectedMurReadOnly().Largeur.toString());
+					hMurTextField.setText(controller.getSelectedMurReadOnly().Hauteur.toString());
+					DecimalFormat df = new DecimalFormat("0.00");
+					if (controller.isVueExterieur())
+						poidsMurTextField.setText(String.valueOf(df.format(controller.getSelectedMurReadOnly().PanneauExt.getPoids())));
+					else
+						poidsMurTextField.setText(String.valueOf(df.format(controller.getSelectedMurReadOnly().PanneauInt.getPoids())));
 				}
 			}
 

@@ -10,7 +10,7 @@ public class Panneau {
     private Pouce hauteur;
     private double  poids;
     public UUID id;
-    private static final double poidsMatiere = 6.3;
+    private static final double poidsMatiere = 6.3 / 144;
     public Panneau() {
 
     }
@@ -82,7 +82,7 @@ public class Panneau {
         return (this.poids <= 250);
     }
 
-    public void soustrairePoidsAccessoire(Pouce hauteur,Pouce largeur,Pouce marge,String type,Pouce hauteurRetourAir){
+    public void soustrairePoidsAccessoire(Pouce hauteur,Pouce largeur,Pouce marge,String type,Pouce epTrouRetourAir){
         double poids = this.poids;
 
         switch (type){
@@ -100,7 +100,7 @@ public class Panneau {
                 break;
             case "Retour d'air":
                 Pouce aireAccessoireMurRetourAir = hauteur.mul(largeur);
-                Pouce aireAccessoirePlafondRetourAir =  hauteurRetourAir.mul(largeur);
+                Pouce aireAccessoirePlafondRetourAir =  epTrouRetourAir.mul(largeur);
                 this.poids = poids - ((aireAccessoireMurRetourAir.toDouble() * poidsMatiere)+(aireAccessoirePlafondRetourAir.toDouble()*poidsMatiere));
                 break;
             default:

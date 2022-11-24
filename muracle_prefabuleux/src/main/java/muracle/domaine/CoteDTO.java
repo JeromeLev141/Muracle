@@ -16,11 +16,19 @@ public class CoteDTO {
     public ArrayList<Accessoire> accessoires;
     public UUID id;
 
-    CoteDTO(Cote cote){
+    CoteDTO(Cote cote) {
         orientation = cote.getOrientation();
         largeur = cote.getLargeur();
         hauteur = cote.getHauteur();
-        murs = cote.getMurs();
+        murs = null;
+        separateurs = cote.getSeparateurs();
+        accessoires = cote.getAccessoires();
+    }
+    CoteDTO(Cote cote, Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir){
+        orientation = cote.getOrientation();
+        largeur = cote.getLargeur();
+        hauteur = cote.getHauteur();
+        murs = cote.getMurs(epaisseur, margeLargeurReplis, longeurPlis, epTrouRetourAir);
         separateurs = cote.getSeparateurs();
         accessoires = cote.getAccessoires();
     }

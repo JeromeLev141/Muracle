@@ -370,13 +370,12 @@ public class MuracleController {
         }
 
         if (!addAccesMode && !addSepMode) {
+            int indexMur = 0;
             for (Pouce sep : getSelectedCote().getSeparateurs()) {
-                int indexMur = 0;
-                if (posX.compare(sep.sub(jeu)) == 1) {
+                if (posX.compare(sep.add(jeu)) == 1)
                     indexMur++;
-                }
-                murSelected = indexMur;
             }
+            murSelected = indexMur;
         }
 
         boolean contientAcces = false;
@@ -415,7 +414,9 @@ public class MuracleController {
         coteSelected = orientation;
     }
 
-    public CoteDTO getSelectedCoteReadOnly() { return new CoteDTO(Objects.requireNonNull(getSelectedCote())); }
+    public CoteDTO getSelectedCoteReadOnly() { return new CoteDTO(Objects.requireNonNull(getSelectedCote()),
+            generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+            generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir()); }
     private Cote getSelectedCote() {
         if (coteSelected != ' ')
             return salle.getCote(coteSelected);
@@ -456,8 +457,13 @@ public class MuracleController {
     public MurDTO getSelectedMurReadOnly() { return new MurDTO(Objects.requireNonNull(getSelectedMur())); }
     private Mur getSelectedMur() {
         if (murSelected != -1)
-            return getSelectedCote().getMurs().get(murSelected);
+            return getSelectedCote().getMurs(generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+                    generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir()).get(murSelected);
         return null;
+    }
+
+    public int getIndexOfSelectedMur() {
+        return murSelected;
     }
 
     private void selectAccessoire(int index) {
