@@ -10,41 +10,18 @@ public class Mur implements java.io.Serializable{
     private Panneau panneauExt;
     private Panneau panneauInt;
 
-    private static final double poidsMatiere = 6.3;
+
 
     public Mur(){
     }
     public Mur(Pouce largeur, Pouce hauteur){
 
     }
-    public Mur(Pouce largeur, Pouce hauteur,Pouce epaisseur, Pouce margeLargeurReplis,Pouce LongeurPlis){
-        Pouce margeLarReplis = margeLargeurReplis.mul(2);
+    public Mur(Pouce largeur, Pouce hauteur,Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis, Boolean isCoin){
         this.largeur = largeur;
         this.hauteur = hauteur;
-        Panneau panExt = new Panneau();
-        Panneau panInt = new Panneau();
-        panInt.setHauteur(hauteur);
-        panInt.setLargeur(largeur);
-        panExt.setLargeur(largeur);
-        panExt.setHauteur(hauteur);
-
-        Pouce surfaceEnPouceCarre = largeur.mul(hauteur);
-        Pouce largeurReplisInt = largeur.sub(margeLarReplis);
-        Pouce surfaceReplisInt = largeurReplisInt.mul(epaisseur);
-        Pouce surfaceInterieur = surfaceEnPouceCarre.add(surfaceReplisInt.mul(2));
-
-        panInt.setPoids((surfaceInterieur.getEntier() + 1)* poidsMatiere);
-
-        Pouce hauteurReplisExt = hauteur.sub(margeLarReplis);
-        Pouce surfaceReplisExt = hauteurReplisExt.mul(epaisseur);
-        Pouce surfaceExterieur = surfaceEnPouceCarre.add(surfaceReplisExt.mul(2));
-
-        panExt.setPoids((surfaceExterieur.getEntier() + 1)* poidsMatiere);
-
-
-
-        this.panneauExt = panExt;
-        this.panneauInt = panInt;
+        this.panneauExt = new Panneau(hauteur,largeur,epaisseur,margeLargeurReplis,longeurPlis,'e',isCoin);
+        this.panneauInt = new Panneau(hauteur,largeur,epaisseur,margeLargeurReplis,longeurPlis,'i',isCoin);
     }
 
     public Pouce getLargeur() {
