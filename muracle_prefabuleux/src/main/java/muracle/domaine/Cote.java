@@ -45,6 +45,7 @@ public class Cote implements java.io.Serializable{
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
         }else{
             this.largeur = largeur;
+            this.updateAccessoir();
             return true;
         }
     }
@@ -331,6 +332,7 @@ public class Cote implements java.io.Serializable{
             separateurs.add(position);
             sortSeparateur();
             CheckValidityForEveryAccessoire();
+            this.updateAccessoir();
         }else{
             throw new CoteError("Position en dehors du côté");
         }
@@ -340,6 +342,7 @@ public class Cote implements java.io.Serializable{
     }
     public void deleteSeparateur(int index){
         this.separateurs.remove(index);
+        this.updateAccessoir();
     }
     public Pouce getSeparateur(int index){
         return this.separateurs.get(index);
@@ -350,9 +353,54 @@ public class Cote implements java.io.Serializable{
             separateurs.remove(index);
             separateurs.add(position);
             sortSeparateur();
+            this.updateAccessoir();
         }else{
             throw new CoteError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
         }
 
+    }
+
+
+    private void centrerRetourAir(Pouce x1, Pouce x2, Accessoire access){
+        try {
+            Pouce posiX = x1.add(x2.sub(x1).divRef(2));
+            Pouce largeurAccess = access.getLargeur().div(2);
+            access.getPosition().setX(posiX.subRef(largeurAccess));
+            access.setIsValid(doesAccessoireFitWithOtherAccessoires(access) && doesAccessoireFitWithSeparateur(access));
+        } catch (PouceError ignored) {}
+    }
+
+    private void updateAccessoir(){
+        for (Accessoire acces:accessoires) {
+            if (!acces.getType().equals("Retour d'air"))
+                continue;
+            Pouce posiCentreX = acces.getPosition().getX();
+            try{
+                posiCentreX = posiCentreX.add(acces.getLargeur().div(2));
+            } catch (PouceError ignored) {}
+            for (int x = 0; x < separateurs.size();x++){
+                if (x==0){
+                    if(posiCentreX.compare(separateurs.get(x)) == -1)
+                        try{
+                            centrerRetourAir(new Pouce(0,0,1),separateurs.get(x),acces);
+                        }catch (FractionError ignored){}
+
+                    else if(posiCentreX.compare(separateurs.get(x)) >= 0 &&
+                            posiCentreX.compare(separateurs.get(x+1)) == -1)
+                        centrerRetourAir(separateurs.get(x),separateurs.get(x+1),acces);
+                }
+                else if(x == separateurs.size()-1){
+                    if(posiCentreX.compare(separateurs.get(x)) >= 0)
+                        centrerRetourAir(separateurs.get(x),this.largeur,acces);
+
+
+                }
+                if (posiCentreX.compare(separateurs.get(x)) >= 0 &&
+                        posiCentreX.compare(separateurs.get(x+1)) == -1){
+                    centrerRetourAir(separateurs.get(x),separateurs.get(x+1),acces);
+                }
+
+            }
+        }
     }
 }
