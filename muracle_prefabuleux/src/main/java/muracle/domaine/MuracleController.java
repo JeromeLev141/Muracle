@@ -416,7 +416,7 @@ public class MuracleController {
 
     public CoteDTO getSelectedCoteReadOnly() { return new CoteDTO(Objects.requireNonNull(getSelectedCote()),
             generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
-            generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir()); }
+            generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis()); }
     private Cote getSelectedCote() {
         if (coteSelected != ' ')
             return salle.getCote(coteSelected);
@@ -458,7 +458,7 @@ public class MuracleController {
     private Mur getSelectedMur() {
         if (murSelected != -1)
             return getSelectedCote().getMurs(generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
-                    generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir()).get(murSelected);
+                    generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis()).get(murSelected);
         return null;
     }
 

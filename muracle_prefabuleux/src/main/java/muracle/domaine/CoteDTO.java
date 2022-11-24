@@ -24,11 +24,11 @@ public class CoteDTO {
         separateurs = cote.getSeparateurs();
         accessoires = cote.getAccessoires();
     }
-    CoteDTO(Cote cote, Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir){
+    CoteDTO(Cote cote, Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir, double anglePlis){
         orientation = cote.getOrientation();
         largeur = cote.getLargeur();
         hauteur = cote.getHauteur();
-        murs = cote.getMurs(epaisseur, margeLargeurReplis, longeurPlis, epTrouRetourAir);
+        murs = cote.getMurs(epaisseur, margeLargeurReplis, longeurPlis, epTrouRetourAir, anglePlis);
         separateurs = cote.getSeparateurs();
         accessoires = cote.getAccessoires();
     }

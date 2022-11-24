@@ -245,7 +245,7 @@ public class Cote implements java.io.Serializable{
     }
 
     public ArrayList<Mur> getMurs(Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir,double angleReplis) {
-        /*ArrayList<Mur> murs = new ArrayList<>();
+        ArrayList<Mur> murs = new ArrayList<>();
 
         if(separateurs.size() == 0){
             Mur m = new Mur(this.getLargeur(),hauteur);
@@ -323,8 +323,7 @@ public class Cote implements java.io.Serializable{
                 }
             }
         }
-        return murs;*/
-        return null;
+        return murs;
     }
 
     public ArrayList<Pouce> getSeparateurs() {
