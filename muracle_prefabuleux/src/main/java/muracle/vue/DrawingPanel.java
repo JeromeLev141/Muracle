@@ -55,7 +55,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
             if (mainWindow.isDarkMode)
                 setBackground(backgroundColor);
             else setBackground(Color.WHITE);
-            Afficheur drawer = new Afficheur(mainWindow.controller, getSize());
+            Afficheur drawer;//= new Afficheur(mainWindow.controller, getSize());
             this.update();
             if (mainWindow.controller.isVueDessus()) {
                 drawer = new AfficheurPlanSalle(mainWindow.controller, getSize());
@@ -234,29 +234,13 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      * @param e:MouseMotionEvent
      */
     public void moved(MouseEvent e){
-        clock++;
+        //clock++;
         if (clip) {
-            //System.out.println("---------------------------------------");
-            //System.out.println("Position souris X : " + e.getX() + " | Y : " + e.getY());
             Fraction zoom = zoomFactor.copy();
-            //System.out.println("Zoom : " + zoom);
             Fraction dx = zoom.mul(mouse_pt.x-e.getX());
             Fraction dy = zoom.mul(mouse_pt.y-e.getY());
-            //System.out.println("dx : " + dx + "|dy : " + dy);
-            posiCam.setX(posiCamTempo.getX().add(new Pouce(0,dx)));
-            posiCam.setY(posiCamTempo.getY().add(new Pouce(0,dy)));
-
-
-            //zoom = this.zoomFactor.copy();
-
-            //posiCam.getX().addRef(new Pouce(0,dx));
-            //posiCam.getY().addRef(new Pouce(0,dy));
-            //System.out.println("Dx : " + dx + "| dy : " + dy);
-
-            //System.out.println(cord);
-            //System.out.println(mouse_pt);
-
-
+            posiCam.setX(posiCamTempo.getX().add(dx));
+            posiCam.setY(posiCamTempo.getY().add(dy));
 
             //mouse_pt = cord;
             //clock = 0 ;
