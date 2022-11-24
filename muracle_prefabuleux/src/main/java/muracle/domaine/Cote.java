@@ -232,7 +232,6 @@ public class Cote implements java.io.Serializable{
             return true;
         }
     }
-    // TODO ici
     private boolean doesHauteurfitWithAccessoires(Pouce hauteur){
         for(int i = 0; i < this.accessoires.size(); i++){
             Double oldHauteurDouble = this.hauteur.toDouble();
@@ -370,7 +369,7 @@ public class Cote implements java.io.Serializable{
         } catch (PouceError ignored) {}
     }
 
-    private void updateAccessoir(){
+    private void updateRetourAir(){
         for (Accessoire acces:accessoires) {
             if (!acces.getType().equals("Retour d'air"))
                 continue;
