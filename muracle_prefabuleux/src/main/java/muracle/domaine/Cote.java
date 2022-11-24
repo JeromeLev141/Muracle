@@ -244,7 +244,7 @@ public class Cote implements java.io.Serializable{
         return true;
     }
 
-    public ArrayList<Mur> getMurs(Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir) {
+    public ArrayList<Mur> getMurs(Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir,double angleReplis) {
         ArrayList<Mur> murs = new ArrayList<>();
 
         if(separateurs.size() == 0){
@@ -256,15 +256,15 @@ public class Cote implements java.io.Serializable{
         else {
             for (int i = 0 ; i < separateurs.size(); i++) {
                 if(i == 0){
-                    Mur m = new Mur(separateurs.get(i),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true);
+                    Mur m = new Mur(separateurs.get(i),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true,angleReplis);
                     m.setEstCoinGauche(true);
                     murs.add(m);
                 }else if(i + 1 == separateurs.size()){
-                    Mur m = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true);
+                    Mur m = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true,angleReplis);
                     m.setEstCoinDroit(true);
                     murs.add(m);
                 }else {
-                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false);
+                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false,angleReplis);
                     murs.add(m);
                 }
             }

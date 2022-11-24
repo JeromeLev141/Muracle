@@ -21,11 +21,11 @@ public class Panneau {
         this.poids = poids;
     }
 
-    public Panneau(Pouce hauteur,Pouce largeur, Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis, char type,boolean isCoin){
+    public Panneau(Pouce hauteur,Pouce largeur, Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis, char type,boolean isCoin,double angleReplis){
         Pouce margeLarReplis = margeLargeurReplis.mul(2);
         this.largeur = largeur;
         this.hauteur = hauteur;
-        Double largeurPlis = Math.tan(45)*longeurPlis.toDouble();
+        Double largeurPlis = longeurPlis.toDouble()/Math.tan(angleReplis);
         Pouce airCoinTriangle = longeurPlis.mul(largeurPlis.intValue() + 1);
 
         Pouce surfaceEnPouceCarre = largeur.mul(hauteur);
