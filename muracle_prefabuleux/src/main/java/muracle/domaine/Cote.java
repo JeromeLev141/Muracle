@@ -45,7 +45,7 @@ public class Cote implements java.io.Serializable{
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
         }else{
             this.largeur = largeur;
-            this.updateAccessoir();
+            this.updateRetourAir();
             return true;
         }
     }
@@ -331,7 +331,7 @@ public class Cote implements java.io.Serializable{
             separateurs.add(position);
             sortSeparateur();
             CheckValidityForEveryAccessoire();
-            this.updateAccessoir();
+            this.updateRetourAir();
         }else{
             throw new CoteError("Position en dehors du côté");
         }
@@ -341,7 +341,7 @@ public class Cote implements java.io.Serializable{
     }
     public void deleteSeparateur(int index){
         this.separateurs.remove(index);
-        this.updateAccessoir();
+        this.updateRetourAir();
     }
     public Pouce getSeparateur(int index){
         return this.separateurs.get(index);
@@ -352,7 +352,7 @@ public class Cote implements java.io.Serializable{
             separateurs.remove(index);
             separateurs.add(position);
             sortSeparateur();
-            this.updateAccessoir();
+            this.updateRetourAir();
         }else{
             throw new CoteError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
         }
