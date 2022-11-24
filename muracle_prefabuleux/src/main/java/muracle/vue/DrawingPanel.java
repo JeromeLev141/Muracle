@@ -7,7 +7,9 @@ import muracle.utilitaire.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 public class DrawingPanel extends JPanel implements MouseWheelListener {
     private MainWindow mainWindow;
@@ -233,15 +235,14 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      */
     public void moved(MouseEvent e){
         clock++;
-        System.out.println(clip);
         if (clip) {
-            System.out.println("---------------------------------------");
-            System.out.println("Position souris X : " + e.getX() + " | Y : " + e.getY());
+            //System.out.println("---------------------------------------");
+            //System.out.println("Position souris X : " + e.getX() + " | Y : " + e.getY());
             Fraction zoom = zoomFactor.copy();
-            System.out.println("Zoom : " + zoom);
+            //System.out.println("Zoom : " + zoom);
             Fraction dx = zoom.mul(mouse_pt.x-e.getX());
             Fraction dy = zoom.mul(mouse_pt.y-e.getY());
-            System.out.println("dx : " + dx + "|dy : " + dy);
+            //System.out.println("dx : " + dx + "|dy : " + dy);
             posiCam.setX(posiCamTempo.getX().add(new Pouce(0,dx)));
             posiCam.setY(posiCamTempo.getY().add(new Pouce(0,dy)));
 
@@ -253,7 +254,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
             //System.out.println("Dx : " + dx + "| dy : " + dy);
 
             //System.out.println(cord);
-            System.out.println(mouse_pt);
+            //System.out.println(mouse_pt);
 
 
 
@@ -265,7 +266,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     }
 
     public void press(MouseEvent e){
-        System.out.println("Cliped");
+        //System.out.println("Cliped");
         clip = true;
         mouse_pt = e.getPoint();
         posiCamTempo = new CoordPouce(posiCam.getX().copy(), posiCam.getY().copy());
@@ -275,7 +276,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
 
         clock = 2;
         moved(e);
-        System.out.println("Uncliped");
+        //System.out.println("Uncliped");
         clip = false;
         mouse_pt = null;
         posiCamTempo = null;

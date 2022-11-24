@@ -77,7 +77,6 @@ public class AfficheurElevationCote extends Afficheur {
     }
 
     private void drawMurs(Graphics2D g2d) {
-        System.out.println(controller.getIndexOfSelectedMur());
         CoteDTO cote = controller.getSelectedCoteReadOnly();
         if (controller.isMurSelected()) {
             MurDTO murSelected = controller.getSelectedMurReadOnly();

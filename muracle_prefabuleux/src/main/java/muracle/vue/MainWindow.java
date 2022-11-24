@@ -386,6 +386,13 @@ public class MainWindow extends JFrame {
 						selectionAccessoireComboBox.removeItem("Prise électrique");
 						selectionAccessoireComboBox.removeItem("Retour d'air");
 					}
+					if (controller.isMurSelected()) {
+						DecimalFormat df = new DecimalFormat("0.00");
+						if (controller.isVueExterieur())
+							poidsMurTextField.setText(String.valueOf(df.format(controller.getSelectedMurReadOnly().PanneauExt.getPoids())));
+						else
+							poidsMurTextField.setText(String.valueOf(df.format(controller.getSelectedMurReadOnly().PanneauInt.getPoids())));
+					}
 				});
 				menuBar.add(changeVueButton);
 

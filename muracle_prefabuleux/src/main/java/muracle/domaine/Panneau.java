@@ -40,7 +40,7 @@ public class Panneau {
             surfaceInterieur.add(aireRectangle.mul(2));
             surfaceInterieur.add(airCoinTriangle);
 
-            this.poids = (surfaceInterieur.getEntier() + 1) * poidsMatiere;
+            this.poids = surfaceInterieur.toDouble() * poidsMatiere;
         } else if (type == 'e') {
             Pouce hauteurReplisExt = hauteur.sub(margeLarReplis);
             Pouce surfaceReplisExt = hauteurReplisExt.mul(epaisseur);
@@ -50,7 +50,7 @@ public class Panneau {
 
             surfaceExterieur.add(aireRectangle.mul(2));
             surfaceExterieur.add(airCoinTriangle);
-            this.poids = (surfaceExterieur.getEntier() + 1)* poidsMatiere;
+            this.poids = surfaceExterieur.toDouble() * poidsMatiere;
         }
     }
 

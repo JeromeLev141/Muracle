@@ -17,8 +17,6 @@ public class GenerateurPlan implements java.io.Serializable {
     public GenerateurPlan() throws FractionError, PouceError {
     }
 
-    public GenerateurPlan(Pouce margeEpMat, Pouce margeLargRep, double angle, Pouce longPlis) throws FractionError, PouceError {}
-
     public Pouce getMargeEpaisseurMateriaux() {
         return margeEpaisseurMateriaux;
     }
