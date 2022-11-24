@@ -87,6 +87,11 @@ public class MainWindow extends JFrame {
 		JTextField largCoteTextField = new JTextField();
 		JTextField hCoteTextField = new JTextField();
 
+		//params mur
+		JTextField largMurTextField = new JTextField();
+		JTextField hMurTextField = new JTextField();
+		JTextField poidsMurTextField = new JTextField();
+
 		JSeparator sepParam1 = new JSeparator();
 
 		// params retours d'air
@@ -155,6 +160,9 @@ public class MainWindow extends JFrame {
 					hAccesTextField.setText(controller.getSelectedAccessoireReadOnly().hauteur.toString());
 					margeAccesTextField.setText(controller.getSelectedAccessoireReadOnly().marge.toString());
 				}
+				if (controller.isMurSelected()) {
+					// to something
+				}
 			}
 
 			@Override
@@ -177,37 +185,39 @@ public class MainWindow extends JFrame {
 				hAccesTextField.setEnabled(true);
 				posXAccesTextField.setEnabled(true);
 				posYAccesTextField.setEnabled(true);
+				sepConfig.setVisible(false);
+				voirPlanButton.setVisible(false);
 
 				for (int i = 0; i < parametresModifPanel.getComponentCount(); i++)
 					parametresModifPanel.getComponent(i).setVisible(true);
 				if (controller.isVueDessus()) {
 					if (controller.isSeparateurSelected()) {
-						for (int i = 0; i < 28; i++)
+						for (int i = 0; i < 37; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
-						for (int i = 31; i < parametresModifPanel.getComponentCount() - 4; i++)
+						for (int i = 40; i < parametresModifPanel.getComponentCount() - 4; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 						deleteButton.setVisible(true);
 					}
 					else {
-						for (int i = 12; i < 18; i++)
+						for (int i = 12; i < 27; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
-						for (int i = 28; i < parametresModifPanel.getComponentCount() - 4; i++)
+						for (int i = 37; i < parametresModifPanel.getComponentCount() - 4; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 					}
 				}
 				else {
-					for (int i = 0; i < 28; i++)
+					for (int i = 0; i < 37; i++)
 						parametresModifPanel.getComponent(i).setVisible(false);
 					if (controller.isSeparateurSelected()) {
-						for (int i = 31; i < parametresModifPanel.getComponentCount() - 4; i++)
+						for (int i = 40; i < parametresModifPanel.getComponentCount() - 4; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 						deleteButton.setVisible(true);
 					}
 					else if (controller.isAccessoireSelected()) {
-						for (int i = 28; i < 31; i++)
+						for (int i = 28; i < 40; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 						if (!controller.getSelectedAccessoireReadOnly().type.equals("Fenêtre"))
-							for (int i = 43; i < 46; i++)
+							for (int i = 52; i < 55; i++)
 								parametresModifPanel.getComponent(i).setVisible(false);
 						if (controller.getSelectedAccessoireReadOnly().type.equals("Retour d'air")) {
 							hAccesTextField.setEnabled(false);
@@ -218,19 +228,19 @@ public class MainWindow extends JFrame {
 							posYAccesTextField.setEnabled(false);
 						deleteButton.setVisible(true);
 					}
-					else {
-						for (int i = 22; i < parametresModifPanel.getComponentCount() - 3; i++)
+					else if (controller.isMurSelected()) {
+						for (int i = 31; i < parametresModifPanel.getComponentCount() - 4; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
-						for (int i = 12; i < 19; i++)
+						for (int i = 18; i < 27; i++)
 							parametresModifPanel.getComponent(i).setVisible(true);
-						if (controller.isMurSelected()) {
-							sepConfig.setVisible(true);
-							voirPlanButton.setVisible(true);
-						}
-						else {
-							sepConfig.setVisible(false);
-							voirPlanButton.setVisible(false);
-						}
+						sepConfig.setVisible(true);
+						voirPlanButton.setVisible(true);
+					}
+					else {
+						for (int i = 22; i < parametresModifPanel.getComponentCount() - 4; i++)
+							parametresModifPanel.getComponent(i).setVisible(false);
+						for (int i = 12; i < 18; i++)
+							parametresModifPanel.getComponent(i).setVisible(true);
 					}
 				}
 			}
@@ -655,6 +665,18 @@ public class MainWindow extends JFrame {
 							addParams(parametresModifPanel, "Hauteur du côté", hCoteTextField, "po", posY++);
 							hCoteTextField.setEnabled(false);
 
+							//---- largMurParam ----
+							addParams(parametresModifPanel, "Largeur du Mur", largMurTextField, "po", posY++);
+							largMurTextField.setEnabled(false);
+
+							//---- hMurParam ----
+							addParams(parametresModifPanel, "Hauteur du Mur", hMurTextField, "po", posY++);
+							hMurTextField.setEnabled(false);
+
+							//---- poidsMurParam ----
+							addParams(parametresModifPanel, "Poids du Mur", poidsMurTextField, "lb", posY++);
+							poidsMurTextField.setEnabled(false);
+
 							//separateur
 							parametresModifPanel.add(sepParam1, new GridBagConstraints(0, posY++, 3, 1, 0, 0,
 									GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -783,9 +805,9 @@ public class MainWindow extends JFrame {
 								drawingPanel.repaint();
 							});
 						}
-						for (int i = 12; i < 18; i++)
+						for (int i = 12; i < 27; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
-						for (int i = 28; i < parametresModifPanel.getComponentCount() - 4; i++)
+						for (int i = 37; i < parametresModifPanel.getComponentCount() - 4; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 						parametresPanel.add(parametresModifPanel);
 					}

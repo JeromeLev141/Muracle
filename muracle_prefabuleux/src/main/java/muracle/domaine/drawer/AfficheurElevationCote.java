@@ -80,7 +80,6 @@ public class AfficheurElevationCote extends Afficheur {
     private void drawAccessoire(Graphics2D g2d, Area coteArea) {
         CoteDTO cote = controller.getSelectedCoteReadOnly();
         ArrayList<Rectangle2D.Double> rectangles = new ArrayList<>();
-        ArrayList<Rectangle2D.Double> rectanglesMarge = new ArrayList<>();
         ArrayList<Integer> indexOfInvalidAcces = new ArrayList<>();
         int indexAccesSelected = -1;
         g2d.setColor(fillColor.darker().darker());
@@ -94,6 +93,10 @@ public class AfficheurElevationCote extends Afficheur {
             else if (!controller.isVueExterieur())
                 rect = new Rectangle2D.Double(posX + w - (accesPosX + acces.getLargeur().toDouble()), posY + accesPosY,
                         acces.getLargeur().toDouble(), acces.getHauteur().toDouble());
+            if (rect != null && acces.getType().equals("Fenêtre")) {
+                double marge = acces.getMarge().toDouble();
+                rect = new Rectangle2D.Double(rect.x - marge, rect.y - marge, rect.width + 2 * marge, rect.height + 2 * marge);
+            }
             if (rect != null) {
                 coteArea.subtract(new Area(rect));
                 if (acces.isInterieurOnly())
@@ -103,11 +106,6 @@ public class AfficheurElevationCote extends Afficheur {
                     indexAccesSelected = rectangles.size() - 1;
                 if (!acces.isValid())
                     indexOfInvalidAcces.add(rectangles.size() -1);
-                if (acces.getType().equals("Fenêtre")) {
-                    double marge = acces.getMarge().toDouble();
-                    Rectangle2D.Double rectMarge = new Rectangle2D.Double(rect.x - marge, rect.y - marge, rect.width + 2 * marge, rect.height + 2 * marge);
-                    rectanglesMarge.add(rectMarge);
-                }
             }
         }
         g2d.setColor(fillColor);
@@ -136,7 +134,6 @@ public class AfficheurElevationCote extends Afficheur {
             else
                 g2d.draw(rectangles.get(i));
         }
-        for (Rectangle2D.Double aDouble : rectanglesMarge) g2d.draw(aDouble);
     }
 
     private void drawVue(Graphics g) {

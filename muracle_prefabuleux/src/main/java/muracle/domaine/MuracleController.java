@@ -291,6 +291,7 @@ public class MuracleController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        murSelected = -1;
         separateurSelected = -1;
         accessoireSelected = -1;
         if (coordPouce != null) {
@@ -368,11 +369,22 @@ public class MuracleController {
             coordPouce.setX(posX);
         }
 
+        if (!addAccesMode && !addSepMode) {
+            for (Pouce sep : getSelectedCote().getSeparateurs()) {
+                int indexMur = 0;
+                if (posX.compare(sep.sub(jeu)) == 1) {
+                    indexMur++;
+                }
+                murSelected = indexMur;
+            }
+        }
+
         boolean contientAcces = false;
         for (Accessoire acces : getSelectedCote().getAccessoires()) {
             Pouce jeuAcces = jeu.add(acces.getMarge());
             if (posX.compare(acces.getPosition().getX().sub(jeuAcces)) == 1 && posX.compare(acces.getPosition().getX().add(acces.getLargeur()).add(jeuAcces)) == -1) {
                 if (posY.compare(acces.getPosition().getY().sub(jeuAcces)) == 1 && posY.compare(acces.getPosition().getY().add(acces.getHauteur()).add(jeuAcces)) == -1) {
+                    murSelected = -1;
                     selectAccessoire(getSelectedCote().getAccessoires().indexOf(acces));
                     contientAcces = true;
                 }
@@ -386,6 +398,7 @@ public class MuracleController {
             boolean contientSep = false;
             for (Pouce sep : getSelectedCote().getSeparateurs()) {
                 if (posX.compare(sep.sub(jeu)) == 1 && posX.compare(sep.add(jeu)) == -1) {
+                    murSelected = -1;
                     accessoireSelected = -1;
                     selectSeparateur(getSelectedCote().getSeparateurs().indexOf(sep));
                     contientSep = true;
