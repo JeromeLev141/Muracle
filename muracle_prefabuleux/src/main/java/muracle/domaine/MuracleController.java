@@ -280,6 +280,7 @@ public class MuracleController {
     }
 
     public  SalleDTO getSalleReadOnly() { return new SalleDTO(salle); }
+    
     private Salle getSalle() {
         return salle;
     }
@@ -339,9 +340,10 @@ public class MuracleController {
                 posXVueCote = coinY.sub(posY);
             }
         }
-        if (coteSelected != ' ') {
+        Cote cote = getSelectedCote();
+        if (cote != null) {
             boolean contientSep = false;
-            for (Pouce sep : getSelectedCote().getSeparateurs()) {
+            for (Pouce sep : cote.getSeparateurs()) {
                 Pouce jeu = new Pouce(1, 1, 2); // la largeur des lignes est de deux pouces (pixels) en zoom x1 + jeu de 1 sur 2
                 if (posXVueCote.compare(sep.sub(jeu)) == 1 &&
                         posXVueCote.compare(sep.add(jeu)) == -1) {
@@ -362,16 +364,19 @@ public class MuracleController {
     private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) throws FractionError, PouceError {
         Pouce jeu = new Pouce(1, 1, 2); // la largeur des lignes est de deux pouces (pixels) en zoom x1 + jeu de 1 sur 2
         // add interraction avec murs
+        Cote cote = getSelectedCote();
+        if (cote == null) // la methode ne devrait pas etre appelle si on n'est pas ne vue de cote (un cote est selectionne)
+            return;
         Pouce posX = coordPouce.getX();
         Pouce posY = coordPouce.getY();
         if (!isVueExterieur) {
-            posX = getSelectedCote().getLargeur().sub(posX);
+            posX = cote.getLargeur().sub(posX);
             coordPouce.setX(posX);
         }
 
         if (!addAccesMode && !addSepMode) {
             int indexMur = 0;
-            for (Pouce sep : getSelectedCote().getSeparateurs()) {
+            for (Pouce sep : cote.getSeparateurs()) {
                 if (posX.compare(sep.add(jeu)) == 1)
                     indexMur++;
             }
@@ -379,12 +384,12 @@ public class MuracleController {
         }
 
         boolean contientAcces = false;
-        for (Accessoire acces : getSelectedCote().getAccessoires()) {
+        for (Accessoire acces : cote.getAccessoires()) {
             Pouce jeuAcces = jeu.add(acces.getMarge());
             if (posX.compare(acces.getPosition().getX().sub(jeuAcces)) == 1 && posX.compare(acces.getPosition().getX().add(acces.getLargeur()).add(jeuAcces)) == -1) {
                 if (posY.compare(acces.getPosition().getY().sub(jeuAcces)) == 1 && posY.compare(acces.getPosition().getY().add(acces.getHauteur()).add(jeuAcces)) == -1) {
                     murSelected = -1;
-                    selectAccessoire(getSelectedCote().getAccessoires().indexOf(acces));
+                    selectAccessoire(cote.getAccessoires().indexOf(acces));
                     contientAcces = true;
                 }
             }
@@ -395,7 +400,7 @@ public class MuracleController {
 
         if (!addAccesMode) {
             boolean contientSep = false;
-            for (Pouce sep : getSelectedCote().getSeparateurs()) {
+            for (Pouce sep : cote.getSeparateurs()) {
                 if (posX.compare(sep.sub(jeu)) == 1 && posX.compare(sep.add(jeu)) == -1) {
                     murSelected = -1;
                     accessoireSelected = -1;
@@ -405,7 +410,7 @@ public class MuracleController {
             }
             if (!contientSep && addSepMode) {
                 addSeparateur(posX);
-                selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posX));
+                selectSeparateur(cote.getSeparateurs().indexOf(posX));
             }
         }
     }
@@ -455,9 +460,10 @@ public class MuracleController {
     }
 
     public MurDTO getSelectedMurReadOnly() { return new MurDTO(Objects.requireNonNull(getSelectedMur())); }
+
     private Mur getSelectedMur() {
         if (murSelected != -1)
-            return getSelectedCote().getMurs(generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+            return Objects.requireNonNull(getSelectedCote()).getMurs(generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
                     generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis()).get(murSelected);
         return null;
     }
@@ -471,11 +477,12 @@ public class MuracleController {
     }
 
     public AccessoireDTO getSelectedAccessoireReadOnly() {
-        return new AccessoireDTO(getSelectedAccessoire());
+        return new AccessoireDTO(Objects.requireNonNull(getSelectedAccessoire()));
     }
+
     private Accessoire getSelectedAccessoire() {
         if (accessoireSelected != -1)
-            return getSelectedCote().getAccessoire(accessoireSelected);
+            return Objects.requireNonNull(getSelectedCote()).getAccessoire(accessoireSelected);
         return null;
     }
 
@@ -551,6 +558,7 @@ public class MuracleController {
     private void addAccessoire(String type, CoordPouce position) {
         try {
             Accessoire acces;
+            Cote cote = Objects.requireNonNull(getSelectedCote());
             switch (type) {
                 case "Fenêtre":
                     Fenetre fenetre = new Fenetre(new Pouce(18, 0, 1), new Pouce(24, 0, 1), position);
@@ -576,7 +584,7 @@ public class MuracleController {
                 default:
                     Pouce debutMur = new Pouce(0, 0, 1);
                     int indexSepSuivant = 0;
-                    if (getSelectedCote().getSeparateurs().size() != 0) {
+                    if (cote.getSeparateurs().size() != 0) {
                         for (Pouce sep : getSelectedCote().getSeparateurs()) {
                             if (position.getX().compare(sep) == 1) {
                                 debutMur = sep;
@@ -598,7 +606,7 @@ public class MuracleController {
                     break;
             }
 
-            getSelectedCote().addAccessoire(acces);
+            cote.addAccessoire(acces);
             selectAccessoire(getSelectedCote().getAccessoires().size() - 1);
             pushNewChange(currentStateSave);
         } catch (FractionError | PouceError | CoteError e) {
@@ -611,7 +619,7 @@ public class MuracleController {
     public void removeAccessoire() {
         try {
             String save = makeSaveString();
-            getSelectedCote().removeAccessoire(getSelectedAccessoire());
+            Objects.requireNonNull(getSelectedCote()).removeAccessoire(getSelectedAccessoire());
             accessoireSelected = -1;
             pushNewChange(save);
         } catch (IOException e) {
@@ -625,9 +633,14 @@ public class MuracleController {
             if (!posX.contains("-") && !posY.contains("-")) {
                 Pouce pouceX = new Pouce(posX);
                 Pouce pouceY = new Pouce(posY);
-                if (!pouceX.equals(getSelectedAccessoire().getPosition().getX()) ||
-                        !pouceY.equals(getSelectedAccessoire().getPosition().getY())) {
-                    getSelectedCote().moveAccessoire(getSelectedAccessoire(), new CoordPouce(pouceX, pouceY));
+                Cote cote = Objects.requireNonNull(getSelectedCote());
+                Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
+                if (!isVueExterieur) {
+                    pouceX = cote.getLargeur().sub(pouceX.add(acces.getLargeur()));
+                }
+                if (!pouceX.equals(acces.getPosition().getX()) ||
+                        !pouceY.equals(acces.getPosition().getY())) {
+                    cote.moveAccessoire(acces, new CoordPouce(pouceX, pouceY));
                     //getSelectedAccessoire().setPosition(new CoordPouce(pouceX, pouceY));
                     pushNewChange(save);
                 }
@@ -642,20 +655,18 @@ public class MuracleController {
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
         try {
             String save = makeSaveString();
-            if (!largeur.contains("-") && !largeur.equals(getSelectedAccessoire().getLargeur().toString())) {
-                /*if (getSelectedAccessoire().getType().equals("Retour d'air")) {
-                    Pouce difLargeur = new Pouce(largeur).sub(getSelectedAccessoire().getLargeur());
-                    getSelectedAccessoire().getPosition().setX(getSelectedAccessoire().getPosition().getX().sub(difLargeur.div(2)));
-                }*/
-                getSelectedCote().setAccessoire(getSelectedAccessoire(), new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
+            Cote cote = Objects.requireNonNull(getSelectedCote());
+            Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
+            if (!largeur.contains("-") && !largeur.equals(acces.getLargeur().toString())) {
+                cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
                 pushNewChange(save);
             }
-            if (!hauteur.contains("-") && !hauteur.equals(getSelectedAccessoire().getHauteur().toString())) {
-                getSelectedCote().setAccessoire(getSelectedAccessoire(), new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
+            if (!hauteur.contains("-") && !hauteur.equals(acces.getHauteur().toString())) {
+                cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
                 pushNewChange(save);
             }
-            if (!marge.contains("-") && getSelectedAccessoire().getType().equals("Fenêtre")) {
-                getSelectedCote().setAccessoire(getSelectedAccessoire(), new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
+            if (!marge.contains("-") && acces.getType().equals("Fenêtre")) {
+                cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
                 pushNewChange(save);
             }
         } catch (PouceError | FractionError | CoteError e) {
@@ -671,13 +682,13 @@ public class MuracleController {
 
     public Pouce getSelectedSeparateur() {
         if (separateurSelected != -1)
-            return getSelectedCote().getSeparateurs().get(separateurSelected);
+            return Objects.requireNonNull(getSelectedCote()).getSeparateurs().get(separateurSelected);
         return null;
     }
 
     private void addSeparateur(Pouce pos) {
         try {
-            getSelectedCote().addSeparateur(pos);
+            Objects.requireNonNull(getSelectedCote()).addSeparateur(pos);
             pushNewChange(currentStateSave);
         } catch (CoteError e) {
             setErrorMessage(e.getMessage());
@@ -689,7 +700,7 @@ public class MuracleController {
     public void removeSeparateur() {
         try {
             String save = makeSaveString();
-            getSelectedCote().deleteSeparateur(getSelectedCote().getSeparateurs().indexOf(getSelectedSeparateur()));
+            Objects.requireNonNull(getSelectedCote()).deleteSeparateur(getSelectedCote().getSeparateurs().indexOf(getSelectedSeparateur()));
             separateurSelected = -1;
             pushNewChange(save);
         } catch (IOException e) {
@@ -702,9 +713,12 @@ public class MuracleController {
             try {
                 String save = makeSaveString();
                 Pouce newSep = new Pouce(position);
-                if (!getSelectedCote().getSeparateur(separateurSelected).equals(newSep)) {
-                    getSelectedCote().setSeparateur(separateurSelected, newSep);
-                    selectSeparateur(getSelectedCote().getSeparateurs().indexOf(newSep));
+                Cote cote = Objects.requireNonNull(getSelectedCote());
+                if (!isVueExterieur)
+                    newSep = cote.getLargeur().sub(newSep);
+                if (!cote.getSeparateur(separateurSelected).equals(newSep)) {
+                    cote.setSeparateur(separateurSelected, newSep);
+                    selectSeparateur(cote.getSeparateurs().indexOf(newSep));
                     pushNewChange(save);
                 }
             } catch (PouceError | FractionError | CoteError e) {
@@ -806,6 +820,15 @@ public class MuracleController {
         }
     }
 
+    public Pouce getSelectedAccesPosXInverse() {
+        Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
+        return Objects.requireNonNull(getSelectedCote()).getLargeur().sub(acces.getPosition().getX().add(acces.getLargeur()));
+    }
+
+    public Pouce getSelectedSepInverse() {
+        return Objects.requireNonNull(getSelectedCote()).getLargeur().sub(getSelectedSeparateur());
+    }
+
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
@@ -813,6 +836,7 @@ public class MuracleController {
     public String getErrorMessage() {
         return errorMessage;
     }
+
     public void ackErrorMessage() {
         errorMessage = "";
     }
