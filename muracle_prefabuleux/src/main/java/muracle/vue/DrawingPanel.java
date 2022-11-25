@@ -254,8 +254,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     }
 
     public void release(MouseEvent e){
-
-        clock = 2;
         moved(e);
         //System.out.println("Uncliped");
         clip = false;
