@@ -133,10 +133,14 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      */
     public CoordPouce coordPixelToPouce(MouseEvent event){
         try {
-            //System.out.println(dimPlan + " " + zoomFactor + getSize() + posiCam);
-
             CoordPouce coord = coordPixelToPouceAll(event);
-            coord.round(128);
+            coord.round(64);
+            /*
+            if (mainWindow.controller.isVueCote() && !mainWindow.controller.isVueExterieur()){
+                coord.setX(dimPlan.getX().sub(coord.getX()));
+            }
+
+             */
             double x = coord.getX().toDouble();
             double y = coord.getY().toDouble();
             if (x >= 0 && x <= dimPlan.getX().toDouble() && y >= 0 && y <= dimPlan.getY().toDouble())
@@ -243,7 +247,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
             //clock = 0 ;
             this.repaint();
         }
-
     }
 
     public void press(MouseEvent e){
