@@ -45,7 +45,7 @@ public class Cote implements java.io.Serializable{
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
         }else{
             this.largeur = largeur;
-            this.updateAccessoir();
+            this.updateRetourAir();
             return true;
         }
     }
@@ -232,7 +232,6 @@ public class Cote implements java.io.Serializable{
             return true;
         }
     }
-    // TODO ici
     private boolean doesHauteurfitWithAccessoires(Pouce hauteur){
         for(int i = 0; i < this.accessoires.size(); i++){
             Double oldHauteurDouble = this.hauteur.toDouble();
@@ -245,7 +244,7 @@ public class Cote implements java.io.Serializable{
         return true;
     }
 
-    public ArrayList<Mur> getMurs(Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir) {
+    public ArrayList<Mur> getMurs(Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir,double angleReplis) {
         ArrayList<Mur> murs = new ArrayList<>();
 
         if(separateurs.size() == 0){
@@ -257,15 +256,19 @@ public class Cote implements java.io.Serializable{
         else {
             for (int i = 0 ; i < separateurs.size(); i++) {
                 if(i == 0){
-                    Mur m = new Mur(separateurs.get(i),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true);
+                    Mur m = new Mur(separateurs.get(i),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true,angleReplis);
                     m.setEstCoinGauche(true);
                     murs.add(m);
                 }else if(i + 1 == separateurs.size()){
-                    Mur m = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true);
-                    m.setEstCoinDroit(true);
-                    murs.add(m);
+                    if(separateurs.size() != 1 ){
+                        Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false,angleReplis);
+                        murs.add(m);
+                    }
+                    Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true,angleReplis);
+                    m2.setEstCoinDroit(true);
+                    murs.add(m2);
                 }else {
-                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false);
+                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false,angleReplis);
                     murs.add(m);
                 }
             }
@@ -332,7 +335,7 @@ public class Cote implements java.io.Serializable{
             separateurs.add(position);
             sortSeparateur();
             CheckValidityForEveryAccessoire();
-            this.updateAccessoir();
+            this.updateRetourAir();
         }else{
             throw new CoteError("Position en dehors du côté");
         }
@@ -342,7 +345,7 @@ public class Cote implements java.io.Serializable{
     }
     public void deleteSeparateur(int index){
         this.separateurs.remove(index);
-        this.updateAccessoir();
+        this.updateRetourAir();
     }
     public Pouce getSeparateur(int index){
         return this.separateurs.get(index);
@@ -353,7 +356,7 @@ public class Cote implements java.io.Serializable{
             separateurs.remove(index);
             separateurs.add(position);
             sortSeparateur();
-            this.updateAccessoir();
+            this.updateRetourAir();
         }else{
             throw new CoteError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
         }
@@ -370,7 +373,7 @@ public class Cote implements java.io.Serializable{
         } catch (PouceError ignored) {}
     }
 
-    private void updateAccessoir(){
+    private void updateRetourAir(){
         for (Accessoire acces:accessoires) {
             if (!acces.getType().equals("Retour d'air"))
                 continue;

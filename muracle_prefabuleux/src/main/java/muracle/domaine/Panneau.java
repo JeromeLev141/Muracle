@@ -21,27 +21,39 @@ public class Panneau {
         this.poids = poids;
     }
 
-    public Panneau(Pouce hauteur,Pouce largeur, Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis, char type,boolean isCoin){
+    public Panneau(Pouce hauteur,Pouce largeur, Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis, char type,boolean isCoin,double angleReplis){
         Pouce margeLarReplis = margeLargeurReplis.mul(2);
         this.largeur = largeur;
         this.hauteur = hauteur;
-        Double largeurPlis = Math.tan(45)*longeurPlis.toDouble();
-        Pouce airCoinTriangle = longeurPlis.mul(largeurPlis.intValue() + 1);
+        Double largeurPlis = longeurPlis.toDouble()/Math.tan(angleReplis);
+        Double airCoinTriangle = longeurPlis.toDouble() * largeurPlis;
+        double surfaceInterieurDouble;
 
         Pouce surfaceEnPouceCarre = largeur.mul(hauteur);
         if(type == 'i'){
             Pouce largeurReplisInt = largeur.sub(margeLarReplis);
             Pouce surfaceReplisInt = largeurReplisInt.mul(epaisseur);
             Pouce surfaceInterieur = surfaceEnPouceCarre.add(surfaceReplisInt.mul(2));
+            if(isCoin){
+                Double largeurPlisCoin = longeurPlis.toDouble()/Math.tan(45);
+                surfaceInterieurDouble = surfaceInterieur.toDouble() + (longeurPlis.toDouble() * largeurPlisCoin);
 
-            Pouce longeurPlisAddMargeReplis = longeurPlis.add(margeLargeurReplis);
-            Pouce aireRectangle = longeurPlis.mul(largeur.sub(longeurPlisAddMargeReplis.mul(2)));
+                double largeurPlisHautCoin = largeur.toDouble() - (margeLargeurReplis.toDouble() * 2) + largeurPlisCoin;
+                double largeurPlisHautCoinSansTriangle = largeurPlisHautCoin - (largeurPlis * 2);
+                surfaceInterieurDouble += largeurPlisHautCoinSansTriangle * longeurPlis.toDouble();
+            }
+            else{
 
-            surfaceInterieur.add(aireRectangle.mul(2));
-            surfaceInterieur.add(airCoinTriangle);
+                Pouce longeurPlisAddMargeReplis = longeurPlis.add(margeLargeurReplis);
+                Pouce aireRectangle = longeurPlis.mul(largeur.sub(longeurPlisAddMargeReplis.mul(2)));
 
-            this.poids = surfaceInterieur.toDouble() * poidsMatiere;
+                surfaceInterieur.add(aireRectangle.mul(2));
+                surfaceInterieurDouble = surfaceInterieur.toDouble() + airCoinTriangle;
+            }
+
+            this.poids = surfaceInterieurDouble * poidsMatiere;
         } else if (type == 'e') {
+
             Pouce hauteurReplisExt = hauteur.sub(margeLarReplis);
             Pouce surfaceReplisExt = hauteurReplisExt.mul(epaisseur);
             Pouce surfaceExterieur = surfaceEnPouceCarre.add(surfaceReplisExt.mul(2));
@@ -49,8 +61,14 @@ public class Panneau {
             Pouce aireRectangle = longeurPlis.mul(hauteur.sub(longeurPlisAddMargeReplis.mul(2)));
 
             surfaceExterieur.add(aireRectangle.mul(2));
-            surfaceExterieur.add(airCoinTriangle);
-            this.poids = surfaceExterieur.toDouble() * poidsMatiere;
+            if(isCoin){
+                Double rallongeMur = hauteur.toDouble() * epaisseur.toDouble();
+                Double hypothenuse = epaisseur.toDouble()/Math.cos(45);
+                Double rallongeMurHyppo = hypothenuse * hauteurReplisExt.toDouble();
+
+                this.poids += rallongeMur + rallongeMurHyppo - aireRectangle.toDouble();
+            }
+            this.poids = (surfaceExterieur.toDouble() + airCoinTriangle) * poidsMatiere;
         }
     }
 
