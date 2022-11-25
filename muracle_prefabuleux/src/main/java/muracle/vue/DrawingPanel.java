@@ -104,6 +104,13 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     }
 
     /**
+     * @brief inverse le x de la position de la cam
+     */
+    public void miroir(){
+        posiCam.setX(dimPlan.getX().sub(posiCam.getX()));
+    }
+
+    /**
      * @brief calcule avec l'emplacement de la sourie la position dans le plan en Pouce
      * @param event :MouseEvent
      * @return CoordPouce de l'emplacement de la sourie
@@ -135,12 +142,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         try {
             CoordPouce coord = coordPixelToPouceAll(event);
             coord.round(64);
-            /*
-            if (mainWindow.controller.isVueCote() && !mainWindow.controller.isVueExterieur()){
-                coord.setX(dimPlan.getX().sub(coord.getX()));
-            }
-
-             */
             double x = coord.getX().toDouble();
             double y = coord.getY().toDouble();
             if (x >= 0 && x <= dimPlan.getX().toDouble() && y >= 0 && y <= dimPlan.getY().toDouble())

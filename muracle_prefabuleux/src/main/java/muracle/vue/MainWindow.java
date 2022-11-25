@@ -382,6 +382,7 @@ public class MainWindow extends JFrame {
 				changeVueButton.addActionListener(e -> {
 					changeVueButton.setSelected(changeVueButton.isSelected());
 					controller.setIsVueExterieur(!changeVueButton.isSelected());
+					drawingPanel.miroir();
 					drawingPanel.repaint();
 					if (changeVueButton.isSelected()) {
 						selectionAccessoireComboBox.addItem("Prise électrique");
