@@ -147,9 +147,15 @@ public class Cote implements java.io.Serializable{
         }
     }
     public boolean doesAccessoireFitWithSeparateur(Accessoire accessoire){
-
-        Double upperLeftPoint = accessoire.getPosition().getX().toDouble();
-        Double upperRightPoint = accessoire.getPosition().getX().add(accessoire.getLargeur()).toDouble();
+       Double upperLeftPoint;
+       Double upperRightPoint;
+        if(Objects.equals(accessoire.getType(), "Fenêtre")){
+            upperLeftPoint = accessoire.getPosition().getX().sub(accessoire.getMarge()).toDouble();
+            upperRightPoint = accessoire.getPosition().getX().add(accessoire.getLargeur()).add(accessoire.getMarge()).toDouble();
+        }else{
+            upperLeftPoint = accessoire.getPosition().getX().toDouble();
+            upperRightPoint = accessoire.getPosition().getX().add(accessoire.getLargeur()).toDouble();
+        }
         for (int e = 0; e < separateurs.size(); e++) {
             double separateur = getSeparateur(e).toDouble();
             if (upperLeftPoint <= separateur && separateur <= upperRightPoint) {

@@ -153,9 +153,15 @@ public class MainWindow extends JFrame {
 					hCoteTextField.setText(controller.getSelectedCoteReadOnly().hauteur.toString());
 				}
 				if (controller.isSeparateurSelected())
-					posSepTextField.setText(controller.getSelectedSeparateur().toString());
+					if (controller.isVueExterieur())
+						posSepTextField.setText(controller.getSelectedSeparateur().toString());
+					else
+						posSepTextField.setText(controller.getSelectedSepInverse().toString());
 				if (controller.isAccessoireSelected()) {
-					posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
+					if (controller.isVueExterieur())
+						posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
+					else
+						posXAccesTextField.setText(controller.getSelectedAccesPosXInverse().toString());
 					posYAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getY().toString());
 					largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
 					hAccesTextField.setText(controller.getSelectedAccessoireReadOnly().hauteur.toString());
@@ -392,6 +398,18 @@ public class MainWindow extends JFrame {
 							poidsMurTextField.setText(String.valueOf(df.format(controller.getSelectedMurReadOnly().PanneauExt.getPoids())));
 						else
 							poidsMurTextField.setText(String.valueOf(df.format(controller.getSelectedMurReadOnly().PanneauInt.getPoids())));
+					}
+					if (controller.isAccessoireSelected()) {
+						if (controller.isVueExterieur())
+							posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
+						else
+							posXAccesTextField.setText(controller.getSelectedAccesPosXInverse().toString());
+					}
+					if (controller.isSeparateurSelected()) {
+						if (controller.isVueExterieur())
+							posSepTextField.setText(controller.getSelectedSeparateur().toString());
+						else
+							posSepTextField.setText(controller.getSelectedSepInverse().toString());
 					}
 				});
 				menuBar.add(changeVueButton);
@@ -728,7 +746,10 @@ public class MainWindow extends JFrame {
 							posSepTextField.addActionListener(e -> {
 								if (controller.isSeparateurSelected()) {
 									controller.moveSeparateur(posSepTextField.getText());
-									posSepTextField.setText(controller.getSelectedSeparateur().toString());
+									if (controller.isVueExterieur())
+										posSepTextField.setText(controller.getSelectedSeparateur().toString());
+									else
+										posSepTextField.setText(controller.getSelectedSepInverse().toString());
 									drawingPanel.repaint();
 								}
 							});
@@ -739,7 +760,10 @@ public class MainWindow extends JFrame {
 							posXAccesTextField.addActionListener(e -> {
 								if (controller.isAccessoireSelected()) {
 									controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
-									posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
+									if (controller.isVueExterieur())
+										posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
+									else
+										posXAccesTextField.setText(controller.getSelectedAccesPosXInverse().toString());
 									drawingPanel.repaint();
 								}
 							});
@@ -760,7 +784,11 @@ public class MainWindow extends JFrame {
 								if (controller.isAccessoireSelected()) {
 									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
 									largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
-									posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString()); //affecte parfois
+									//affecte parfois
+									if (controller.isVueExterieur())
+										posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
+									else
+										posXAccesTextField.setText(controller.getSelectedAccesPosXInverse().toString());
 									drawingPanel.repaint();
 								}
 							});
