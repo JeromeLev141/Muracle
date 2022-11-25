@@ -126,6 +126,7 @@ public class MuracleController {
                 murSelected = -1;
                 accessoireSelected = -1;
                 separateurSelected = -1;
+                isVueDessus = true;
                 isVueExterieur = true;
             } catch (ClassNotFoundException | IOException e) {
                 throw new RuntimeException(e);
@@ -653,11 +654,17 @@ public class MuracleController {
     }
 
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
+        Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
+        Pouce posXAcces = acces.getPosition().getX();
         try {
             String save = makeSaveString();
             Cote cote = Objects.requireNonNull(getSelectedCote());
-            Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
             if (!largeur.contains("-") && !largeur.equals(acces.getLargeur().toString())) {
+                Pouce largAcces = new Pouce(largeur);
+                if (!isVueExterieur) {
+                    Pouce decal = largAcces.sub(acces.getLargeur());
+                    acces.getPosition().setX(posXAcces.sub(decal));
+                }
                 cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
                 pushNewChange(save);
             }
@@ -671,6 +678,7 @@ public class MuracleController {
             }
         } catch (PouceError | FractionError | CoteError e) {
             setErrorMessage(e.getMessage());
+            acces.getPosition().setX(posXAcces);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

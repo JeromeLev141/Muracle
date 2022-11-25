@@ -33,10 +33,13 @@ public class AfficheurElevationCote extends Afficheur {
         h = cote.hauteur.toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setStroke(ligneStroke);
 
 
         ajustement(g2d,zoom, dim, posiCam,dimPlan);
+        if (controller.isGrilleShown())
+            drawGrille(g2d, posX, posY);
         drawCote(g2d);
         drawMurs(g2d);
         drawSeparateur(g2d);
@@ -192,8 +195,8 @@ public class AfficheurElevationCote extends Afficheur {
                 path += "Ext.png";
             else path += "Int.png";
             image = ImageIO.read(Objects.requireNonNull(getClass().getResource(path)));
-            image = image.getScaledInstance( 48, 48,  Image.SCALE_SMOOTH ) ;
-            g.drawImage(image, initialDimension.width - 64, 16, null);
+            image = image.getScaledInstance( 64, 64,  Image.SCALE_SMOOTH ) ;
+            g.drawImage(image, initialDimension.width - 80, 16, null);
         } catch (Exception except) {
             except.printStackTrace();
         }
