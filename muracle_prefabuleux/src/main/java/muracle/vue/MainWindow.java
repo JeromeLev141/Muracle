@@ -453,7 +453,6 @@ public class MainWindow extends JFrame {
 				lookButton.setMaximumSize(new Dimension(30, 32767));
 				lookButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				lookButton.setRequestFocusEnabled(false);
-				lookButton.setContentAreaFilled(false);
 				try {
 					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/moon.png")));
 					image = image.getScaledInstance( 16, 16,  Image.SCALE_SMOOTH ) ;
@@ -494,7 +493,6 @@ public class MainWindow extends JFrame {
 				undoButton.setMaximumSize(new Dimension(50, 32767));
 				undoButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				undoButton.setRequestFocusEnabled(false);
-				undoButton.setContentAreaFilled(false);
 				try {
 					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/undoRev.png")));
 					image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
@@ -521,7 +519,6 @@ public class MainWindow extends JFrame {
 				redoButton.setMaximumSize(new Dimension(50, 32767));
 				redoButton.setRequestFocusEnabled(false);
 				redoButton.setHorizontalTextPosition(SwingConstants.CENTER);
-				redoButton.setContentAreaFilled(false);
 				try {
 					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/redoRev.png")));
 					image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
@@ -542,6 +539,11 @@ public class MainWindow extends JFrame {
 					}
 				});
 				menuBar.add(redoButton);
+
+				JLabel tokenSpacer = new JLabel("");
+				tokenSpacer.setPreferredSize(new Dimension(1, 20));
+
+				menuBar.add(tokenSpacer);
 			}
 			this.setJMenuBar(menuBar);
 
