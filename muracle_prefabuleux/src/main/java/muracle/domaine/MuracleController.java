@@ -126,6 +126,7 @@ public class MuracleController {
                 murSelected = -1;
                 accessoireSelected = -1;
                 separateurSelected = -1;
+                isVueDessus = true;
                 isVueExterieur = true;
             } catch (ClassNotFoundException | IOException e) {
                 throw new RuntimeException(e);
