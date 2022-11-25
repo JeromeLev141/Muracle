@@ -21,8 +21,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     private final Color backgroundColor;
     private Point mouse_pt;
     private boolean clip;
-    private int clock;
-
 
     /**
      * @brief constructeur de la classe DrawingPanel
@@ -41,7 +39,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         addMouseWheelListener(this);
         mouse_pt = null;
         clip = false;
-        clock = 0;
     }
 
     /**
@@ -257,8 +254,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     }
 
     public void release(MouseEvent e){
-
-        clock = 2;
         moved(e);
         //System.out.println("Uncliped");
         clip = false;

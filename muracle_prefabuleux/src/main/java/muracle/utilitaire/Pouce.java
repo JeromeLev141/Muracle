@@ -456,6 +456,7 @@ public class Pouce implements java.io.Serializable{
     /**
      @brief arroudie la fraction au dénominateur donnée.
      @param value :int la valeur du denum
+     @throws FractionError: if not valid
      **/
     public Pouce round(int value) throws FractionError {
        this.fraction.round(value);
