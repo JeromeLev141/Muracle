@@ -31,13 +31,6 @@ public class CoordPouce implements java.io.Serializable{
         y.round(value);
         return this;
     }
-    //à implémenter dans pouce calcule de la racide carré
-    //Fonction incomplet
-    public static Pouce distance(CoordPouce pts1, CoordPouce pts2) throws FractionError {
-        Pouce x = pts1.getX().sub(pts2.getX());
-        Pouce y = pts1.getY().sub(pts2.getY());
-        return null;
-    }
 
     @Override
     public String toString(){
