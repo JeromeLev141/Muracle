@@ -241,6 +241,8 @@ public class PouceTest {
             assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
             assertThat(pouce1.add(new Fraction(-1,5)).equals(new Pouce(1,1,20))).isTrue();
             assertThat(pouce1.equals(new Pouce(1,1,4))).isTrue();
+
+            assertThat(new Pouce(-2,55,512).add(new Fraction(64,10)).equals(new Pouce(4,749,2560)));
         }catch (FractionError fractionError){
             fail();
         }

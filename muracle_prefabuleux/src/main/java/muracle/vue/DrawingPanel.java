@@ -236,16 +236,12 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      * @param e:MouseMotionEvent
      */
     public void moved(MouseEvent e){
-        //clock++;
         if (clip) {
             Fraction zoom = zoomFactor.copy();
             Fraction dx = zoom.mul(mouse_pt.x-e.getX());
             Fraction dy = zoom.mul(mouse_pt.y-e.getY());
             posiCam.setX(posiCamTempo.getX().add(dx));
             posiCam.setY(posiCamTempo.getY().add(dy));
-
-            //mouse_pt = cord;
-            //clock = 0 ;
             this.repaint();
         }
     }
@@ -259,7 +255,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
 
     public void release(MouseEvent e){
         moved(e);
-        //System.out.println("Uncliped");
         clip = false;
         mouse_pt = null;
         posiCamTempo = null;
@@ -281,18 +276,17 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
                     this.posiCam = new CoordPouce(this.dimPlan.getX().div(2), this.dimPlan.getY().div(2));
                 }else if (zoomFactor.toDouble() > 0.1) {
 
-                    Pouce x = new Pouce(0,getSize().width,2);
+                    Pouce x = new Pouce(0,this.getWidth(),2);
                     x.mulRef(zoomInc);
-                    x.mulRef(new Fraction(2*e.getX(),getSize().width).subRef(1));
+                    x.mulRef(new Fraction(2*e.getX(),this.getWidth()).subRef(1));
                     this.posiCam.getX().addRef(x);
 
-                    Pouce y = new Pouce(0,getSize().height,2);
+                    Pouce y = new Pouce(0,this.getHeight(),2);
                     y.mulRef(zoomInc);
-                    y.mulRef(new Fraction(2*e.getY(),getSize().height).subRef(1));
+                    y.mulRef(new Fraction(2*e.getY(),this.getHeight()).subRef(1));
                     this.posiCam.getY().addRef(y);
                 }
             }catch (FractionError | PouceError ignored){}
-
             this.repaint();
 
         }

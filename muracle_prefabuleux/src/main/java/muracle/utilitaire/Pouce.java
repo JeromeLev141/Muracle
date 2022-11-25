@@ -441,7 +441,10 @@ public class Pouce implements java.io.Serializable{
      */
     private Fraction pouce2Fraction(){
         Fraction fract = this.fraction.copy();
-        fract.setNum(fract.getNum() + entier*fract.getDenum());
+        if(entier < 0)
+            fract.setNum(entier*fract.getDenum() - fract.getNum());
+        else
+            fract.setNum(fract.getNum() + entier*fract.getDenum());
         return fract;
     }
 
