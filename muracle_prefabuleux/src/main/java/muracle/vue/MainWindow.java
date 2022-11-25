@@ -104,6 +104,7 @@ public class MainWindow extends JFrame {
 		JTextField posSepTextField = new JTextField();
 
 		// params accessoires
+		JTextField typeAccesTextField = new JTextField();
 		JTextField posXAccesTextField = new JTextField();
 		JTextField posYAccesTextField = new JTextField();
 		JTextField largAccesTextField = new JTextField();
@@ -155,6 +156,7 @@ public class MainWindow extends JFrame {
 				if (controller.isSeparateurSelected())
 					posSepTextField.setText(controller.getSelectedSeparateur().toString());
 				if (controller.isAccessoireSelected()) {
+					typeAccesTextField.setText(controller.getSelectedAccessoireReadOnly().type);
 					posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
 					posYAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getY().toString());
 					largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
@@ -262,8 +264,8 @@ public class MainWindow extends JFrame {
 			{
 				//---- nouveau projet ----
 				newProjectButton.setText("Nouveau projet");
-				newProjectButton.setPreferredSize(new Dimension(140, 22));
-				newProjectButton.setMaximumSize(new Dimension(100, 32767));
+				newProjectButton.setPreferredSize(new Dimension(120, 22));
+				newProjectButton.setMaximumSize(new Dimension(120, 32767));
 				newProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				newProjectButton.setRequestFocusEnabled(false);
 				newProjectButton.setFocusPainted(false);
@@ -279,8 +281,8 @@ public class MainWindow extends JFrame {
 
 				//---- ouvrir projet ----
 				openProjectButton.setText("Ouvrir projet");
-				openProjectButton.setPreferredSize(new Dimension(140, 22));
-				openProjectButton.setMaximumSize(new Dimension(100, 32767));
+				openProjectButton.setPreferredSize(new Dimension(120, 22));
+				openProjectButton.setMaximumSize(new Dimension(120, 32767));
 				openProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				openProjectButton.setRequestFocusEnabled(false);
 				openProjectButton.setFocusPainted(false);
@@ -296,8 +298,8 @@ public class MainWindow extends JFrame {
 
 				//---- sauvergarder projet ----
 				saveProjectButton.setText("Sauvegarder projet");
-				saveProjectButton.setMaximumSize(new Dimension(120, 32767));
-				saveProjectButton.setPreferredSize(new Dimension(160, 22));
+				saveProjectButton.setMaximumSize(new Dimension(140, 32767));
+				saveProjectButton.setPreferredSize(new Dimension(140, 22));
 				saveProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				saveProjectButton.setRequestFocusEnabled(false);
 				saveProjectButton.addActionListener(e -> controller.sauvegarderProjet(this));
@@ -305,8 +307,8 @@ public class MainWindow extends JFrame {
 
 				//---- exporter plan ----
 				exportButton.setText("Exporter plans");
-				exportButton.setPreferredSize(new Dimension(140, 22));
-				exportButton.setMaximumSize(new Dimension(100, 32767));
+				exportButton.setPreferredSize(new Dimension(120, 22));
+				exportButton.setMaximumSize(new Dimension(120, 32767));
 				exportButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				exportButton.setRequestFocusEnabled(false);
 				exportButton.addActionListener(e -> controller.exporterPlan(this));
@@ -314,8 +316,8 @@ public class MainWindow extends JFrame {
 
 				//---- afficher grille ----
 				showGrilleButton.setText("Afficher grille");
-				showGrilleButton.setMaximumSize(new Dimension(100, 32767));
-				showGrilleButton.setPreferredSize(new Dimension(140, 22));
+				showGrilleButton.setMaximumSize(new Dimension(120, 32767));
+				showGrilleButton.setPreferredSize(new Dimension(120, 22));
 				showGrilleButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				showGrilleButton.setRequestFocusEnabled(false);
 				showGrilleButton.addActionListener(e -> {
@@ -327,7 +329,7 @@ public class MainWindow extends JFrame {
 
 				//---- ajouter Separateur ----
 				addSeparateurButton.setText("Ajouter séparateur");
-				addSeparateurButton.setMaximumSize(new Dimension(100, 32767));
+				addSeparateurButton.setMaximumSize(new Dimension(140, 32767));
 				addSeparateurButton.setPreferredSize(new Dimension(140, 22));
 				addSeparateurButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				addSeparateurButton.setRequestFocusEnabled(false);
@@ -340,7 +342,7 @@ public class MainWindow extends JFrame {
 
 				//---- ajouter accessoire ----
 				addAccessoireButton.setText("Ajouter Accessoire");
-				addAccessoireButton.setMaximumSize(new Dimension(100, 32767));
+				addAccessoireButton.setMaximumSize(new Dimension(140, 32767));
 				addAccessoireButton.setPreferredSize(new Dimension(140, 22));
 				addAccessoireButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				addAccessoireButton.setRequestFocusEnabled(false);
@@ -368,8 +370,8 @@ public class MainWindow extends JFrame {
 
 				//---- changer vue ----
 				changeVueButton.setText("Changer de vue");
-				changeVueButton.setMaximumSize(new Dimension(100, 32767));
-				changeVueButton.setPreferredSize(new Dimension(140, 22));
+				changeVueButton.setMaximumSize(new Dimension(120, 32767));
+				changeVueButton.setPreferredSize(new Dimension(120, 22));
 				changeVueButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				changeVueButton.setRequestFocusEnabled(false);
 				changeVueButton.setVisible(false);
@@ -398,7 +400,7 @@ public class MainWindow extends JFrame {
 
 				//---- retour vue dessus ----
 				retourVueHautButton.setText("Retour vue dessus");
-				retourVueHautButton.setMaximumSize(new Dimension(100, 32767));
+				retourVueHautButton.setMaximumSize(new Dimension(140, 32767));
 				retourVueHautButton.setPreferredSize(new Dimension(140, 22));
 				retourVueHautButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				retourVueHautButton.setRequestFocusEnabled(false);
@@ -734,6 +736,11 @@ public class MainWindow extends JFrame {
 							});
 
 							// params accessoires
+
+							//---- typeAccesParam ----
+							addParams(parametresModifPanel, "Type de l'accessoire", typeAccesTextField, "", posY++);
+							typeAccesTextField.setEnabled(false);
+
 							//---- posXAccesParam ----
 							addParams(parametresModifPanel, "Position X de l'accessoire", posXAccesTextField, "po", posY++);
 							posXAccesTextField.addActionListener(e -> {

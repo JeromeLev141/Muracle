@@ -42,12 +42,13 @@ public class AfficheurPlanSalle extends Afficheur{
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         ajustement(g2d,zoom, dim, posiCam, dimPlan);
-
+        if (controller.isGrilleShown())
+            drawGrille(g2d, posX - ep, posY- ep);
         drawSalle(g2d);
         drawSeparateur(g2d);
         drawTrouRetourAir(g2d);
-
         reset(g2d,zoom, dim, posiCam, dimPlan);
+
         drawVue(g);
         drawErrorMessage(g2d);
     }
@@ -201,8 +202,8 @@ public class AfficheurPlanSalle extends Afficheur{
     private void drawVue(Graphics g) {
         try {
             Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/vues/vueDessus.png")));
-            image = image.getScaledInstance( 48, 48,  Image.SCALE_SMOOTH ) ;
-            g.drawImage(image, initialDimension.width - 64, 16, null);
+            image = image.getScaledInstance( 64, 64,  Image.SCALE_SMOOTH ) ;
+            g.drawImage(image, initialDimension.width - 80, 16, null);
         } catch (Exception except) {
             except.printStackTrace();
         }

@@ -44,34 +44,31 @@ public class Afficheur {
             selectedStroke = new BasicStroke(6 / (float) zoom);
         }
         g.setColor(lineColor);
-        if (controller.isGrilleShown()) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setStroke(ligneStroke);
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            ajustement(g2d, zoom, dim, posiCam, dimPlan);
-            drawGrille(g2d);
-            reset(g2d, zoom, dim, posiCam, dimPlan);
-        }
     }
 
-
-    private void drawGrille(Graphics2D g) {
-        g.setColor(grilleColor);
-        double decalX = (int) (2 * initialDimension.width / controller.getDistLigneGrille().toDouble())
-                * controller.getDistLigneGrille().toDouble();
-        double decalY = (int) (2 * initialDimension.height / controller.getDistLigneGrille().toDouble())
-                * controller.getDistLigneGrille().toDouble();
-        double posX = initialDimension.width % controller.getDistLigneGrille().toDouble() / 2 - decalX;
-        double posY = initialDimension.height % controller.getDistLigneGrille().toDouble() / 2 - decalY;
+    protected void drawGrille(Graphics2D g2d, double posX, double posY) {
+        g2d.setColor(grilleColor);
+        double tokenX = posX;
+        double tokenY = posY;
         while (posX < 3 * initialDimension.width) {
-            g.draw(new Line2D.Double(posX, -2 * initialDimension.height, posX, 3 * initialDimension.height));
+            g2d.draw(new Line2D.Double(posX, -2 * initialDimension.height, posX, 3 * initialDimension.height));
             posX += controller.getDistLigneGrille().toDouble();
         }
+        posX = tokenX - controller.getDistLigneGrille().toDouble();
+        while (posX > - 2 * initialDimension.width) {
+            g2d.draw(new Line2D.Double(posX, -2 * initialDimension.height, posX, 3 * initialDimension.height));
+            posX -= controller.getDistLigneGrille().toDouble();
+        }
         while (posY < 3 * initialDimension.height) {
-            g.draw(new Line2D.Double(-2 * initialDimension.width, posY, 3 * initialDimension.width, posY));
+            g2d.draw(new Line2D.Double(-2 * initialDimension.width, posY, 3 * initialDimension.width, posY));
             posY += controller.getDistLigneGrille().toDouble();
         }
-        g.setColor(lineColor);
+        posY = tokenY - controller.getDistLigneGrille().toDouble();
+        while (posY > - 2 * initialDimension.height) {
+            g2d.draw(new Line2D.Double(-2 * initialDimension.width, posY, 3 * initialDimension.width, posY));
+            posY -= controller.getDistLigneGrille().toDouble();
+        }
+        g2d.setColor(lineColor);
     }
 
     protected void drawErrorMessage(Graphics2D g2d) {
