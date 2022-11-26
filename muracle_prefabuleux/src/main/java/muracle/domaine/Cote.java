@@ -270,7 +270,7 @@ public class Cote implements java.io.Serializable{
                         Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis);
                         murs.add(m);
                     }
-                    Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeLargeurReplis,margeEp,longeurPlis,true,angleReplis);
+                    Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
                     m2.setEstCoinDroit(true);
                     murs.add(m2);
                 }else {
@@ -282,7 +282,7 @@ public class Cote implements java.io.Serializable{
                 CoordPouce coinHautGauche =  accessoire.getPosition();
                 CoordPouce coinHautDroit = new CoordPouce(coinHautGauche.getX().add(accessoire.getLargeur()),coinHautGauche.getY());
                 int i = 0;
-                while (separateurs.get(i).compare(coinHautGauche.getX()) == -1){
+                while (separateurs.get(i).compare(coinHautGauche.getX()) == -1 && i < separateurs.size()){
                     i++;
                 }
                 Panneau panneauIntGauche = murs.get(i).getPanneauInt();
