@@ -250,7 +250,7 @@ public class Cote implements java.io.Serializable{
         return true;
     }
 
-    public ArrayList<Mur> getMurs(Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir,double angleReplis) {
+    public ArrayList<Mur> getMurs(Pouce epaisseur, Pouce margeEp, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir,double angleReplis) {
         ArrayList<Mur> murs = new ArrayList<>();
 
         if(separateurs.size() == 0){
@@ -337,7 +337,7 @@ public class Cote implements java.io.Serializable{
         return separateurs;
     }
     public void addSeparateur(Pouce position) throws CoteError {
-        if(position.compare(largeur) == -1 || !separateurs.contains(position)){
+        if(position.compare(largeur) == -1 && !separateurs.contains(position)){
             separateurs.add(position);
             sortSeparateur();
             CheckValidityForEveryAccessoire();

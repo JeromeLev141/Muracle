@@ -80,14 +80,16 @@ public class MuracleController {
     public void creerProjet() {
         try {
             salle = new Salle(new Pouce("288"), new Pouce("108"),
-                    new Pouce("144"), new Pouce("12"));
+                    new Pouce("144"), new Pouce("8"));
             for (Cote cote : salle.getTableauCote()) {
-                cote.addSeparateur(new Pouce(48, 0, 1));
-                cote.addSeparateur(new Pouce(96, 0, 1));
+                cote.addSeparateur(new Pouce(36, 0, 1));
+                cote.addSeparateur(new Pouce(72, 0, 1));
+                cote.addSeparateur(new Pouce(108, 0, 1));
                 if (cote.getLargeur().getEntier() == 288) {
                     cote.addSeparateur(new Pouce(144, 0, 1));
-                    cote.addSeparateur(new Pouce(192, 0, 1));
-                    cote.addSeparateur(new Pouce(240, 0, 1));
+                    cote.addSeparateur(new Pouce(180, 0, 1));
+                    cote.addSeparateur(new Pouce(216, 0, 1));
+                    cote.addSeparateur(new Pouce(252, 0, 1));
                 }
             }
             generateurPlan = new GenerateurPlan();
@@ -280,7 +282,7 @@ public class MuracleController {
         }
     }
 
-    public  SalleDTO getSalleReadOnly() { return new SalleDTO(salle); }
+    public  SalleDTO getSalleReadOnly() { return new SalleDTO(getSalle()); }
     
     private Salle getSalle() {
         return salle;
@@ -320,7 +322,7 @@ public class MuracleController {
         Pouce ep = salle.getProfondeur(); // epaisseur mur
         Pouce coinX = salle.getProfondeur().add(salle.getLargeur()); // coin interieur haut droit
         Pouce coinY = salle.getProfondeur().add(salle.getLongueur()); // coin interieur bas gauche
-        Pouce posXVueCote = new Pouce(1, 0, 1); //temporaire
+        Pouce posXVueCote = null;
         if (posX.compare(ep) == 1 && posX.compare(coinX) == -1) {
             if (posY.compare(ep) == -1) {
                 selectCote('N');
@@ -342,19 +344,19 @@ public class MuracleController {
             }
         }
         Cote cote = getSelectedCote();
-        if (cote != null) {
+        if (cote != null && posXVueCote != null) {
             boolean contientSep = false;
+            Pouce jeu = new Pouce(1, 1, 2); // la largeur des lignes est de deux pouces (pixels) en zoom x1 + jeu de 1 sur 2
             for (Pouce sep : cote.getSeparateurs()) {
-                Pouce jeu = new Pouce(1, 1, 2); // la largeur des lignes est de deux pouces (pixels) en zoom x1 + jeu de 1 sur 2
                 if (posXVueCote.compare(sep.sub(jeu)) == 1 &&
                         posXVueCote.compare(sep.add(jeu)) == -1) {
-                    selectSeparateur(getSelectedCote().getSeparateurs().indexOf(sep));
+                    selectSeparateur(cote.getSeparateurs().indexOf(sep));
                     contientSep = true;
                 }
             }
             if (!contientSep && addSepMode) {
                 addSeparateur(posXVueCote);
-                selectSeparateur(getSelectedCote().getSeparateurs().indexOf(posXVueCote));
+                selectSeparateur(cote.getSeparateurs().indexOf(posXVueCote));
             }
         }
         if (coteSelected != ' ' && separateurSelected == -1) {
@@ -381,7 +383,7 @@ public class MuracleController {
                 if (posX.compare(sep.add(jeu)) == 1)
                     indexMur++;
             }
-            murSelected = indexMur;
+            selectMur(indexMur);
         }
 
         boolean contientAcces = false;
@@ -421,7 +423,7 @@ public class MuracleController {
     }
 
     public CoteDTO getSelectedCoteReadOnly() { return new CoteDTO(Objects.requireNonNull(getSelectedCote()),
-            generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+            salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
             generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis()); }
     private Cote getSelectedCote() {
         if (coteSelected != ' ')
@@ -464,7 +466,7 @@ public class MuracleController {
 
     private Mur getSelectedMur() {
         if (murSelected != -1)
-            return Objects.requireNonNull(getSelectedCote()).getMurs(generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+            return Objects.requireNonNull(getSelectedCote()).getMurs(salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
                     generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis()).get(murSelected);
         return null;
     }
