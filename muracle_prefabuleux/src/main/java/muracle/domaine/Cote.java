@@ -262,19 +262,19 @@ public class Cote implements java.io.Serializable{
         else {
             for (int i = 0 ; i < separateurs.size(); i++) {
                 if(i == 0){
-                    Mur m = new Mur(separateurs.get(i),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true,angleReplis);
+                    Mur m = new Mur(separateurs.get(i),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
                     m.setEstCoinGauche(true);
                     murs.add(m);
                 }else if(i + 1 == separateurs.size()){
                     if(separateurs.size() != 1 ){
-                        Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false,angleReplis);
+                        Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis);
                         murs.add(m);
                     }
-                    Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,true,angleReplis);
+                    Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeLargeurReplis,margeEp,longeurPlis,true,angleReplis);
                     m2.setEstCoinDroit(true);
                     murs.add(m2);
                 }else {
-                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeLargeurReplis,longeurPlis,false,angleReplis);
+                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis);
                     murs.add(m);
                 }
             }

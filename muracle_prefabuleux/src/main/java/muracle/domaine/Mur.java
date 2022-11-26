@@ -17,11 +17,11 @@ public class Mur implements java.io.Serializable{
     public Mur(Pouce largeur, Pouce hauteur){
 
     }
-    public Mur(Pouce largeur, Pouce hauteur,Pouce epaisseur, Pouce margeLargeurReplis,Pouce longeurPlis, Boolean isCoin,double angleReplis){
+    public Mur(Pouce largeur, Pouce hauteur,Pouce epaisseur,Pouce margeEp, Pouce margeLargeurReplis,Pouce longeurPlis, Boolean isCoin,double angleReplis){
         this.largeur = largeur;
         this.hauteur = hauteur;
-        this.panneauExt = new Panneau(hauteur,largeur,epaisseur,margeLargeurReplis,longeurPlis,'e',isCoin,angleReplis);
-        this.panneauInt = new Panneau(hauteur,largeur,epaisseur,margeLargeurReplis,longeurPlis,'i',isCoin,angleReplis);
+        this.panneauExt = new Panneau(hauteur,largeur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,'e',isCoin,angleReplis);
+        this.panneauInt = new Panneau(hauteur,largeur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,'i',isCoin,angleReplis);
     }
 
     public Pouce getLargeur() {
