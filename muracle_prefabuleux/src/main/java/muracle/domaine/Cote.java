@@ -276,7 +276,8 @@ public class Cote implements java.io.Serializable{
                     Mur m = new Mur(separateurs.get(i),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
                     m.setEstCoinGauche(true);
                     murs.add(m);
-                }else if(i + 1 == separateurs.size()){
+                }
+                if(i + 1 == separateurs.size()){
                     if(separateurs.size() != 1 ){
                         Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis);
                         murs.add(m);
@@ -284,22 +285,18 @@ public class Cote implements java.io.Serializable{
                     Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
                     m2.setEstCoinDroit(true);
                     murs.add(m2);
-                }else {
+                }else if (i != 0){
                     Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis);
                     murs.add(m);
                 }
             }
             for (Accessoire accessoire: accessoires) {
                 CoordPouce coinHautGauche =  accessoire.getPosition();
-                CoordPouce coinHautDroit = new CoordPouce(coinHautGauche.getX().add(accessoire.getLargeur()),coinHautGauche.getY());
+                //CoordPouce coinHautDroit = new CoordPouce(coinHautGauche.getX().add(accessoire.getLargeur()),coinHautGauche.getY());
                 int x = 0;
-                for (int i = 0 ; i < separateurs.size(); i++){
-                    if(separateurs.get(i).compare(coinHautGauche.getX()) == 1){
-                        x = i;
-                    }
-                    if(i+1 == separateurs.size() && x ==0){
-                        x = i+1;
-                    }
+                for (Pouce separateur : separateurs) {
+                    if (coinHautGauche.getX().compare(separateur) == 1)
+                        x++;
                 }
                 Panneau panneauIntGauche = murs.get(x).getPanneauInt();
                 Panneau panneauExtGauche = murs.get(x).getPanneauExt();
