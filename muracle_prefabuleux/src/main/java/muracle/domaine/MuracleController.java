@@ -444,6 +444,9 @@ public class MuracleController {
 
     public void setIsVueExterieur(boolean exterieur) {
         isVueExterieur = exterieur;
+        if (isAccessoireSelected())
+            if (Objects.requireNonNull(getSelectedAccessoire()).isInterieurOnly())
+                accessoireSelected = -1;
     }
 
     public boolean isVueExterieur() {

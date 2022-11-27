@@ -114,7 +114,7 @@ public class Cote implements java.io.Serializable{
         }
         Pouce difLargeur = largeur.sub(accessoire.getLargeur());
         if (accessoire.getType().equals("Retour d'air")) {
-            dummyAccessoire.getPosition().setX(dummyAccessoire.getPosition().getX().sub(difLargeur.div(2)));
+            dummyAccessoire.getPosition().setX(dummyAccessoire.getPosition().getX().add(difLargeur.div(2)));
         }
         Pouce difHauteur = hauteur.sub(accessoire.getHauteur());
         if (accessoire.getType().equals("Porte")) {
@@ -127,7 +127,7 @@ public class Cote implements java.io.Serializable{
                 accessoire.setMarge(marge);
             }
             if (accessoire.getType().equals("Retour d'air")) {
-                accessoire.getPosition().setX(accessoire.getPosition().getX().sub(difLargeur.div(2)));
+                accessoire.getPosition().setX(accessoire.getPosition().getX().add(difLargeur.div(2)));
             }
             if (accessoire.getType().equals("Porte")) {
                 accessoire.getPosition().setY(accessoire.getPosition().getY().sub(difHauteur));

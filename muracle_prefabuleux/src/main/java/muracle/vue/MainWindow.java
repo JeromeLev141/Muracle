@@ -232,7 +232,7 @@ public class MainWindow extends JFrame {
 						for (int i = 28; i < 40; i++)
 							parametresModifPanel.getComponent(i).setVisible(false);
 						if (!controller.getSelectedAccessoireReadOnly().type.equals("Fenêtre"))
-							for (int i = 52; i < 55; i++)
+							for (int i = 55; i < 58; i++)
 								parametresModifPanel.getComponent(i).setVisible(false);
 						if (controller.getSelectedAccessoireReadOnly().type.equals("Retour d'air")) {
 							hAccesTextField.setEnabled(false);
@@ -414,6 +414,7 @@ public class MainWindow extends JFrame {
 						else
 							posSepTextField.setText(controller.getSelectedSepInverse().toString());
 					}
+					updater.updateParamsShown();
 				});
 				menuBar.add(changeVueButton);
 
@@ -977,14 +978,21 @@ public class MainWindow extends JFrame {
 		panel.add(introLabel, new GridBagConstraints(0, posY, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 10, 10), 0, 0));
 
-		textField.setColumns(5);
-		textField.addFocusListener(new FocusAdapter() {
-			public void focusLost(FocusEvent e) {
-				textField.postActionEvent();
-			}
-		});
-		panel.add(textField, new GridBagConstraints(1, posY, 1, 1, 0.0, 0.0,
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 10, 10), 0, 0));
+		if (intro.equals("Type de l'accessoire")) {
+			textField.setColumns(8);
+			panel.add(textField, new GridBagConstraints(1, posY, 2, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 10, 0), 0, 0));
+		}
+		else {
+			textField.setColumns(5);
+			textField.addFocusListener(new FocusAdapter() {
+				public void focusLost(FocusEvent e) {
+					textField.postActionEvent();
+				}
+			});
+			panel.add(textField, new GridBagConstraints(1, posY, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 10, 10), 0, 0));
+		}
 
 		JLabel endLabel = new JLabel(end);
 		panel.add(endLabel, new GridBagConstraints(2, posY, 1, 1, 0.0, 0.0,
