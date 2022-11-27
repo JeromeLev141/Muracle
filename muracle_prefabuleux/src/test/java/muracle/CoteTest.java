@@ -180,10 +180,9 @@ public class CoteTest {
         try{
             Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
             cote.addSeparateur(new Pouce("12"));
-            cote.addSeparateur(new Pouce("30"));
             cote.addSeparateur(new Pouce("10"));
             cote.addSeparateur(new Pouce("29"));
-            assertEquals(4, cote.getSeparateurs().size());
+            assertEquals(3, cote.getSeparateurs().size());
         }catch (Exception e){
             fail();
         }
@@ -193,7 +192,6 @@ public class CoteTest {
         try{
             Cote cote = new Cote('N', new Pouce("30"), new Pouce("30"));
             cote.addSeparateur(new Pouce("12"));
-            cote.addSeparateur(new Pouce("30"));
             cote.addSeparateur(new Pouce("10"));
             cote.addSeparateur(new Pouce("29"));
             cote.setSeparateur(2, new Pouce("15"));
