@@ -18,6 +18,8 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     private CoordPouce posiCam;
     private CoordPouce posiCamTempo;
     private CoordPouce dimPlan;
+    private CoordPouce min;
+    private CoordPouce max;
     private final Color backgroundColor;
     private Point mouse_pt;
     private boolean clip;
@@ -35,6 +37,8 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         }catch (Exception ignored){}
         posiCam = null;
         posiCamTempo = null;
+        min = new CoordPouce(null,null);
+        max = new CoordPouce(null,null);
         backgroundColor = new Color(89, 100, 124);
         addMouseWheelListener(this);
         mouse_pt = null;
@@ -70,6 +74,15 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         }
     }
 
+    private void updateMaxMin(){
+        try{
+            this.min.setX(this.dimPlan.getX().div(2).subRef(new Fraction(this.getWidth()*5,2)));
+            this.min.setY(this.dimPlan.getY().div(2).subRef(new Fraction(this.getHeight()*5,2)));
+            this.max.setX(this.dimPlan.getX().div(2).addRef(new Fraction(this.getWidth()*5,2)));
+            this.max.setY(this.dimPlan.getY().div(2).addRef(new Fraction(this.getHeight()*5,2)));
+        }catch (PouceError | FractionError ignored){}
+    }
+
     /**
      * @brief update dimPlan
      */
@@ -81,6 +94,8 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
 
         else if (mainWindow.controller.isVueCote())
             this.dimPlan = mainWindow.controller.getSelectedCoteReadOnly().getDimension();
+
+        updateMaxMin();
     }
 
     /**
@@ -101,6 +116,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         }catch (Exception ex){
             throw new Error("Erreur dans l'opdate des paramètre");
         }
+        updateMaxMin();
     }
 
     /**
@@ -242,12 +258,33 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
             Fraction dy = zoom.mul(mouse_pt.y-e.getY());
             posiCam.setX(posiCamTempo.getX().add(dx));
             posiCam.setY(posiCamTempo.getY().add(dy));
+            ajustCam();
             this.repaint();
         }
     }
 
+    private void ajustCam(){
+        try {
+            Fraction largeur = zoomFactor.mul(this.getWidth()).divRef(2);
+            Fraction hauteur = zoomFactor.mul(this.getHeight()).divRef(2);
+
+            if (posiCam.getX().sub(largeur).compare(this.min.getX()) == -1) {
+                posiCam.setX(this.min.getX().add(largeur));
+            }
+            if (posiCam.getX().add(largeur).compare(this.max.getX()) == 1) {
+                posiCam.setX(this.max.getX().sub(largeur));
+            }
+            if (posiCam.getY().sub(hauteur).compare(this.min.getY()) == -1) {
+                posiCam.setY(this.min.getY().add(hauteur));
+            }
+            if (posiCam.getY().add(hauteur).compare(this.max.getY()) == 1) {
+                posiCam.setY(this.max.getY().sub(hauteur));
+            }
+        }catch (FractionError ignored){}
+
+    }
+
     public void press(MouseEvent e){
-        //System.out.println("Cliped");
         clip = true;
         mouse_pt = e.getPoint();
         posiCamTempo = new CoordPouce(posiCam.getX().copy(), posiCam.getY().copy());
@@ -287,6 +324,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
                     this.posiCam.getY().addRef(y);
                 }
             }catch (FractionError | PouceError ignored){}
+            ajustCam();
             this.repaint();
 
         }
@@ -298,6 +336,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
                 try {
                     this.posiCam = new CoordPouce(this.dimPlan.getX().div(2), this.dimPlan.getY().div(2));
                 }catch (PouceError ignored){}
+            ajustCam();
             this.repaint();
         }
     }
