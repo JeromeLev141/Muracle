@@ -254,10 +254,21 @@ public class Cote implements java.io.Serializable{
         ArrayList<Mur> murs = new ArrayList<>();
 
         if(separateurs.size() == 0){
-            Mur m = new Mur(this.getLargeur(),hauteur);
-            m.setEstCoinGauche(true);
-            m.setEstCoinDroit(true);
-            murs.add(m);
+            Mur murSimpleCoin = new Mur(this.largeur,this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
+            Mur murDoubleCoin = new Mur(this.largeur,this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
+            Mur murNonCoin = new Mur(this.largeur,this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis);
+            double diffPoidsInt = murSimpleCoin.getPanneauInt().getPoids() - murNonCoin.getPanneauInt().getPoids();
+            double diffPoidsExt = murSimpleCoin.getPanneauExt().getPoids() - murNonCoin.getPanneauExt().getPoids();
+
+            diffPoidsInt += murSimpleCoin.getPanneauInt().getPoids();
+            diffPoidsExt += murSimpleCoin.getPanneauExt().getPoids();
+
+            murDoubleCoin.getPanneauInt().setPoids(diffPoidsInt);
+            murDoubleCoin.getPanneauExt().setPoids(diffPoidsExt);
+
+            murDoubleCoin.setEstCoinGauche(true);
+            murDoubleCoin.setEstCoinDroit(true);
+            murs.add(murDoubleCoin);
         }
         else {
             for (int i = 0 ; i < separateurs.size(); i++) {
@@ -281,14 +292,19 @@ public class Cote implements java.io.Serializable{
             for (Accessoire accessoire: accessoires) {
                 CoordPouce coinHautGauche =  accessoire.getPosition();
                 CoordPouce coinHautDroit = new CoordPouce(coinHautGauche.getX().add(accessoire.getLargeur()),coinHautGauche.getY());
-                int i = 0;
-                while (separateurs.get(i).compare(coinHautGauche.getX()) == -1 && i < separateurs.size()){
-                    i++;
+                int x = 0;
+                for (int i = 0 ; i < separateurs.size(); i++){
+                    if(separateurs.get(i).compare(coinHautGauche.getX()) == 1){
+                        x = i;
+                    }
+                    if(i+1 == separateurs.size() && x ==0){
+                        x = i+1;
+                    }
                 }
-                Panneau panneauIntGauche = murs.get(i).getPanneauInt();
-                Panneau panneauExtGauche = murs.get(i).getPanneauExt();
+                Panneau panneauIntGauche = murs.get(x).getPanneauInt();
+                Panneau panneauExtGauche = murs.get(x).getPanneauExt();
 
-                if(separateurs.get(i).compare(coinHautDroit.getX()) == -1) {
+                /*if(separateurs.get(i).compare(coinHautDroit.getX()) == -1) {
                     Panneau panneauIntDroit = murs.get(i+1).getPanneauInt();
                     Panneau panneauExtDroit = murs.get(i+1).getPanneauExt();
 
@@ -315,7 +331,7 @@ public class Cote implements java.io.Serializable{
                                 accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
                     }
                 }
-                else {
+                else {}*/
                    if(accessoire.isInterieurOnly()){
                        panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
@@ -326,8 +342,8 @@ public class Cote implements java.io.Serializable{
 
                     panneauExtGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
                             accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-                   }
-                }
+
+                    }
             }
         }
         return murs;
