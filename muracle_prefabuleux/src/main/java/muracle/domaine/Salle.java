@@ -69,7 +69,9 @@ public class Salle implements java.io.Serializable{
     }
 
     public void setLargeur(Pouce largeur) throws CoteError {
-        if (getCote('N').setLargeur(largeur) && getCote('S').setLargeur(largeur)){
+        if (getCote('N').verifSetLargeur(largeur) && getCote('S').verifSetLargeur(largeur)){
+            getCote('N').setLargeur(largeur);
+            getCote('S').setLargeur(largeur);
             this.largeur = largeur;
         }
     }
@@ -92,8 +94,12 @@ public class Salle implements java.io.Serializable{
 
     public void setHauteur(Pouce hauteur) throws SalleError, CoteError {
         if(hauteurRetourAir.add(distanceTrouRetourAir).compare(hauteur) == -1){
-            if(getCote('E').setHauteur(hauteur) && getCote('W').setHauteur(hauteur) &&
-                    getCote('N').setHauteur(hauteur) &&getCote('S').setHauteur(hauteur)){
+            if(getCote('E').verifSetHauteur(hauteur) && getCote('W').verifSetHauteur(hauteur) &&
+                    getCote('N').verifSetHauteur(hauteur) && getCote('S').verifSetHauteur(hauteur)){
+                getCote('E').setHauteur(hauteur);
+                getCote('W').setHauteur(hauteur);
+                getCote('N').setHauteur(hauteur);
+                getCote('S').setHauteur(hauteur);
                 this.hauteur = hauteur;
             }
         }else{
@@ -129,9 +135,11 @@ public class Salle implements java.io.Serializable{
     }
 
     public void setLongueur(Pouce longueur) throws CoteError {
-        this.longueur = longueur;
-        getCote('E').setLargeur(longueur);
-        getCote('W').setLargeur(longueur);
+        if (getCote('E').verifSetLargeur(longueur) && getCote('W').verifSetLargeur(longueur)){
+            getCote('E').setLargeur(longueur);
+            getCote('W').setLargeur(longueur);
+            this.longueur = longueur;
+        }
     }
 
     public Pouce getProfondeur() {

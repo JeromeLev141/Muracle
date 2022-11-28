@@ -38,17 +38,21 @@ public class Cote implements java.io.Serializable{
         return largeur;
     }
 
-    public boolean setLargeur(Pouce largeur) throws CoteError {
+    public boolean verifSetLargeur(Pouce largeur) throws CoteError {
         if(!doesLargeurFitWithSeparateurs(largeur)){
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un séparateur.");
         } else if (!doesLargeurFitWithAccessories(largeur)) {
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
         }else{
-            this.largeur = largeur;
-            this.updateRetourAir();
             return true;
         }
     }
+
+    public void setLargeur(Pouce largeur) {
+        this.largeur = largeur;
+        this.updateRetourAir();
+    }
+
     private boolean doesLargeurFitWithAccessories(Pouce largeur) {
         for(int i = 0; i < this.accessoires.size(); i++){
             Double oldLargeurDouble = this.largeur.toDouble();
@@ -230,21 +234,30 @@ public class Cote implements java.io.Serializable{
         return isRightValid && isLeftValid && isBotValid && isTopValid;
     }
 
-    public boolean setHauteur(Pouce hauteur) throws CoteError {
+    public boolean verifSetHauteur(Pouce hauteur) throws CoteError {
         if(!doesHauteurfitWithAccessoires(hauteur)){
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
         }else{
-            this.hauteur = hauteur;
             return true;
         }
     }
+
+    public void setHauteur(Pouce hauteur) {
+        reposYAccesSpecial(this.hauteur, hauteur);
+        this.hauteur = hauteur;
+    }
+
     private boolean doesHauteurfitWithAccessoires(Pouce hauteur){
         for(int i = 0; i < this.accessoires.size(); i++){
-            Double oldHauteurDouble = this.hauteur.toDouble();
-            Double newHauteurDouble = hauteur.toDouble();
-            Double LowerY = getAccessoire(i).getPosition().getY().toDouble() + getAccessoire(i).getHauteur().toDouble();
-            if(newHauteurDouble <= LowerY && LowerY <= oldHauteurDouble){
-                return false;
+            if (!getAccessoire(i).getType().equals("Retour d'air")) {
+                Double oldHauteurDouble = this.hauteur.toDouble();
+                Double newHauteurDouble = hauteur.toDouble();
+                Double lowerY = getAccessoire(i).getPosition().getY().toDouble() + getAccessoire(i).getHauteur().toDouble();
+                if (getAccessoire(i).getType().equals("Porte"))
+                    lowerY = getAccessoire(i).getHauteur().toDouble();
+                if (newHauteurDouble <= lowerY && lowerY <= oldHauteurDouble) {
+                    return false;
+                }
             }
         }
         return true;
@@ -383,6 +396,14 @@ public class Cote implements java.io.Serializable{
 
     }
 
+    private void reposYAccesSpecial(Pouce ancienneH, Pouce nouvelleH) {
+        Pouce difH = nouvelleH.sub(ancienneH);
+        for (Accessoire acces : accessoires) {
+            if (acces.getType().equals("Retour d'air") || acces.getType().equals("Porte")) {
+                acces.getPosition().setY(acces.getPosition().getY().add(difH));
+            }
+        }
+    }
 
     private void centrerRetourAir(Pouce x1, Pouce x2, Accessoire access){
         try {

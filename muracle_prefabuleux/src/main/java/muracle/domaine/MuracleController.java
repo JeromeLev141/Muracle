@@ -391,9 +391,11 @@ public class MuracleController {
             Pouce jeuAcces = jeu.add(acces.getMarge());
             if (posX.compare(acces.getPosition().getX().sub(jeuAcces)) == 1 && posX.compare(acces.getPosition().getX().add(acces.getLargeur()).add(jeuAcces)) == -1) {
                 if (posY.compare(acces.getPosition().getY().sub(jeuAcces)) == 1 && posY.compare(acces.getPosition().getY().add(acces.getHauteur()).add(jeuAcces)) == -1) {
-                    murSelected = -1;
-                    selectAccessoire(cote.getAccessoires().indexOf(acces));
-                    contientAcces = true;
+                    if (!isVueExterieur || !acces.isInterieurOnly()) {
+                        murSelected = -1;
+                        selectAccessoire(cote.getAccessoires().indexOf(acces));
+                        contientAcces = true;
+                    }
                 }
             }
         }
@@ -501,8 +503,10 @@ public class MuracleController {
 
     public void setDistLigneGrille(String dist) {
         try {
-            if (!dist.contains("-") && !dist.equals(distLigneGrille.toString()))
-                distLigneGrille = new Pouce(dist);
+            if (!dist.contains("-"))
+                if (!dist.equals(distLigneGrille.toString()))
+                    distLigneGrille = new Pouce(dist);
+            else setErrorMessage("La valeur entrée ne doit pas négative");
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         }
@@ -541,22 +545,24 @@ public class MuracleController {
     public void setDimensionSalle(String largeur, String longueur, String hauteur, String profondeur) {
         try {
             String save = makeSaveString();
-            if (!largeur.contains("-") && !largeur.equals(salle.getLargeur().toString())) {
-                salle.setLargeur(new Pouce(largeur));
-                pushNewChange(save);
-            }
-            if (!longueur.contains("-") && !longueur.equals(salle.getLongueur().toString())) {
-                salle.setLongueur(new Pouce(longueur));
-                pushNewChange(save);
-            }
-            if (!hauteur.contains("-") && !hauteur.equals(salle.getHauteur().toString())) {
-                salle.setHauteur(new Pouce(hauteur));
-                pushNewChange(save);
-            }
-            if (!profondeur.contains("-") && !profondeur.equals(salle.getProfondeur().toString())) {
-                salle.setProfondeur(new Pouce(profondeur));
-                pushNewChange(save);
-            }
+            if (!largeur.contains("-") && !longueur.contains("-") && !hauteur.contains("-") && !profondeur.contains("-")) {
+                if (!largeur.equals(salle.getLargeur().toString())) {
+                    salle.setLargeur(new Pouce(largeur));
+                    pushNewChange(save);
+                }
+                if (!longueur.equals(salle.getLongueur().toString())) {
+                    salle.setLongueur(new Pouce(longueur));
+                    pushNewChange(save);
+                }
+                if (!hauteur.equals(salle.getHauteur().toString())) {
+                    salle.setHauteur(new Pouce(hauteur));
+                    pushNewChange(save);
+                }
+                if (!profondeur.equals(salle.getProfondeur().toString())) {
+                    salle.setProfondeur(new Pouce(profondeur));
+                    pushNewChange(save);
+                }
+            } else setErrorMessage("La valeur entrée ne doit pas négative");
         } catch (CoteError | SalleError | PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -653,7 +659,7 @@ public class MuracleController {
                     //getSelectedAccessoire().setPosition(new CoordPouce(pouceX, pouceY));
                     pushNewChange(save);
                 }
-        }
+        } else setErrorMessage("La valeur entrée ne doit pas négative");
         } catch(PouceError | FractionError | CoteError e){
             setErrorMessage(e.getMessage());
         } catch(IOException e){
@@ -667,23 +673,25 @@ public class MuracleController {
         try {
             String save = makeSaveString();
             Cote cote = Objects.requireNonNull(getSelectedCote());
-            if (!largeur.contains("-") && !largeur.equals(acces.getLargeur().toString())) {
-                Pouce largAcces = new Pouce(largeur);
-                if (!isVueExterieur) {
-                    Pouce decal = largAcces.sub(acces.getLargeur());
-                    acces.getPosition().setX(posXAcces.sub(decal));
+            if (!largeur.contains("-") && !hauteur.contains("-") && !marge.contains("-")) {
+                if (!largeur.equals(acces.getLargeur().toString())) {
+                    Pouce largAcces = new Pouce(largeur);
+                    if (!isVueExterieur) {
+                        Pouce decal = largAcces.sub(acces.getLargeur());
+                        acces.getPosition().setX(posXAcces.sub(decal));
+                    }
+                    cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
+                    pushNewChange(save);
                 }
-                cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
-                pushNewChange(save);
-            }
-            if (!hauteur.contains("-") && !hauteur.equals(acces.getHauteur().toString())) {
-                cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
-                pushNewChange(save);
-            }
-            if (!marge.contains("-") && acces.getType().equals("Fenêtre")) {
-                cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
-                pushNewChange(save);
-            }
+                if (!hauteur.equals(acces.getHauteur().toString())) {
+                    cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
+                    pushNewChange(save);
+                }
+                if (acces.getType().equals("Fenêtre")) {
+                    cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
+                    pushNewChange(save);
+                }
+            } else setErrorMessage("La valeur entrée ne doit pas négative");
         } catch (PouceError | FractionError | CoteError e) {
             setErrorMessage(e.getMessage());
             acces.getPosition().setX(posXAcces);
@@ -742,7 +750,7 @@ public class MuracleController {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
+        } else setErrorMessage("La valeur entrée ne doit pas négative");
     }
 
     public String getParametreRetourAir(int indexParam) {
@@ -764,18 +772,20 @@ public class MuracleController {
     public void setParametreRetourAir(String hauteur, String epaisseur, String distanceSol) {
         try {
             String save = makeSaveString();
-            if (!hauteur.contains("-") && !hauteur.equals(salle.getHauteurRetourAir().toString())) {
-                salle.setHauteurRetourAir(new Pouce(hauteur));
-                pushNewChange(save);
-            }
-            if (!epaisseur.contains("-") && !epaisseur.equals(salle.getEpaisseurTrouRetourAir().toString())) {
-                salle.setEpaisseurTrouRetourAir(new Pouce(epaisseur));
-                pushNewChange(save);
-            }
-            if (!distanceSol.contains("-") && !distanceSol.equals(salle.getDistanceTrouRetourAir().toString())) {
-                salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
-                pushNewChange(save);
-            }
+            if (!hauteur.contains("-") && !epaisseur.contains("-") && !distanceSol.contains("-")) {
+                if (!hauteur.equals(salle.getHauteurRetourAir().toString())) {
+                    salle.setHauteurRetourAir(new Pouce(hauteur));
+                    pushNewChange(save);
+                }
+                if (!epaisseur.equals(salle.getEpaisseurTrouRetourAir().toString())) {
+                    salle.setEpaisseurTrouRetourAir(new Pouce(epaisseur));
+                    pushNewChange(save);
+                }
+                if (!distanceSol.equals(salle.getDistanceTrouRetourAir().toString())) {
+                    salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
+                    pushNewChange(save);
+                }
+            } else setErrorMessage("La valeur entrée ne doit pas négative");
         } catch (SalleError | PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -805,30 +815,32 @@ public class MuracleController {
     public void setParametrePlan(String margeEpaisseur, String margeLargeur, String anglePlis, String longueurPlis) {
         try {
             String save = makeSaveString();
-            if (!margeEpaisseur.contains("-") && !margeEpaisseur.equals(generateurPlan.getMargeEpaisseurMateriaux().toString())) {
-                generateurPlan.setMargeEpaisseurMateriaux(new Pouce(margeEpaisseur));
-                pushNewChange(save);
-            }
-            if (!margeLargeur.contains("-") && !margeLargeur.equals(generateurPlan.getMargeLargeurReplis().toString())) {
-                generateurPlan.setMargeLargeurReplis(new Pouce(margeLargeur));
-                pushNewChange(save);
-            }
-            try {
-                double angle = Double.parseDouble(anglePlis);
-                if (0 <= angle && angle <= 90) {
-                    if (angle != generateurPlan.getAnglePlis()) {
-                        generateurPlan.setAnglePlis(angle);
-                        pushNewChange(save);
-                    }
-                } else
-                    setErrorMessage("L'angle doit être entre 0 et 90 degrée");
-            } catch (NumberFormatException e) {
-                setErrorMessage("Caractères alphabétiques détectés");
-            }
-            if (!longueurPlis.contains("-") && !longueurPlis.equals(generateurPlan.getLongueurPlis().toString())) {
-                generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
-                pushNewChange(save);
-            }
+            if (!margeEpaisseur.contains("-") && !margeLargeur.contains("-") && !longueurPlis.contains("-")) {
+                if (!margeEpaisseur.equals(generateurPlan.getMargeEpaisseurMateriaux().toString())) {
+                    generateurPlan.setMargeEpaisseurMateriaux(new Pouce(margeEpaisseur));
+                    pushNewChange(save);
+                }
+                if (!margeLargeur.equals(generateurPlan.getMargeLargeurReplis().toString())) {
+                    generateurPlan.setMargeLargeurReplis(new Pouce(margeLargeur));
+                    pushNewChange(save);
+                }
+                try {
+                    double angle = Double.parseDouble(anglePlis);
+                    if (0 <= angle && angle <= 90) {
+                        if (angle != generateurPlan.getAnglePlis()) {
+                            generateurPlan.setAnglePlis(angle);
+                            pushNewChange(save);
+                        }
+                    } else
+                        setErrorMessage("L'angle doit être entre 0 et 90 degrée");
+                } catch (NumberFormatException e) {
+                    setErrorMessage("Caractères alphabétiques détectés");
+                }
+                if (!longueurPlis.equals(generateurPlan.getLongueurPlis().toString())) {
+                    generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
+                    pushNewChange(save);
+                }
+            } else setErrorMessage("La valeur entrée ne doit pas négative");
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {

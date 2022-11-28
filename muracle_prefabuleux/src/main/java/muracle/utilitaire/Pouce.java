@@ -46,7 +46,7 @@ public class Pouce implements java.io.Serializable{
                 String[] fraction = subString[1].split("/");
                 this.fraction = new Fraction(Integer.parseInt(fraction[0]),Integer.parseInt(fraction[1]));
             }catch (NumberFormatException ex){
-                throw new PouceError("la string d'entré est invalide");
+                throw new PouceError("la format entré est invalide");
             }
 
         else if (subString.length == 1)
@@ -61,13 +61,13 @@ public class Pouce implements java.io.Serializable{
                     this.fraction = new Fraction(Integer.parseInt(fraction[0]),Integer.parseInt(fraction[1]));
                 }
                 else
-                    throw new PouceError("la string d'entré est invalide");
+                    throw new PouceError("la format entré est invalide");
 
             }catch (NumberFormatException ex){
-                throw new PouceError("la string d'entré est invalide");
+                throw new PouceError("la format entré est invalide");
             }
         else
-            throw new PouceError("la string d'entré est invalide");
+            throw new PouceError("la format entré est invalide");
 
         if(this.fraction.toDouble() < 0 && this.entier != 0){
             this.entier *= -1;
