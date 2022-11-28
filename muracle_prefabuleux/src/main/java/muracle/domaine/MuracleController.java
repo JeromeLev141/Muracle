@@ -398,6 +398,7 @@ public class MuracleController {
             }
         }
         if (!contientAcces && addAccesMode) {
+            murSelected = -1;
             addAccessoire(type, coordPouce);
         }
 
@@ -412,6 +413,8 @@ public class MuracleController {
                 }
             }
             if (!contientSep && addSepMode) {
+                murSelected = -1;
+                accessoireSelected = -1;
                 addSeparateur(posX);
                 selectSeparateur(cote.getSeparateurs().indexOf(posX));
             }

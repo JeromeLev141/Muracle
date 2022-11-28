@@ -371,14 +371,15 @@ public class Cote implements java.io.Serializable{
     }
 
     public void setSeparateur(int index, Pouce position) throws CoteError {
-        if(!separateurs.contains(position) || (position.compare(largeur) == -1)){
-            separateurs.remove(index);
-            separateurs.add(position);
-            sortSeparateur();
-            this.updateRetourAir();
-        }else{
-            throw new CoteError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
-        }
+        if(!separateurs.contains(position)){
+            if (position.compare(largeur) == -1){
+                separateurs.remove(index);
+                separateurs.add(position);
+                sortSeparateur();
+                this.updateRetourAir();
+            }
+            else throw new CoteError("Le separateur ne doit pas dépasser la largeur du côté");
+        }else throw new CoteError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
 
     }
 
