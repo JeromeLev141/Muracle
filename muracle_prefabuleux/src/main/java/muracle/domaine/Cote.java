@@ -400,7 +400,23 @@ public class Cote implements java.io.Serializable{
             try{
                 posiCentreX = posiCentreX.add(acces.getLargeur().div(2));
             } catch (PouceError ignored) {}
-            //System.out.println(separateurs.size());
+
+            if (separateurs.size() == 0) {
+                try {
+                    centrerRetourAir(new Pouce(0, 0, 1), this.largeur, acces);
+                } catch (FractionError ignored) {}
+                continue;
+            }
+            else if (separateurs.size() == 1){
+                if (posiCentreX.compare(separateurs.get(0)) == -1)
+                    try {
+                        centrerRetourAir(new Pouce(0, 0, 1), separateurs.get(0), acces);
+                    }catch (FractionError ignored){}
+                else
+                    centrerRetourAir(separateurs.get(0),this.largeur,acces);
+                continue;
+            }
+
             for (int x = 0; x < separateurs.size();x++){
                 if (x==0){
                     //System.out.println("first");
