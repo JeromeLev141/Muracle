@@ -43,7 +43,7 @@ public class AfficheurPlanSalle extends Afficheur{
 
         ajustement(g2d,zoom, dim, posiCam, dimPlan);
         if (controller.isGrilleShown())
-            drawGrille(g2d, posX - ep, posY- ep);
+            drawGrille(g2d, posX - ep, posY- ep, zoom);
         drawSalle(g2d);
         drawSeparateur(g2d);
         drawTrouRetourAir(g2d);

@@ -197,12 +197,15 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      * @brief diminue le zoomFacteur par zoomInc
      */
     private void addZoomFactor() {
+        /*
         if (zoomFactor.toDouble() <= 0.1){
             this.zoomFactor.setNum(1);
             this.zoomFactor.setDenum(10);
         }else {
             zoomFactor.subRef(zoomInc);
         }
+*/      if(!zoomFactor.equals(zoomInc))
+            zoomFactor.subRef(zoomInc);
 
     }
 
@@ -210,13 +213,21 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      * @brief augmente le zoomFacteur par zoomInc
      */
     private void subZoomFactor(){
-
+        /*
         if (zoomFactor.toDouble() >= 5) {
             this.zoomFactor.setNum(5);
             this.zoomFactor.setDenum(1);
         } else {
             zoomFactor.addRef(zoomInc);
         }
+        */
+    if (zoomFactor.toDouble() < 20000)
+        zoomFactor.addRef(zoomInc);
+    else
+    {
+        this.zoomFactor.setNum(20000);
+        this.zoomFactor.setDenum(1);
+    }
     }
 
     /**
@@ -242,7 +253,13 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      */
     private void calculZoomInc(){
         try {
-            zoomInc = zoomFactor.mul(zoomFactor).mulRef(new Fraction(1, 10)).addRef(new Fraction(1,100)).round(1024);
+
+            //zoomInc = zoomFactor.mul(zoomFactor).mulRef(new Fraction(1, 10)).addRef(new Fraction(1,100)).round(1024);
+            //zoomInc = zoomFactor.mul(zoomFactor).mulRef(new Fraction(1, 10)).round(262144).addRef(new Fraction(1,262144));
+            zoomInc = zoomFactor.mul(new Fraction(1,10)).round(1048576);
+            if(zoomInc.toDouble() == 0)
+                zoomInc = new Fraction(1,2097152);
+
         }catch (FractionError ignored){}
     }
 
@@ -264,6 +281,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     }
 
     private void ajustCam(){
+        /*
         try {
             Fraction largeur = zoomFactor.mul(this.getWidth()).divRef(2);
             Fraction hauteur = zoomFactor.mul(this.getHeight()).divRef(2);
@@ -281,6 +299,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
                 posiCam.setY(this.max.getY().sub(hauteur));
             }
         }catch (FractionError ignored){}
+         */
 
     }
 
@@ -307,11 +326,12 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         if(e.getWheelRotation() < 0) {
             calculZoomInc();
             addZoomFactor();
+            System.out.println("Zoom : " +  zoomFactor);
 
             try {
                 if (zoomFactor.toDouble() == 5) {
                     this.posiCam = new CoordPouce(this.dimPlan.getX().div(2), this.dimPlan.getY().div(2));
-                }else if (zoomFactor.toDouble() > 0.1) {
+                }else if (zoomFactor.toDouble() > 0.002) {
 
                     Pouce x = new Pouce(0,this.getWidth(),2);
                     x.mulRef(zoomInc);
@@ -321,6 +341,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
                     Pouce y = new Pouce(0,this.getHeight(),2);
                     y.mulRef(zoomInc);
                     y.mulRef(new Fraction(2*e.getY(),this.getHeight()).subRef(1));
+                    System.out.println(y);
                     this.posiCam.getY().addRef(y);
                 }
             }catch (FractionError | PouceError ignored){}
@@ -332,10 +353,13 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
             //Dezoom
             calculZoomInc();
             subZoomFactor();
+            /*
             if (zoomFactor.toDouble() >= 3)
                 try {
                     this.posiCam = new CoordPouce(this.dimPlan.getX().div(2), this.dimPlan.getY().div(2));
                 }catch (PouceError ignored){}
+
+             */
             ajustCam();
             this.repaint();
         }

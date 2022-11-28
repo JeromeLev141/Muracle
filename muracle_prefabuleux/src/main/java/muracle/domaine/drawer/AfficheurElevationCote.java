@@ -39,7 +39,7 @@ public class AfficheurElevationCote extends Afficheur {
 
         ajustement(g2d,zoom, dim, posiCam,dimPlan);
         if (controller.isGrilleShown())
-            drawGrille(g2d, posX, posY);
+            drawGrille(g2d, posX, posY, zoom);
         drawCote(g2d);
         drawMurs(g2d);
         drawSeparateur(g2d);

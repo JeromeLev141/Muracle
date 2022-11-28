@@ -34,38 +34,47 @@ public class Afficheur {
         selectColor = new Color(97, 255, 89);
         errorColor = new Color(233, 103, 104);
         backErrorColor = new Color(46, 52, 64);
-        ligneStroke = new BasicStroke(1.5f);
-        selectedStroke = new BasicStroke(3);
+        ligneStroke = new BasicStroke(1);
+        selectedStroke = new BasicStroke(2);
     }
 
     public void draw(Graphics g, double zoom, Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
+        /*
         if (zoom >= 2) {
             ligneStroke = new BasicStroke(3 / (float) zoom);
             selectedStroke = new BasicStroke(6 / (float) zoom);
         }
+
+         */
         g.setColor(lineColor);
     }
 
-    protected void drawGrille(Graphics2D g2d, double posX, double posY) {
+    protected void drawGrille(Graphics2D g2d, double posX, double posY, double zoom) {
         g2d.setColor(grilleColor);
         double tokenX = posX;
         double tokenY = posY;
-        while (posX < 3 * initialDimension.width) {
-            g2d.draw(new Line2D.Double(posX, -2 * initialDimension.height, posX, 3 * initialDimension.height));
+        double w = initialDimension.width;
+        double h = initialDimension.height;
+        if (zoom < 1) {
+            w = (1 / zoom) * initialDimension.width;
+            h = (1 / zoom) * initialDimension.height;
+        }
+        while (posX < w) {
+            g2d.draw(new Line2D.Double(posX, -h, posX, h));
             posX += controller.getDistLigneGrille().toDouble();
         }
         posX = tokenX - controller.getDistLigneGrille().toDouble();
-        while (posX > - 2 * initialDimension.width) {
-            g2d.draw(new Line2D.Double(posX, -2 * initialDimension.height, posX, 3 * initialDimension.height));
+        while (posX > - w) {
+            g2d.draw(new Line2D.Double(posX, -h, posX, h));
             posX -= controller.getDistLigneGrille().toDouble();
         }
-        while (posY < 3 * initialDimension.height) {
-            g2d.draw(new Line2D.Double(-2 * initialDimension.width, posY, 3 * initialDimension.width, posY));
+        while (posY < h) {
+            g2d.draw(new Line2D.Double(-w, posY, w, posY));
             posY += controller.getDistLigneGrille().toDouble();
         }
         posY = tokenY - controller.getDistLigneGrille().toDouble();
-        while (posY > - 2 * initialDimension.height) {
-            g2d.draw(new Line2D.Double(-2 * initialDimension.width, posY, 3 * initialDimension.width, posY));
+        while (posY > - h) {
+            g2d.draw(new Line2D.Double(-w, posY, w, posY));
             posY -= controller.getDistLigneGrille().toDouble();
         }
         g2d.setColor(lineColor);
