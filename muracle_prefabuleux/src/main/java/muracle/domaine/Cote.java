@@ -243,19 +243,17 @@ public class Cote implements java.io.Serializable{
     }
 
     public void setHauteur(Pouce hauteur) {
-        reposYAccesSpecial(this.hauteur, hauteur);
+        reposYAcces(this.hauteur, hauteur);
         this.hauteur = hauteur;
     }
 
     private boolean doesHauteurfitWithAccessoires(Pouce hauteur){
         for(int i = 0; i < this.accessoires.size(); i++){
             if (!getAccessoire(i).getType().equals("Retour d'air")) {
-                Double oldHauteurDouble = this.hauteur.toDouble();
-                Double newHauteurDouble = hauteur.toDouble();
-                Double lowerY = getAccessoire(i).getPosition().getY().toDouble() + getAccessoire(i).getHauteur().toDouble();
-                if (getAccessoire(i).getType().equals("Porte"))
-                    lowerY = getAccessoire(i).getHauteur().toDouble();
-                if (newHauteurDouble <= lowerY && lowerY <= oldHauteurDouble) {
+                double oldHauteurDouble = this.hauteur.toDouble();
+                double newHauteurDouble = hauteur.toDouble();
+                double upperY = oldHauteurDouble - getAccessoire(i).getPosition().getY().toDouble();
+                if (upperY >= newHauteurDouble) {
                     return false;
                 }
             }
@@ -383,9 +381,9 @@ public class Cote implements java.io.Serializable{
         return this.separateurs.get(index);
     }
 
-    public void setSeparateur(int index, Pouce position) throws CoteError {
+    public void setSeparateur(int index, Pouce position) throws CoteError, FractionError {
         if(!separateurs.contains(position)){
-            if (position.compare(largeur) == -1){
+            if (position.compare(largeur) == -1 && position.compare(new Pouce(0, 0, 1)) == 1){
                 separateurs.remove(index);
                 separateurs.add(position);
                 sortSeparateur();
@@ -396,12 +394,10 @@ public class Cote implements java.io.Serializable{
 
     }
 
-    private void reposYAccesSpecial(Pouce ancienneH, Pouce nouvelleH) {
+    private void reposYAcces(Pouce ancienneH, Pouce nouvelleH) {
         Pouce difH = nouvelleH.sub(ancienneH);
         for (Accessoire acces : accessoires) {
-            if (acces.getType().equals("Retour d'air") || acces.getType().equals("Porte")) {
-                acces.getPosition().setY(acces.getPosition().getY().add(difH));
-            }
+            acces.getPosition().setY(acces.getPosition().getY().add(difH));
         }
     }
 
