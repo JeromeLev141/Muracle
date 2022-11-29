@@ -15,12 +15,6 @@ public class Panneau {
 
     }
 
-    public Panneau(Pouce largeur, Pouce hauteur, double poids) {
-        this.largeur = largeur;
-        this.hauteur = hauteur;
-        this.poids = poids;
-    }
-
     public Panneau(Pouce hauteur,Pouce largeur, Pouce epaisseur,Pouce margeEp, Pouce margeLargeurReplis,Pouce longeurPlis, char type,boolean isCoin,double angleReplis){
         Pouce margeLarReplis = margeLargeurReplis.mul(2);
         epaisseur = epaisseur.add(margeEp);
