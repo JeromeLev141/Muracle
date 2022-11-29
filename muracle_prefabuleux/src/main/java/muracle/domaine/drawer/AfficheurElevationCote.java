@@ -113,7 +113,7 @@ public class AfficheurElevationCote extends Afficheur {
                 }
                 rect = new Rectangle2D.Double(posX + murPosX, posY, mur.getLargeur().toDouble(), mur.getHauteur().toDouble());
                 if (controller.getErrorMessage().equals(""))
-                    controller.setErrorMessage("Les panneaux d'un mur " + (indexMur + 1) + "excèdent le poids maximum");
+                    controller.setErrorMessage("Les panneaux du mur " + (indexMur + 1) + " du côté selectionné excèdent le poids maximum");
             }
             if (rect != null) {
                 g2d.setColor(errorColor);
