@@ -184,6 +184,8 @@ public class AfficheurElevationCote extends Afficheur {
                 g2d.setColor(backErrorColor);
                 g2d.draw(rectangles.get(i));
                 g2d.setColor(lineColor);
+                if (controller.getErrorMessage().equals(""))
+                    controller.setErrorMessage("Au moins un accessoire du côté selectionné est dans une position invalide");
             }
             else
                 g2d.draw(rectangles.get(i));
