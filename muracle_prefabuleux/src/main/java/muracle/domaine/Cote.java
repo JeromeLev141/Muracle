@@ -375,6 +375,7 @@ public class Cote implements java.io.Serializable{
     }
     public void deleteSeparateur(int index){
         this.separateurs.remove(index);
+        CheckValidityForEveryAccessoire();
         this.updateRetourAir();
     }
     public Pouce getSeparateur(int index){
@@ -387,6 +388,7 @@ public class Cote implements java.io.Serializable{
                 separateurs.remove(index);
                 separateurs.add(position);
                 sortSeparateur();
+                CheckValidityForEveryAccessoire();
                 this.updateRetourAir();
             }
             else throw new CoteError("Le separateur ne doit pas dépasser la largeur du côté");

@@ -49,35 +49,41 @@ public class Afficheur {
         g.setColor(lineColor);
     }
 
-    protected void drawGrille(Graphics2D g2d, double posX, double posY, double zoom) {
-        g2d.setColor(grilleColor);
-        double tokenX = posX;
-        double tokenY = posY;
-        double w = initialDimension.width;
-        double h = initialDimension.height;
-        if (zoom < 1) {
-            w = (1 / zoom) * initialDimension.width;
-            h = (1 / zoom) * initialDimension.height;
+    protected void drawGrille(Graphics2D g2d, double posX, double posY, double zoom, CoordPouce posiCam, CoordPouce dimPlan) {
+        try {
+            g2d.setColor(grilleColor);
+            double tokenX = posX;
+            double tokenY = posY;
+            double w = initialDimension.width;
+            double h = initialDimension.height;
+            double decalX = posiCam.getX().sub(dimPlan.getX().div(2)).toDouble();
+            double decalY = posiCam.getY().sub(dimPlan.getY().div(2)).toDouble();
+            if (zoom < 1) {
+                w = (1 / zoom) * initialDimension.width;
+                h = (1 / zoom) * initialDimension.height;
+            }
+            while (posX < w + decalX) {
+                g2d.draw(new Line2D.Double(posX, -h + decalY, posX, h + decalY));
+                posX += controller.getDistLigneGrille().toDouble();
+            }
+            posX = tokenX - controller.getDistLigneGrille().toDouble();
+            while (posX > - w + decalX) {
+                g2d.draw(new Line2D.Double(posX, -h + decalY, posX, h + decalY));
+                posX -= controller.getDistLigneGrille().toDouble();
+            }
+            while (posY < h + decalY) {
+                g2d.draw(new Line2D.Double(-w + decalX, posY, w + decalX, posY));
+                posY += controller.getDistLigneGrille().toDouble();
+            }
+            posY = tokenY - controller.getDistLigneGrille().toDouble();
+            while (posY > - h + decalY) {
+                g2d.draw(new Line2D.Double(-w + decalX, posY, w + decalX, posY));
+                posY -= controller.getDistLigneGrille().toDouble();
+            }
+            g2d.setColor(lineColor);
+        } catch (PouceError e) {
+            throw new RuntimeException(e);
         }
-        while (posX < w) {
-            g2d.draw(new Line2D.Double(posX, -h, posX, h));
-            posX += controller.getDistLigneGrille().toDouble();
-        }
-        posX = tokenX - controller.getDistLigneGrille().toDouble();
-        while (posX > - w) {
-            g2d.draw(new Line2D.Double(posX, -h, posX, h));
-            posX -= controller.getDistLigneGrille().toDouble();
-        }
-        while (posY < h) {
-            g2d.draw(new Line2D.Double(-w, posY, w, posY));
-            posY += controller.getDistLigneGrille().toDouble();
-        }
-        posY = tokenY - controller.getDistLigneGrille().toDouble();
-        while (posY > - h) {
-            g2d.draw(new Line2D.Double(-w, posY, w, posY));
-            posY -= controller.getDistLigneGrille().toDouble();
-        }
-        g2d.setColor(lineColor);
     }
 
     protected void drawErrorMessage(Graphics2D g2d) {

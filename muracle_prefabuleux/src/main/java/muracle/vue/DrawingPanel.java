@@ -326,7 +326,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         if(e.getWheelRotation() < 0) {
             calculZoomInc();
             addZoomFactor();
-            System.out.println("Zoom : " +  zoomFactor);
 
             try {
                 if (zoomFactor.toDouble() == 5) {
@@ -341,7 +340,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
                     Pouce y = new Pouce(0,this.getHeight(),2);
                     y.mulRef(zoomInc);
                     y.mulRef(new Fraction(2*e.getY(),this.getHeight()).subRef(1));
-                    System.out.println(y);
                     this.posiCam.getY().addRef(y);
                 }
             }catch (FractionError | PouceError ignored){}

@@ -39,7 +39,7 @@ public class AfficheurElevationCote extends Afficheur {
 
         ajustement(g2d,zoom, dim, posiCam,dimPlan);
         if (controller.isGrilleShown())
-            drawGrille(g2d, posX, posY, zoom);
+            drawGrille(g2d, posX, posY, zoom, posiCam, dimPlan);
         drawCote(g2d);
         drawMurs(g2d);
         drawSeparateur(g2d);
@@ -100,17 +100,20 @@ public class AfficheurElevationCote extends Afficheur {
         int indexMur = 0;
         for (Mur mur : controller.getSelectedCoteReadOnly().murs) {
             Rectangle2D.Double rect = null;
-            if (!mur.getPanneauExt().isPoidsValid() && controller.isVueExterieur()) {
-                double murPosX = 0;
-                if (!mur.GetEstCoinGauche())
-                    murPosX = cote.separateurs.get(indexMur - 1).toDouble();
+            if (!(mur.getPanneauExt().isPoidsValid() && mur.getPanneauInt().isPoidsValid())) {
+                double murPosX;
+                if (controller.isVueExterieur()) {
+                    murPosX = 0;
+                    if (!mur.GetEstCoinGauche())
+                        murPosX = cote.separateurs.get(indexMur - 1).toDouble();
+                } else {
+                    murPosX = cote.largeur.toDouble() - mur.getLargeur().toDouble();
+                    if (!mur.GetEstCoinGauche())
+                        murPosX = cote.largeur.toDouble() - (cote.separateurs.get(indexMur - 1).toDouble() + mur.getLargeur().toDouble());
+                }
                 rect = new Rectangle2D.Double(posX + murPosX, posY, mur.getLargeur().toDouble(), mur.getHauteur().toDouble());
-            }
-            else if (!mur.getPanneauInt().isPoidsValid() && !controller.isVueExterieur()) {
-                double murPosX = cote.largeur.toDouble() - mur.getLargeur().toDouble();
-                if (!mur.GetEstCoinGauche())
-                    murPosX = cote.largeur.toDouble() - (cote.separateurs.get(indexMur - 1).toDouble() + mur.getLargeur().toDouble());
-                rect = new Rectangle2D.Double(posX + murPosX, posY, mur.getLargeur().toDouble(), mur.getHauteur().toDouble());
+                if (controller.getErrorMessage().equals(""))
+                    controller.setErrorMessage("Les panneaux d'un mur " + (indexMur + 1) + "excèdent le poids maximum");
             }
             if (rect != null) {
                 g2d.setColor(errorColor);
