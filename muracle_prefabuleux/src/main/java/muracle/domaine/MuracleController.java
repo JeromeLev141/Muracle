@@ -436,7 +436,13 @@ public class MuracleController {
                 throw new RuntimeException(e);
             }
         }
-        else {}
+        else if (isAccessoireSelected()) {
+            Accessoire access = Objects.requireNonNull(getSelectedAccessoire());
+            if (isVueExterieur)
+                dragRef = new CoordPouce(access.getPosition().getX().copy(), access.getPosition().getY().copy());
+            else
+                dragRef = new CoordPouce(Objects.requireNonNull(getSelectedCote()).getLargeur().sub(access.getPosition().getX()), access.getPosition().getY().copy());
+        }
     }
 
     public void dragging (CoordPouce decalCoord) {
@@ -456,7 +462,10 @@ public class MuracleController {
                 pos = dragRef.getX().sub(decalCoord.getX());
             dragSeparateur(pos);
         }
-        else {}
+        else if (isAccessoireSelected()) {
+            CoordPouce coord = new CoordPouce(dragRef.getX().sub(decalCoord.getX()), dragRef.getY().sub(decalCoord.getY()));
+            dragAccessoire(coord);
+        }
     }
 
     public void endDraggging () {
@@ -704,7 +713,6 @@ public class MuracleController {
                 if (!pouceX.equals(acces.getPosition().getX()) ||
                         !pouceY.equals(acces.getPosition().getY())) {
                     cote.moveAccessoire(acces, new CoordPouce(pouceX, pouceY));
-                    //getSelectedAccessoire().setPosition(new CoordPouce(pouceX, pouceY));
                     pushNewChange(save);
                 }
         } else setErrorMessage("La valeur entrée ne doit pas négative");
@@ -712,6 +720,27 @@ public class MuracleController {
             setErrorMessage(e.getMessage());
         } catch(IOException e){
             throw new RuntimeException(e);
+        }
+    }
+
+
+    private void dragAccessoire(CoordPouce coord) {
+        try {
+            Pouce pouceX = coord.getX();
+            Pouce pouceY = coord.getY();
+            Cote cote = Objects.requireNonNull(getSelectedCote());
+            Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
+            if (!acces.getType().equals("Retour d'air")) {
+                if (!isVueExterieur) {
+                    pouceX = cote.getLargeur().sub(pouceX);
+                }
+                coord = new CoordPouce(pouceX, pouceY);
+                if (acces.getType().equals("Porte"))
+                    coord.setY(acces.getPosition().getY());
+                cote.moveAccessoire(acces, coord);
+            }
+        } catch (FractionError | PouceError | CoteError e) {
+            setErrorMessage(e.getMessage());
         }
     }
 
@@ -801,7 +830,7 @@ public class MuracleController {
         } else setErrorMessage("La valeur entrée ne doit pas négative");
     }
 
-    public void dragSeparateur(Pouce pos) {
+    private void dragSeparateur(Pouce pos) {
         try {
             Cote cote = Objects.requireNonNull(getSelectedCote());
             if (!isVueExterieur)
