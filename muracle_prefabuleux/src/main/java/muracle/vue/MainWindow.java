@@ -578,6 +578,20 @@ public class MainWindow extends JFrame {
 								if (controller.isSeparateurSelected() || controller.isAccessoireSelected()) {
 									controller.dragging(drawingPanel.movedItem(e));
 									drawingPanel.repaint();
+									if (controller.isSeparateurSelected()) {
+										if (controller.isVueExterieur())
+											posSepTextField.setText(controller.getSelectedSeparateur().toString());
+										else
+											posSepTextField.setText(controller.getSelectedSepInverse().toString());
+									}
+									else {
+										if (controller.isVueExterieur())
+											posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
+										else
+											posXAccesTextField.setText(controller.getSelectedAccesPosXInverse().toString());
+										posYAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getY().toString());
+									}
+
 								}
 							}
 						}

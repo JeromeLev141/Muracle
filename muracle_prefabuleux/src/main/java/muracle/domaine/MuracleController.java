@@ -446,6 +446,13 @@ public class MuracleController {
     }
 
     public void dragging (CoordPouce decalCoord) {
+        Cote cote = Objects.requireNonNull(getSelectedCote());
+        try {
+            decalCoord.getX().round(64);
+            decalCoord.getY().round(64);
+        } catch (FractionError e) {
+            throw new RuntimeException(e);
+        }
         if (isSeparateurSelected()) {
             Pouce pos;
             if (isVueDessus) {
@@ -460,10 +467,51 @@ public class MuracleController {
             }
             else
                 pos = dragRef.getX().sub(decalCoord.getX());
+
+            //stopper pour manip plus fluide
+            try {
+                Pouce coinGauche = new Pouce(1, 0, 1);
+                if (pos.compare(coinGauche) == -1) {
+                    pos = coinGauche;
+                }
+                else if (pos.compare(cote.getLargeur().sub(1)) == 1) {
+                    pos = cote.getLargeur().sub(1);
+                }
+            } catch (FractionError e) {
+                throw new RuntimeException(e);
+            }
             dragSeparateur(pos);
         }
         else if (isAccessoireSelected()) {
             CoordPouce coord = new CoordPouce(dragRef.getX().sub(decalCoord.getX()), dragRef.getY().sub(decalCoord.getY()));
+
+            Accessoire access = Objects.requireNonNull(getSelectedAccessoire());
+            //stopper pour manip plus fluide
+            try {
+                Pouce coinHGauche = new Pouce(1, 0, 1);
+                if (isVueExterieur) {
+                    if (coord.getX().compare(coinHGauche) == -1)
+                        coord.setX(coinHGauche);
+                    else if (coord.getX().add(access.getLargeur()).compare(cote.getLargeur().sub(1)) == 1)
+                        coord.setX(cote.getLargeur().sub(1).sub(access.getLargeur()));
+                    if (coord.getY().compare(coinHGauche) == -1)
+                        coord.setY(coinHGauche);
+                    else if (coord.getY().add(access.getHauteur()).compare(cote.getHauteur().sub(1)) == 1)
+                        coord.setY(cote.getHauteur().sub(1).sub(access.getHauteur()));
+                }
+                else {
+                    if (coord.getX().compare(coinHGauche.add(access.getLargeur())) == -1)
+                        coord.setX(coinHGauche.add(access.getLargeur()));
+                    else if (coord.getX().compare(cote.getLargeur().sub(1)) == 1)
+                        coord.setX(cote.getLargeur().sub(1));
+                    if (coord.getY().compare(coinHGauche) == -1)
+                        coord.setY(coinHGauche);
+                    else if (coord.getY().add(access.getHauteur()).compare(cote.getHauteur().sub(1)) == 1)
+                        coord.setY(cote.getHauteur().sub(1).sub(access.getHauteur()));
+                }
+            } catch (FractionError e) {
+                throw new RuntimeException(e);
+            }
             dragAccessoire(coord);
         }
     }
