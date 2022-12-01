@@ -31,6 +31,8 @@ public class MainWindow extends JFrame {
 	protected MuracleController controller;
 	protected boolean isDarkMode = true;
 
+	private boolean isRightClicDrag;
+
 	public MainWindow() {
 		{
 			try {
@@ -570,7 +572,14 @@ public class MainWindow extends JFrame {
 					drawingPanel.addMouseMotionListener(new MouseMotionListener() {
 						@Override
 						public void mouseDragged(MouseEvent e) {
-							drawingPanel.moved(e);
+							if (isRightClicDrag)
+								drawingPanel.moved(e);
+							else {
+								if (controller.isSeparateurSelected() || controller.isAccessoireSelected()) {
+									controller.dragging(drawingPanel.movedItem(e));
+									drawingPanel.repaint();
+								}
+							}
 						}
 
 						@Override
@@ -588,8 +597,11 @@ public class MainWindow extends JFrame {
 
 							if (e.getButton() == 3){//click droit
 								drawingPanel.press(e);
+								isRightClicDrag = true;
 							}
 							else  if (e.getButton() == 1) {//click gauche
+								drawingPanel.pressItem(e);
+								isRightClicDrag = false;
 
 								boolean token = controller.isVueDessus();
 								controller.interactComponent(drawingPanel.coordPixelToPouce(e),
@@ -600,13 +612,20 @@ public class MainWindow extends JFrame {
 								if (token != controller.isVueDessus())
 									drawingPanel.updateParametre();
 								drawingPanel.repaint();
+
+								controller.startDragging();
 							}
 						}
 
 						@Override
 						public void mouseReleased(MouseEvent e) {
-							drawingPanel.release(e);
-
+							if (isRightClicDrag)
+								drawingPanel.release(e);
+							else {
+								if (controller.isSeparateurSelected() || controller.isAccessoireSelected())
+									controller.endDraggging();
+								drawingPanel.releaseItem();
+							}
 						}
 
 						@Override

@@ -280,6 +280,13 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         }
     }
 
+
+    public CoordPouce movedItem(MouseEvent e) {
+        Fraction zoom = zoomFactor.copy();
+        Fraction dx = zoom.mul(mouse_pt.x-e.getX());
+        Fraction dy = zoom.mul(mouse_pt.y-e.getY());
+        return new CoordPouce(new Pouce(0, dx), new Pouce(0, dy));
+    }
     private void ajustCam(){
         /*
         try {
@@ -309,12 +316,22 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         posiCamTempo = new CoordPouce(posiCam.getX().copy(), posiCam.getY().copy());
     }
 
+    public void pressItem(MouseEvent e){
+        clip = true;
+        mouse_pt = e.getPoint();
+    }
+
     public void release(MouseEvent e){
         moved(e);
         clip = false;
         mouse_pt = null;
         posiCamTempo = null;
 
+    }
+
+    public void releaseItem(){
+        clip = false;
+        mouse_pt = null;
     }
 
     /**

@@ -41,6 +41,8 @@ public class MuracleController {
     private Stack<String> undoPile;
     private Stack<String> redoPile;
 
+    private CoordPouce dragRef;
+
     private static class Save implements java.io.Serializable{
         public Salle saveSalle;
         public GenerateurPlan saveGenerateurPlan;
@@ -423,6 +425,48 @@ public class MuracleController {
         }
     }
 
+    public void startDragging() {
+        if (isSeparateurSelected()) {
+            try {
+                if (isVueExterieur)
+                    dragRef = new CoordPouce(getSelectedSeparateur().copy(), new Pouce(0, 0 ,1));
+                else
+                    dragRef = new CoordPouce(Objects.requireNonNull(getSelectedCote()).getLargeur().sub(getSelectedSeparateur()), new Pouce(0, 0, 1));
+            } catch (FractionError e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {}
+    }
+
+    public void dragging (CoordPouce decalCoord) {
+        if (isSeparateurSelected()) {
+            Pouce pos;
+            if (isVueDessus) {
+                if (coteSelected == 'N')
+                    pos = dragRef.getX().add(decalCoord.getX());
+                else if (coteSelected == 'S')
+                    pos = dragRef.getX().sub(decalCoord.getX());
+                else if (coteSelected == 'E')
+                    pos = dragRef.getX().add(decalCoord.getY());
+                else
+                    pos = dragRef.getX().sub(decalCoord.getY());
+            }
+            else
+                pos = dragRef.getX().sub(decalCoord.getX());
+            dragSeparateur(pos);
+        }
+        else {}
+    }
+
+    public void endDraggging () {
+        try {
+            pushNewChange(currentStateSave);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void selectCote(char orientation) {
         coteSelected = orientation;
     }
@@ -755,6 +799,18 @@ public class MuracleController {
                 throw new RuntimeException(e);
             }
         } else setErrorMessage("La valeur entrée ne doit pas négative");
+    }
+
+    public void dragSeparateur(Pouce pos) {
+        try {
+            Cote cote = Objects.requireNonNull(getSelectedCote());
+            if (!isVueExterieur)
+                pos = cote.getLargeur().sub(pos);
+            cote.setSeparateur(separateurSelected, pos);
+            selectSeparateur(cote.getSeparateurs().indexOf(pos));
+        } catch (FractionError | CoteError e) {
+            setErrorMessage(e.getMessage());
+        }
     }
 
     public String getParametreRetourAir(int indexParam) {
