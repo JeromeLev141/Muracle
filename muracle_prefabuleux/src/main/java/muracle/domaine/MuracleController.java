@@ -430,6 +430,10 @@ public class MuracleController {
     public CoteDTO getSelectedCoteReadOnly() { return new CoteDTO(Objects.requireNonNull(getSelectedCote()),
             salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
             generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis()); }
+
+    public CoteDTO getCoteReadOnly(char orientation) { return new CoteDTO(salle.getCote(orientation),
+            salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+            generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis()); }
     private Cote getSelectedCote() {
         if (coteSelected != ' ')
             return salle.getCote(coteSelected);

@@ -1,9 +1,6 @@
 package muracle.domaine.drawer;
 
-import muracle.domaine.Accessoire;
-import muracle.domaine.CoteDTO;
-import muracle.domaine.MuracleController;
-import muracle.domaine.SalleDTO;
+import muracle.domaine.*;
 import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.FractionError;
 
@@ -45,8 +42,9 @@ public class AfficheurPlanSalle extends Afficheur{
         if (controller.isGrilleShown())
             drawGrille(g2d, posX - ep, posY- ep, zoom, posiCam, dimPlan);
         drawSalle(g2d);
-        drawSeparateur(g2d);
         drawTrouRetourAir(g2d);
+        drawMursCote(g2d);
+        drawSeparateur(g2d);
         reset(g2d,zoom, dim, posiCam, dimPlan);
 
         drawVue(g);
@@ -134,12 +132,134 @@ public class AfficheurPlanSalle extends Afficheur{
         }
     }
 
+
+    private void drawMursCote(Graphics2D g2d) {
+        CoteDTO cote;
+        // south
+        cote = controller.getCoteReadOnly('S');
+        int indexMur = 0;
+        for (Mur mur : cote.murs) {
+            Rectangle2D.Double rect = null;
+            if (!(mur.getPanneauExt().isPoidsValid() && mur.getPanneauInt().isPoidsValid())) {
+                double murPosX;
+                murPosX = 0;
+                if (!mur.GetEstCoinGauche())
+                    murPosX = cote.separateurs.get(indexMur - 1).toDouble();
+                rect = new Rectangle2D.Double(posX + murPosX, posY + h, mur.getLargeur().toDouble(), ep);
+                if (controller.getErrorMessage().equals(""))
+                    controller.setErrorMessage("Les panneaux du mur " + (indexMur + 1) + " du côté " + cote.orientation + " excèdent le poids maximum");
+            }
+            if (rect != null) {
+                g2d.setColor(errorColor);
+                Composite compoInit = g2d.getComposite();
+                AlphaComposite alcom = AlphaComposite.getInstance(
+                        AlphaComposite.SRC_OVER, 0.5f);
+                g2d.setComposite(alcom);
+                g2d.fill(rect);
+                g2d.setComposite(compoInit);
+                g2d.setColor(backErrorColor);
+                g2d.draw(rect);
+                g2d.setColor(lineColor);
+            }
+            indexMur++;
+        }
+
+        // north
+        cote = controller.getCoteReadOnly('N');
+        indexMur = 0;
+        for (Mur mur : cote.murs) {
+            Rectangle2D.Double rect = null;
+            if (!(mur.getPanneauExt().isPoidsValid() && mur.getPanneauInt().isPoidsValid())) {
+                double murPosX;
+                murPosX = cote.largeur.toDouble() - mur.getLargeur().toDouble();
+                if (!mur.GetEstCoinGauche())
+                    murPosX = cote.largeur.toDouble() - cote.separateurs.get(indexMur - 1).toDouble() - mur.getLargeur().toDouble();
+                rect = new Rectangle2D.Double(posX + murPosX, posY - ep, mur.getLargeur().toDouble(), ep);
+                if (controller.getErrorMessage().equals(""))
+                    controller.setErrorMessage("Les panneaux du mur " + (indexMur + 1) + " du côté " + cote.orientation + " excèdent le poids maximum");
+            }
+            if (rect != null) {
+                g2d.setColor(errorColor);
+                Composite compoInit = g2d.getComposite();
+                AlphaComposite alcom = AlphaComposite.getInstance(
+                        AlphaComposite.SRC_OVER, 0.5f);
+                g2d.setComposite(alcom);
+                g2d.fill(rect);
+                g2d.setComposite(compoInit);
+                g2d.setColor(backErrorColor);
+                g2d.draw(rect);
+                g2d.setColor(lineColor);
+            }
+            indexMur++;
+        }
+
+        // south
+        cote = controller.getCoteReadOnly('E');
+        indexMur = 0;
+        for (Mur mur : cote.murs) {
+            Rectangle2D.Double rect = null;
+            if (!(mur.getPanneauExt().isPoidsValid() && mur.getPanneauInt().isPoidsValid())) {
+                double murPosY;
+                murPosY = cote.largeur.toDouble() - mur.getLargeur().toDouble();
+                if (!mur.GetEstCoinGauche())
+                    murPosY = cote.largeur.toDouble() - cote.separateurs.get(indexMur - 1).toDouble() - mur.getLargeur().toDouble();
+                rect = new Rectangle2D.Double(posX + w, posY + murPosY, ep, mur.getLargeur().toDouble());
+                if (controller.getErrorMessage().equals(""))
+                    controller.setErrorMessage("Les panneaux du mur " + (indexMur + 1) + " du côté " + cote.orientation + " excèdent le poids maximum");
+            }
+            if (rect != null) {
+                g2d.setColor(errorColor);
+                Composite compoInit = g2d.getComposite();
+                AlphaComposite alcom = AlphaComposite.getInstance(
+                        AlphaComposite.SRC_OVER, 0.5f);
+                g2d.setComposite(alcom);
+                g2d.fill(rect);
+                g2d.setComposite(compoInit);
+                g2d.setColor(backErrorColor);
+                g2d.draw(rect);
+                g2d.setColor(lineColor);
+            }
+            indexMur++;
+        }
+
+        // east
+        cote = controller.getCoteReadOnly('W');
+        indexMur = 0;
+        for (Mur mur : cote.murs) {
+            Rectangle2D.Double rect = null;
+            if (!(mur.getPanneauExt().isPoidsValid() && mur.getPanneauInt().isPoidsValid())) {
+                double murPosY;
+                murPosY = 0;
+                if (!mur.GetEstCoinGauche())
+                    murPosY = cote.separateurs.get(indexMur - 1).toDouble();
+                rect = new Rectangle2D.Double(posX - ep, posY + murPosY, ep, mur.getLargeur().toDouble());
+                if (controller.getErrorMessage().equals(""))
+                    controller.setErrorMessage("Les panneaux du mur " + (indexMur + 1) + " du côté " + cote.orientation + " excèdent le poids maximum");
+            }
+            if (rect != null) {
+                g2d.setColor(errorColor);
+                Composite compoInit = g2d.getComposite();
+                AlphaComposite alcom = AlphaComposite.getInstance(
+                        AlphaComposite.SRC_OVER, 0.5f);
+                g2d.setComposite(alcom);
+                g2d.fill(rect);
+                g2d.setComposite(compoInit);
+                g2d.setColor(backErrorColor);
+                g2d.draw(rect);
+                g2d.setColor(lineColor);
+            }
+            indexMur++;
+        }
+    }
+
     private void drawTrouRetourAir(Graphics2D g2d) {
         CoteDTO cote;
 
         // south
         cote = controller.getSalleReadOnly().getCote('S');
         for (Accessoire acces : cote.accessoires) {
+            if (!acces.isValid() && controller.getErrorMessage().equals(""))
+                controller.setErrorMessage("Au moins un accessoire du côté " + cote.orientation + " est dans une position invalide");
             if (acces.getType().equals("Retour d'air")) {
                 double retourPosX = acces.getPosition().getX().toDouble();
                 double retourPosY = h + (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
@@ -156,6 +276,8 @@ public class AfficheurPlanSalle extends Afficheur{
         cote = controller.getSalleReadOnly().getCote('N');
         g2d.setColor(fillColor.darker().darker());
         for (Accessoire acces : cote.accessoires) {
+            if (!acces.isValid() && controller.getErrorMessage().equals(""))
+                controller.setErrorMessage("Au moins un accessoire du côté " + cote.orientation + " est dans une position invalide");
             if (acces.getType().equals("Retour d'air")) {
                 double retourPosX = w - acces.getPosition().getX().toDouble() - acces.getLargeur().toDouble();
                 double retourPosY = (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
@@ -171,6 +293,8 @@ public class AfficheurPlanSalle extends Afficheur{
         // east
         cote = controller.getSalleReadOnly().getCote('E');
         for (Accessoire acces : cote.accessoires) {
+            if (!acces.isValid() && controller.getErrorMessage().equals(""))
+                controller.setErrorMessage("Au moins un accessoire du côté " + cote.orientation + " est dans une position invalide");
             if (acces.getType().equals("Retour d'air")) {
                 double retourPosX = w + (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
                 double retourPosY = h - acces.getPosition().getX().toDouble() - acces.getLargeur().toDouble();
@@ -186,6 +310,8 @@ public class AfficheurPlanSalle extends Afficheur{
         // west
         cote = controller.getSalleReadOnly().getCote('W');
         for (Accessoire acces : cote.accessoires) {
+            if (!acces.isValid() && controller.getErrorMessage().equals(""))
+                controller.setErrorMessage("Au moins un accessoire du côté " + cote.orientation + " est dans une position invalide");
             if (acces.getType().equals("Retour d'air")) {
                 double retourPosX = (ep - controller.getSalleReadOnly().epaisseurTrouRetourAir.toDouble()) / 2;
                 double retourPosY = acces.getPosition().getX().toDouble();
@@ -197,6 +323,8 @@ public class AfficheurPlanSalle extends Afficheur{
                 g2d.draw(rect);
             }
         }
+
+        g2d.setColor(lineColor);
     }
 
     private void drawVue(Graphics g) {
