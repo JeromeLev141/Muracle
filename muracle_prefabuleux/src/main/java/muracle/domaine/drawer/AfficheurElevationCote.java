@@ -138,6 +138,9 @@ public class AfficheurElevationCote extends Afficheur {
         int indexAccesSelected = -1;
         g2d.setColor(fillColor.darker().darker());
         for (Accessoire acces : cote.accessoires) {
+            if (!acces.isValid())
+                if (controller.getErrorMessage().equals(""))
+                    controller.setErrorMessage("Au moins un accessoire du côté selectionné est dans une position invalide");
             Rectangle2D.Double rect = null;
             double accesPosX = acces.getPosition().getX().toDouble();
             double accesPosY = acces.getPosition().getY().toDouble();
@@ -168,7 +171,8 @@ public class AfficheurElevationCote extends Afficheur {
         if (indexAccesSelected != -1) {
             g2d.setColor(selectColor);
             g2d.setStroke(selectedStroke);
-            g2d.draw(rectangles.get(indexAccesSelected));
+            Rectangle2D.Double rect = rectangles.get(indexAccesSelected);
+            g2d.draw(rect);
             g2d.setStroke(ligneStroke);
             g2d.setColor(lineColor);
         }
@@ -184,11 +188,22 @@ public class AfficheurElevationCote extends Afficheur {
                 g2d.setColor(backErrorColor);
                 g2d.draw(rectangles.get(i));
                 g2d.setColor(lineColor);
-                if (controller.getErrorMessage().equals(""))
-                    controller.setErrorMessage("Au moins un accessoire du côté selectionné est dans une position invalide");
             }
             else
                 g2d.draw(rectangles.get(i));
+
+            if (i == indexAccesSelected) {
+                Rectangle2D.Double rect = rectangles.get(i);
+                Rectangle2D.Double resizeRect = new Rectangle2D.Double(rect.x + rect.width - 1, rect.y + rect.height - 1,
+                        2, 2);
+                if (cote.accessoires.get(indexAccesSelected).getType().equals("Porte"))
+                    resizeRect = new Rectangle2D.Double(rect.x + rect.width - 1, rect.y - 1,
+                            2, 2);
+                g2d.fill(resizeRect);
+                g2d.setColor(fillColor);
+                g2d.fill(new Rectangle2D.Double(resizeRect.x + 0.5, resizeRect.y + 0.5, 1, 1));
+                g2d.setColor(lineColor);
+            }
         }
     }
 

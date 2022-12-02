@@ -585,6 +585,10 @@ public class MainWindow extends JFrame {
 											posSepTextField.setText(controller.getSelectedSepInverse().toString());
 									}
 									else {
+										if (controller.isResizing()) {
+											largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
+											hAccesTextField.setText(controller.getSelectedAccessoireReadOnly().hauteur.toString());
+										}
 										if (controller.isVueExterieur())
 											posXAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getX().toString());
 										else
@@ -608,6 +612,7 @@ public class MainWindow extends JFrame {
 
 						@Override
 						public void mousePressed(MouseEvent e) {
+							drawingPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
 							if (e.getButton() == 3){//click droit
 								drawingPanel.press(e);
@@ -633,6 +638,7 @@ public class MainWindow extends JFrame {
 
 						@Override
 						public void mouseReleased(MouseEvent e) {
+							drawingPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 							if (isRightClicDrag)
 								drawingPanel.release(e);
 							else {

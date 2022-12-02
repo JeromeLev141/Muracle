@@ -41,7 +41,11 @@ public class MuracleController {
     private Stack<String> undoPile;
     private Stack<String> redoPile;
 
+    private boolean isResizing;
+
     private CoordPouce dragRef;
+
+    private Pouce accesPosRef;
 
     private static class Save implements java.io.Serializable{
         public Salle saveSalle;
@@ -397,6 +401,15 @@ public class MuracleController {
                         murSelected = -1;
                         selectAccessoire(cote.getAccessoires().indexOf(acces));
                         contientAcces = true;
+                        // resize point
+                        if ((!acces.getType().equals("Porte") && posY.compare(acces.getPosition().getY().add(acces.getHauteur()).sub(jeuAcces)) == 1) ||
+                                (acces.getType().equals("Porte") && posY.compare(acces.getPosition().getY().add(jeuAcces)) == -1)) {
+                            if (isVueExterieur && posX.compare(acces.getPosition().getX().add(acces.getLargeur()).add(acces.getMarge().mul(2)).sub(jeuAcces)) == 1) {
+                                isResizing = true;
+                            } else if (!isVueExterieur && posX.compare(acces.getPosition().getX().sub(acces.getMarge().mul(2)).add(jeuAcces)) == -1) {
+                                isResizing = true;
+                            }
+                        }
                     }
                 }
             }
@@ -437,11 +450,23 @@ public class MuracleController {
             }
         }
         else if (isAccessoireSelected()) {
+            Cote cote = Objects.requireNonNull(getSelectedCote());
             Accessoire access = Objects.requireNonNull(getSelectedAccessoire());
-            if (isVueExterieur)
-                dragRef = new CoordPouce(access.getPosition().getX().copy(), access.getPosition().getY().copy());
-            else
-                dragRef = new CoordPouce(Objects.requireNonNull(getSelectedCote()).getLargeur().sub(access.getPosition().getX()), access.getPosition().getY().copy());
+            if (isResizing) {
+                dragRef = new CoordPouce(access.getPosition().getX().add(access.getLargeur()), access.getPosition().getY().add(access.getHauteur()));
+                if (!isVueExterieur) {
+                    dragRef.setX(cote.getLargeur().sub(access.getPosition().getX()));
+                    accesPosRef = cote.getLargeur().sub(access.getPosition().getX().add(access.getLargeur()));
+                }
+                if (access.getType().equals("Porte"))
+                    dragRef.setY(access.getPosition().getY());
+            }
+            else {
+                if (isVueExterieur)
+                    dragRef = new CoordPouce(access.getPosition().getX().copy(), access.getPosition().getY().copy());
+                else
+                    dragRef = new CoordPouce(Objects.requireNonNull(getSelectedCote()).getLargeur().sub(access.getPosition().getX()), access.getPosition().getY().copy());
+            }
         }
     }
 
@@ -486,28 +511,57 @@ public class MuracleController {
             CoordPouce coord = new CoordPouce(dragRef.getX().sub(decalCoord.getX()), dragRef.getY().sub(decalCoord.getY()));
 
             Accessoire access = Objects.requireNonNull(getSelectedAccessoire());
+
             //stopper pour manip plus fluide
             try {
                 Pouce coinHGauche = new Pouce(1, 0, 1);
-                if (isVueExterieur) {
-                    if (coord.getX().compare(coinHGauche) == -1)
-                        coord.setX(coinHGauche);
-                    else if (coord.getX().add(access.getLargeur()).compare(cote.getLargeur().sub(1)) == 1)
-                        coord.setX(cote.getLargeur().sub(1).sub(access.getLargeur()));
-                    if (coord.getY().compare(coinHGauche) == -1)
-                        coord.setY(coinHGauche);
-                    else if (coord.getY().add(access.getHauteur()).compare(cote.getHauteur().sub(1)) == 1)
-                        coord.setY(cote.getHauteur().sub(1).sub(access.getHauteur()));
+                if (isResizing){
+                    if (!isVueExterieur) {
+                        coord.setX(coord.getX().sub(accesPosRef));
+                        if (coord.getX().compare(coinHGauche) == -1)
+                            coord.setX(coinHGauche);
+                        else if (coord.getX().add(accesPosRef).add(access.getMarge()).compare(cote.getLargeur().sub(1)) == 1)
+                            coord.setX(cote.getLargeur().sub(1).sub(accesPosRef).sub(access.getMarge()));
+                    }
+                    else {
+                        coord.setX(coord.getX().sub(access.getPosition().getX()));
+                        if (coord.getX().compare(coinHGauche) == -1)
+                            coord.setX(coinHGauche);
+                        else if (coord.getX().add(access.getPosition().getX()).add(access.getMarge()).compare(cote.getLargeur().sub(1)) == 1)
+                            coord.setX(cote.getLargeur().sub(access.getMarge()).sub(1).sub(access.getPosition().getX()));
+                    }
+                    if (access.getType().equals("Porte")) {
+                        coord.setY(cote.getHauteur().sub(coord.getY()));
+                        if (coord.getY().compare(coinHGauche) == -1)
+                            coord.setY(coinHGauche);
+                        else if (coord.getY().compare(cote.getHauteur().sub(1)) == 1)
+                            coord.setY(cote.getHauteur().sub(1));
+                    }
+                    else {
+                        coord.setY(coord.getY().sub(access.getPosition().getY()));
+                        if (coord.getY().compare(coinHGauche) == -1)
+                            coord.setY(coinHGauche);
+                        else if (coord.getY().add(access.getMarge()).add(access.getPosition().getY()).compare(cote.getHauteur().sub(1)) == 1)
+                            coord.setY(cote.getHauteur().sub(1).sub(access.getPosition().getY()).sub(access.getMarge()));
+                    }
                 }
                 else {
-                    if (coord.getX().compare(coinHGauche.add(access.getLargeur())) == -1)
-                        coord.setX(coinHGauche.add(access.getLargeur()));
-                    else if (coord.getX().compare(cote.getLargeur().sub(1)) == 1)
-                        coord.setX(cote.getLargeur().sub(1));
-                    if (coord.getY().compare(coinHGauche) == -1)
-                        coord.setY(coinHGauche);
-                    else if (coord.getY().add(access.getHauteur()).compare(cote.getHauteur().sub(1)) == 1)
-                        coord.setY(cote.getHauteur().sub(1).sub(access.getHauteur()));
+                    if (isVueExterieur) {
+                        if (coord.getX().sub(access.getMarge()).compare(coinHGauche) == -1)
+                            coord.setX(coinHGauche.add(access.getMarge()));
+                        else if (coord.getX().add(access.getLargeur().add(access.getMarge())).compare(cote.getLargeur().sub(1)) == 1) {
+                            coord.setX(cote.getLargeur().sub(access.getLargeur().add(access.getMarge()).add(1)));
+                        }
+                    } else {
+                        if (coord.getX().compare(coinHGauche.add(access.getLargeur()).add(access.getMarge())) == -1)
+                            coord.setX(coinHGauche.add(access.getLargeur()).add(access.getMarge()));
+                        else if (coord.getX().sub(access.getMarge()).compare(cote.getLargeur().sub(1)) == 1)
+                            coord.setX(cote.getLargeur().sub(access.getMarge().add(1)));
+                    }
+                    if (coord.getY().sub(access.getMarge()).compare(coinHGauche) == -1)
+                        coord.setY(coinHGauche.add(access.getMarge()));
+                    else if (coord.getY().add(access.getHauteur()).add(access.getMarge()).compare(cote.getHauteur().sub(1)) == 1)
+                        coord.setY(cote.getHauteur().sub(access.getHauteur().add(access.getMarge()).add(1)));
                 }
             } catch (FractionError e) {
                 throw new RuntimeException(e);
@@ -518,6 +572,7 @@ public class MuracleController {
 
     public void endDraggging () {
         try {
+            isResizing = false;
             pushNewChange(currentStateSave);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -774,18 +829,34 @@ public class MuracleController {
 
     private void dragAccessoire(CoordPouce coord) {
         try {
-            Pouce pouceX = coord.getX();
-            Pouce pouceY = coord.getY();
-            Cote cote = Objects.requireNonNull(getSelectedCote());
             Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
-            if (!acces.getType().equals("Retour d'air")) {
+            Cote cote = Objects.requireNonNull(getSelectedCote());
+            if (isResizing) {
+                Pouce largeur = coord.getX();
+                Pouce hauteur = coord.getY();
                 if (!isVueExterieur) {
-                    pouceX = cote.getLargeur().sub(pouceX);
+                    Pouce decal = largeur.sub(acces.getLargeur());
+                    acces.getPosition().setX(acces.getPosition().getX().sub(decal));
                 }
-                coord = new CoordPouce(pouceX, pouceY);
-                if (acces.getType().equals("Porte"))
-                    coord.setY(acces.getPosition().getY());
-                cote.moveAccessoire(acces, coord);
+                if (acces.getType().equals("Retour d'air")) {
+                    cote.setAccessoire(acces, largeur, acces.getHauteur(), acces.getMarge());
+                }
+                else {
+                    cote.setAccessoire(acces, largeur, hauteur, acces.getMarge());
+                }
+            }
+            else {
+                Pouce pouceX = coord.getX();
+                Pouce pouceY = coord.getY();
+                if (!acces.getType().equals("Retour d'air")) {
+                    if (!isVueExterieur) {
+                        pouceX = cote.getLargeur().sub(pouceX);
+                    }
+                    coord = new CoordPouce(pouceX, pouceY);
+                    if (acces.getType().equals("Porte"))
+                        coord.setY(acces.getPosition().getY());
+                    cote.moveAccessoire(acces, coord);
+                }
             }
         } catch (FractionError | PouceError | CoteError e) {
             setErrorMessage(e.getMessage());
@@ -992,6 +1063,10 @@ public class MuracleController {
 
     public Pouce getSelectedSepInverse() {
         return Objects.requireNonNull(getSelectedCote()).getLargeur().sub(getSelectedSeparateur());
+    }
+
+    public boolean isResizing() {
+        return isResizing;
     }
 
     public void setErrorMessage(String errorMessage) {
