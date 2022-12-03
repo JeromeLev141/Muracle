@@ -575,7 +575,7 @@ public class MainWindow extends JFrame {
 							if (isRightClicDrag)
 								drawingPanel.moved(e);
 							else {
-								if (controller.isSeparateurSelected() || controller.isAccessoireSelected()) {
+								if (controller.isSeparateurSelected() || controller.isAccessoireSelected() || controller.isResizing()) {
 									controller.dragging(drawingPanel.movedItem(e));
 									drawingPanel.repaint();
 									if (controller.isSeparateurSelected()) {
@@ -584,7 +584,7 @@ public class MainWindow extends JFrame {
 										else
 											posSepTextField.setText(controller.getSelectedSepInverse().toString());
 									}
-									else {
+									else if (controller.isAccessoireSelected()) {
 										if (controller.isResizing()) {
 											largAccesTextField.setText(controller.getSelectedAccessoireReadOnly().largeur.toString());
 											hAccesTextField.setText(controller.getSelectedAccessoireReadOnly().hauteur.toString());
@@ -595,7 +595,10 @@ public class MainWindow extends JFrame {
 											posXAccesTextField.setText(controller.getSelectedAccesPosXInverse().toString());
 										posYAccesTextField.setText(controller.getSelectedAccessoireReadOnly().position.getY().toString());
 									}
-
+									else if (controller.isVueDessus() && controller.isResizing()) {
+										largSalleTextField.setText(controller.getDimensionSalle(0));
+										longSalleTextField.setText(controller.getDimensionSalle(1));
+									}
 								}
 							}
 						}
@@ -639,11 +642,17 @@ public class MainWindow extends JFrame {
 						@Override
 						public void mouseReleased(MouseEvent e) {
 							drawingPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-							if (isRightClicDrag)
+							if (isRightClicDrag) {
 								drawingPanel.release(e);
+							}
 							else {
-								if (controller.isSeparateurSelected() || controller.isAccessoireSelected())
+								if (controller.isSeparateurSelected() || controller.isAccessoireSelected() || controller.isVueDessus()) {
+									if (controller.isVueDessus() && controller.isResizing()) {
+										drawingPanel.updateParametre();
+										drawingPanel.repaint();
+									}
 									controller.endDraggging();
+								}
 								drawingPanel.releaseItem();
 							}
 						}

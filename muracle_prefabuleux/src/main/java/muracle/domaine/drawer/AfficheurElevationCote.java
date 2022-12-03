@@ -19,6 +19,8 @@ public class AfficheurElevationCote extends Afficheur {
     private double w;
     private double h;
 
+    private double ep;
+
     public AfficheurElevationCote (MuracleController controller, Dimension initDim) {
         super(controller, initDim);
     }
@@ -31,6 +33,7 @@ public class AfficheurElevationCote extends Afficheur {
         posY = (initialDimension.getHeight() - cote.hauteur.toDouble()) / 2;
         w = cote.largeur.toDouble();
         h = cote.hauteur.toDouble();
+        ep = controller.getSalleReadOnly().profondeur.toDouble();
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -51,9 +54,25 @@ public class AfficheurElevationCote extends Afficheur {
 
     private void drawCote(Graphics2D g2d) {
         Rectangle2D.Double rect = new Rectangle2D.Double(posX, posY, w, h);
-        Area coteArea = new Area(rect);
-        drawAccessoire(g2d, coteArea);
-        g2d.draw(rect);
+        if (controller.isVueExterieur()) {
+            Rectangle2D.Double rectWithEp = new Rectangle2D.Double(rect.getX() - ep, rect.y, rect.width + 2 * ep, rect.height);
+            Area coteAreaWithEp = new Area(rectWithEp);
+            Area coteArea = new Area(rect);
+            coteAreaWithEp.subtract(coteArea);
+            g2d.setColor(fillColor);
+            g2d.fill(coteAreaWithEp);
+            g2d.setColor(lineColor);
+            drawAccessoire(g2d, coteArea);
+            g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0));
+            g2d.draw(rect);
+            g2d.setStroke(ligneStroke);
+            g2d.draw(rectWithEp);
+        }
+        else {
+            Area coteArea = new Area(rect);
+            drawAccessoire(g2d, coteArea);
+            g2d.draw(rect);
+        }
     }
 
     private void drawSeparateur(Graphics2D g2d) {
