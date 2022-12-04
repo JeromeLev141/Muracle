@@ -51,7 +51,7 @@ public class Cote implements java.io.Serializable{
         if (!doesLargeurFitWithAccessories(largeur)){
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
         }else if(largeur.toDouble() < 0){
-            throw new CoteError("On ne peut modifier la salle car la nouvelle largeur est plus petite que la vielle.");
+            throw new CoteError("On ne peut modifier la salle car la nouvelle largeur est plus petite que la vieille.");
         }else{
             resizeSeparateur(largeur);
             checkValidityForEveryAccessoire();
