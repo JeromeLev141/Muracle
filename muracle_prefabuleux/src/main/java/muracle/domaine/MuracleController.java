@@ -591,11 +591,15 @@ public class MuracleController {
         }
     }
 
-    public void endDraggging () {
+    public void endDraggging (CoordPouce decalCoord) {
         try {
             isResizing = false;
-            pushNewChange(currentStateSave);
-        } catch (IOException e) {
+            decalCoord.getX().round(64);
+            decalCoord.getY().round(64);
+            CoordPouce coord = new CoordPouce(dragRef.getX().sub(decalCoord.getX()), dragRef.getY().sub(decalCoord.getY()));
+            if (!coord.getX().equals(dragRef.getX()) || !coord.getY().equals(dragRef.getY()))
+                pushNewChange(currentStateSave);
+        } catch (IOException | FractionError e) {
             throw new RuntimeException(e);
         }
     }

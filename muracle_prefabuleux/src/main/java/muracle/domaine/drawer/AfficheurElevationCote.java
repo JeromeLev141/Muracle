@@ -58,7 +58,7 @@ public class AfficheurElevationCote extends Afficheur {
             Rectangle2D.Double rectWithEp = new Rectangle2D.Double(rect.getX() - ep, rect.y, rect.width + 2 * ep, rect.height);
             Area coteAreaWithEp = new Area(rectWithEp);
             Area coteArea = new Area(rect);
-            coteAreaWithEp.subtract(coteArea);
+            coteAreaWithEp.subtract(new Area(new Rectangle2D.Double(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2)));
             g2d.setColor(fillColor);
             g2d.fill(coteAreaWithEp);
             g2d.setColor(lineColor);

@@ -271,12 +271,19 @@ public class MainWindow extends JFrame {
 			//======== menuBar ========
 			{
 				//---- nouveau projet ----
-				newProjectButton.setText("Nouveau projet");
-				newProjectButton.setPreferredSize(new Dimension(120, 22));
-				newProjectButton.setMaximumSize(new Dimension(120, 32767));
+				//newProjectButton.setText("Nouveau projet");
+				newProjectButton.setPreferredSize(new Dimension(60, 22));
+				newProjectButton.setMaximumSize(new Dimension(60, 32767));
 				newProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				newProjectButton.setRequestFocusEnabled(false);
 				newProjectButton.setFocusPainted(false);
+				try {
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/newRev.png")));
+					image = image.getScaledInstance( 40, 40,  Image.SCALE_SMOOTH ) ;
+					newProjectButton.setIcon(new ImageIcon(image));
+				} catch (Exception except) {
+					except.printStackTrace();
+				}
 				newProjectButton.addActionListener(e -> {
 					controller.creerProjet();
 					updater.updateTextFields();
@@ -288,12 +295,19 @@ public class MainWindow extends JFrame {
 				menuBar.add(newProjectButton);
 
 				//---- ouvrir projet ----
-				openProjectButton.setText("Ouvrir projet");
-				openProjectButton.setPreferredSize(new Dimension(120, 22));
-				openProjectButton.setMaximumSize(new Dimension(120, 32767));
+				//openProjectButton.setText("Ouvrir projet");
+				openProjectButton.setPreferredSize(new Dimension(60, 22));
+				openProjectButton.setMaximumSize(new Dimension(60, 32767));
 				openProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				openProjectButton.setRequestFocusEnabled(false);
 				openProjectButton.setFocusPainted(false);
+				try {
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/openRev.png")));
+					image = image.getScaledInstance( 24, 24,  Image.SCALE_SMOOTH ) ;
+					openProjectButton.setIcon(new ImageIcon(image));
+				} catch (Exception except) {
+					except.printStackTrace();
+				}
 				openProjectButton.addActionListener(e -> {
 					controller.ouvrirProjet(this);
 					updater.updateTextFields();
@@ -305,20 +319,34 @@ public class MainWindow extends JFrame {
 				menuBar.add(openProjectButton);
 
 				//---- sauvergarder projet ----
-				saveProjectButton.setText("Sauvegarder projet");
-				saveProjectButton.setMaximumSize(new Dimension(140, 32767));
-				saveProjectButton.setPreferredSize(new Dimension(140, 22));
+				//saveProjectButton.setText("Sauvegarder projet");
+				saveProjectButton.setMaximumSize(new Dimension(60, 32767));
+				saveProjectButton.setPreferredSize(new Dimension(60, 22));
 				saveProjectButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				saveProjectButton.setRequestFocusEnabled(false);
+				try {
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/saveRev.png")));
+					image = image.getScaledInstance( 20, 20,  Image.SCALE_SMOOTH ) ;
+					saveProjectButton.setIcon(new ImageIcon(image));
+				} catch (Exception except) {
+					except.printStackTrace();
+				}
 				saveProjectButton.addActionListener(e -> controller.sauvegarderProjet(this));
 				menuBar.add(saveProjectButton);
 
 				//---- exporter plan ----
-				exportButton.setText("Exporter plans");
-				exportButton.setPreferredSize(new Dimension(120, 22));
-				exportButton.setMaximumSize(new Dimension(120, 32767));
+				//exportButton.setText("Exporter plans");
+				exportButton.setPreferredSize(new Dimension(60, 22));
+				exportButton.setMaximumSize(new Dimension(60, 32767));
 				exportButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				exportButton.setRequestFocusEnabled(false);
+				try {
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/exportRev.png")));
+					image = image.getScaledInstance( 26, 26,  Image.SCALE_SMOOTH ) ;
+					exportButton.setIcon(new ImageIcon(image));
+				} catch (Exception except) {
+					except.printStackTrace();
+				}
 				exportButton.addActionListener(e -> controller.exporterPlan(this));
 				menuBar.add(exportButton);
 
@@ -421,12 +449,19 @@ public class MainWindow extends JFrame {
 				menuBar.add(changeVueButton);
 
 				//---- retour vue dessus ----
-				retourVueHautButton.setText("Retour vue dessus");
-				retourVueHautButton.setMaximumSize(new Dimension(140, 32767));
-				retourVueHautButton.setPreferredSize(new Dimension(140, 22));
+				//retourVueHautButton.setText("Retour vue dessus");
+				retourVueHautButton.setMaximumSize(new Dimension(60, 32767));
+				retourVueHautButton.setPreferredSize(new Dimension(60, 22));
 				retourVueHautButton.setHorizontalTextPosition(SwingConstants.CENTER);
 				retourVueHautButton.setRequestFocusEnabled(false);
 				retourVueHautButton.setVisible(false);
+				try {
+					Image image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/returnRev.png")));
+					image = image.getScaledInstance( 24, 24,  Image.SCALE_SMOOTH ) ;
+					retourVueHautButton.setIcon(new ImageIcon(image));
+				} catch (Exception except) {
+					except.printStackTrace();
+				}
 				retourVueHautButton.addActionListener(e -> {
 					if (changeVueButton.isSelected())
 						changeVueButton.doClick();
@@ -486,6 +521,21 @@ public class MainWindow extends JFrame {
 						image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/redo" + rev + ".png")));
 						image = image.getScaledInstance( 40, 22,  Image.SCALE_SMOOTH ) ;
 						redoButton.setIcon(new ImageIcon(image));
+						image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/new" + rev + ".png")));
+						image = image.getScaledInstance( 40, 40,  Image.SCALE_SMOOTH ) ;
+						newProjectButton.setIcon(new ImageIcon(image));
+						image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/open" + rev + ".png")));
+						image = image.getScaledInstance( 24, 24,  Image.SCALE_SMOOTH ) ;
+						openProjectButton.setIcon(new ImageIcon(image));
+						image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/save" + rev + ".png")));
+						image = image.getScaledInstance( 20, 20,  Image.SCALE_SMOOTH ) ;
+						saveProjectButton.setIcon(new ImageIcon(image));
+						image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/export" + rev + ".png")));
+						image = image.getScaledInstance( 26, 26,  Image.SCALE_SMOOTH ) ;
+						exportButton.setIcon(new ImageIcon(image));
+						image = ImageIO.read(Objects.requireNonNull(getClass().getResource("/images/return" + rev + ".png")));
+						image = image.getScaledInstance( 24, 24,  Image.SCALE_SMOOTH ) ;
+						retourVueHautButton.setIcon(new ImageIcon(image));
 					}catch (Exception exception){
 						exception.printStackTrace();
 					}
@@ -575,6 +625,18 @@ public class MainWindow extends JFrame {
 							if (isRightClicDrag)
 								drawingPanel.moved(e);
 							else {
+								if (controller.isResizing()) {
+									if (controller.isVueCote()) {
+										if (controller.getSelectedAccessoireReadOnly().type.equals("Porte"))
+											drawingPanel.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
+										else if (controller.getSelectedAccessoireReadOnly().type.equals("Retour d'air"))
+											drawingPanel.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+										else
+											drawingPanel.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
+									}
+									else
+										drawingPanel.setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
+								}
 								if (controller.isSeparateurSelected() || controller.isAccessoireSelected() || controller.isResizing()) {
 									controller.dragging(drawingPanel.movedItem(e));
 									drawingPanel.repaint();
@@ -615,8 +677,6 @@ public class MainWindow extends JFrame {
 
 						@Override
 						public void mousePressed(MouseEvent e) {
-							drawingPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
 							if (e.getButton() == 3){//click droit
 								drawingPanel.press(e);
 								isRightClicDrag = true;
@@ -637,6 +697,8 @@ public class MainWindow extends JFrame {
 
 								controller.startDragging();
 							}
+							if (controller.isAccessoireSelected() || controller.isSeparateurSelected())
+								drawingPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 						}
 
 						@Override
@@ -646,12 +708,12 @@ public class MainWindow extends JFrame {
 								drawingPanel.release(e);
 							}
 							else {
-								if (controller.isSeparateurSelected() || controller.isAccessoireSelected() || controller.isVueDessus()) {
+								if (controller.isSeparateurSelected() || controller.isAccessoireSelected() || controller.isResizing()) {
 									if (controller.isVueDessus() && controller.isResizing()) {
 										drawingPanel.updateParametre();
 										drawingPanel.repaint();
 									}
-									controller.endDraggging();
+									controller.endDraggging(drawingPanel.movedItem(e));
 								}
 								drawingPanel.releaseItem();
 							}
