@@ -492,7 +492,7 @@ public class MuracleController {
             try {
                 salle.setLargeur(coord.getX());
                 salle.setLongueur(coord.getY());
-            } catch (CoteError e) {
+            } catch (CoteError | FractionError e) {
                 setErrorMessage(e.getMessage());
             }
         }

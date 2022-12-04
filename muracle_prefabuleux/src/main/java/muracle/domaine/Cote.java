@@ -47,6 +47,25 @@ public class Cote implements java.io.Serializable{
             return true;
         }
     }
+    public boolean veriSetLargeurREFACTOR(Pouce largeur) throws CoteError, FractionError {
+        if (!doesLargeurFitWithAccessories(largeur)){
+            throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
+        }else if(largeur.toDouble() < 0){
+            throw new CoteError("On ne peut modifier la salle car la nouvelle largeur est plus petite que la vielle.");
+        }else{
+            resizeSeparateur(largeur);
+            checkValidityForEveryAccessoire();
+            return true;
+        }
+    }
+    private void resizeSeparateur(Pouce largeur) throws FractionError {
+        // resize
+        for (int i = 0; i < this.separateurs.size(); i++){
+            Pouce newValue = (getSeparateur(i).mul(largeur)).div(this.largeur);
+            newValue.round(64);
+            this.separateurs.set(i, newValue);
+        }
+    }
 
     public void setLargeur(Pouce largeur) {
         this.largeur = largeur;
@@ -93,7 +112,7 @@ public class Cote implements java.io.Serializable{
 
         if(doesAccessoireFitInCote(accessoire)){
             accessoires.add(accessoire);
-            CheckValidityForEveryAccessoire();
+            checkValidityForEveryAccessoire();
         } else{
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         }
@@ -103,7 +122,7 @@ public class Cote implements java.io.Serializable{
         dummyAccessoire.setPosition(positionPost);
         if(doesAccessoireFitInCote(dummyAccessoire)){
             accessoire.setPosition(positionPost);
-            CheckValidityForEveryAccessoire();
+            checkValidityForEveryAccessoire();
         }else{
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         }
@@ -136,16 +155,16 @@ public class Cote implements java.io.Serializable{
             if (accessoire.getType().equals("Porte")) {
                 accessoire.getPosition().setY(accessoire.getPosition().getY().sub(difHauteur));
             }
-            CheckValidityForEveryAccessoire();
+            checkValidityForEveryAccessoire();
         }else{
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         }
     }
     public void removeAccessoire(Accessoire accessoire){
         accessoires.remove(accessoire);
-        CheckValidityForEveryAccessoire();
+        checkValidityForEveryAccessoire();
     }
-    private void CheckValidityForEveryAccessoire() {
+    private void checkValidityForEveryAccessoire() {
         for (int i = 0; i< accessoires.size(); i++){
             getAccessoire(i).setIsValid(doesAccessoireFitWithOtherAccessoires(getAccessoire(i)) && doesAccessoireFitWithSeparateur(getAccessoire(i)));
         }
@@ -364,7 +383,7 @@ public class Cote implements java.io.Serializable{
         if(position.compare(largeur) == -1 && !separateurs.contains(position)){
             separateurs.add(position);
             sortSeparateur();
-            CheckValidityForEveryAccessoire();
+            checkValidityForEveryAccessoire();
             this.updateRetourAir();
         }else{
             throw new CoteError("Position en dehors du côté");
@@ -375,7 +394,7 @@ public class Cote implements java.io.Serializable{
     }
     public void deleteSeparateur(int index){
         this.separateurs.remove(index);
-        CheckValidityForEveryAccessoire();
+        checkValidityForEveryAccessoire();
         this.updateRetourAir();
     }
     public Pouce getSeparateur(int index){
@@ -388,7 +407,7 @@ public class Cote implements java.io.Serializable{
                 separateurs.remove(index);
                 separateurs.add(position);
                 sortSeparateur();
-                CheckValidityForEveryAccessoire();
+                checkValidityForEveryAccessoire();
                 this.updateRetourAir();
             }
             else throw new CoteError("Le separateur ne doit pas dépasser la largeur du côté");

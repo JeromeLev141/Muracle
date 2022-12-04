@@ -68,11 +68,21 @@ public class Salle implements java.io.Serializable{
         return largeur;
     }
 
-    public void setLargeur(Pouce largeur) throws CoteError {
-        if (getCote('N').verifSetLargeur(largeur) && getCote('S').verifSetLargeur(largeur)){
+    public void setLargeur(Pouce largeur) throws CoteError, FractionError {
+        if (getCote('N').veriSetLargeurREFACTOR(largeur) && getCote('S').veriSetLargeurREFACTOR(largeur)){
             getCote('N').setLargeur(largeur);
             getCote('S').setLargeur(largeur);
             this.largeur = largeur;
+        }
+    }
+    public Pouce getLongueur() {
+        return longueur;
+    }
+    public void setLongueur(Pouce longueur) throws CoteError, FractionError {
+        if (getCote('E').veriSetLargeurREFACTOR(longueur) && getCote('W').veriSetLargeurREFACTOR(longueur)){
+            getCote('E').setLargeur(longueur);
+            getCote('W').setLargeur(longueur);
+            this.longueur = longueur;
         }
     }
 
@@ -127,18 +137,6 @@ public class Salle implements java.io.Serializable{
             this.hauteurRetourAir = hauteurRetourAir;
         }else {
             throw new SalleError("La distance du sol des retours d'air additionné à la hauteur des retours d'air ne peut pas être plus grande que la hauteur");
-        }
-    }
-
-    public Pouce getLongueur() {
-        return longueur;
-    }
-
-    public void setLongueur(Pouce longueur) throws CoteError {
-        if (getCote('E').verifSetLargeur(longueur) && getCote('W').verifSetLargeur(longueur)){
-            getCote('E').setLargeur(longueur);
-            getCote('W').setLargeur(longueur);
-            this.longueur = longueur;
         }
     }
 
