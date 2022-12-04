@@ -490,6 +490,11 @@ public class MuracleController {
             }
             CoordPouce coord = new CoordPouce(dragRef.getX().sub(decalCoord.getX()), dragRef.getY().sub(decalCoord.getY()));
             try {
+                Pouce min = new Pouce(48, 0, 1);
+                if (coord.getX().compare(min) == -1)
+                    coord.setX(min.copy());
+                if (coord.getY().compare(min) == -1)
+                    coord.setY(min.copy());
                 salle.setLargeur(coord.getX());
                 salle.setLongueur(coord.getY());
             } catch (CoteError | FractionError e) {
