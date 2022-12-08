@@ -322,7 +322,6 @@ public class Cote implements java.io.Serializable{
             }
             for (Accessoire accessoire: accessoires) {
                 CoordPouce coinHautGauche =  accessoire.getPosition();
-                //CoordPouce coinHautDroit = new CoordPouce(coinHautGauche.getX().add(accessoire.getLargeur()),coinHautGauche.getY());
                 int x = 0;
                 for (Pouce separateur : separateurs) {
                     if (coinHautGauche.getX().compare(separateur) == 1)
@@ -331,34 +330,6 @@ public class Cote implements java.io.Serializable{
                 Panneau panneauIntGauche = murs.get(x).getPanneauInt();
                 Panneau panneauExtGauche = murs.get(x).getPanneauExt();
 
-                /*if(separateurs.get(i).compare(coinHautDroit.getX()) == -1) {
-                    Panneau panneauIntDroit = murs.get(i+1).getPanneauInt();
-                    Panneau panneauExtDroit = murs.get(i+1).getPanneauExt();
-
-                    Pouce largeurGauche = accessoire.getLargeur().sub(separateurs.get(i).sub(coinHautGauche.getX()));
-                    Pouce largeurDroite=  accessoire.getLargeur().sub(coinHautDroit.getX().sub(separateurs.get(i)));
-                    if(accessoire.isInterieurOnly()){
-                        panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurGauche,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-
-                        panneauIntDroit.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurDroite,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-                    }else
-                    {
-                        panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurGauche,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-
-                        panneauIntDroit.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurDroite,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-
-                        panneauExtGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurGauche,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-
-                        panneauExtDroit.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurDroite,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-                    }
-                }
-                else {}*/
                    if(accessoire.isInterieurOnly()){
                        panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
