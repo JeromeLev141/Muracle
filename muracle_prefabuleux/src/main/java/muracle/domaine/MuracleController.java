@@ -28,6 +28,8 @@ public class MuracleController {
 
     private boolean isVueDessus;
     private boolean isVueExterieur;
+
+    private boolean isVuePlanDecoupage;
     private Pouce distLigneGrille;
     private boolean isGrilleShown;
     private String errorMessage;
@@ -104,6 +106,7 @@ public class MuracleController {
         separateurSelected = -1;
         isVueDessus = true;
         isVueExterieur = true;
+        isVuePlanDecoupage = false;
         undoPile = new Stack<>();
         redoPile = new Stack<>();
     }
@@ -132,6 +135,7 @@ public class MuracleController {
                 separateurSelected = -1;
                 isVueDessus = true;
                 isVueExterieur = true;
+                isVuePlanDecoupage = false;
             } catch (ClassNotFoundException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -266,6 +270,7 @@ public class MuracleController {
         separateurSelected = save.saveSeparateurSelected;
         isVueDessus = save.saveIsVueDessus;
         isVueExterieur = save.saveIsVueExterieur;
+        isVuePlanDecoupage = isVuePlanDecoupage;
         ois.close();
     }
 
@@ -639,9 +644,13 @@ public class MuracleController {
                 accessoireSelected = -1;
     }
 
-    public boolean isVueExterieur() {
-        return isVueExterieur;
+    public boolean isVueExterieur() {return isVueExterieur;}
+
+    public void setIsVuePlanDecoupage(boolean vuePlanDecoupage) {
+        isVuePlanDecoupage = vuePlanDecoupage;
     }
+
+    public boolean isVuePlanDecoupage() {return isVuePlanDecoupage;}
 
     public boolean isVueCote() { return !isVueDessus();}
 
@@ -651,9 +660,7 @@ public class MuracleController {
 
     public boolean isSeparateurSelected() { return separateurSelected != -1; }
 
-    private void selectMur(int index) {
-        murSelected = index;
-    }
+    private void selectMur(int index) {murSelected = index;}
 
     public MurDTO getSelectedMurReadOnly() { return new MurDTO(Objects.requireNonNull(getSelectedMur())); }
 

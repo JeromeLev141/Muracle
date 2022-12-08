@@ -58,7 +58,7 @@ public class AfficheurElevationCote extends Afficheur {
             Rectangle2D.Double rectWithEp = new Rectangle2D.Double(rect.getX() - ep, rect.y, rect.width + 2 * ep, rect.height);
             Area coteAreaWithEp = new Area(rectWithEp);
             Area coteArea = new Area(rect);
-            coteAreaWithEp.subtract(new Area(new Rectangle2D.Double(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2)));
+            coteAreaWithEp.subtract(new Area(new Rectangle2D.Double(rect.x + 1, rect.y, rect.width - 2, rect.height)));
             g2d.setColor(fillColor);
             g2d.fill(coteAreaWithEp);
             g2d.setColor(lineColor);
@@ -139,9 +139,9 @@ public class AfficheurElevationCote extends Afficheur {
                 }
                 rect = new Rectangle2D.Double(posX + murPosX, posY, mur.getLargeur().toDouble(), mur.getHauteur().toDouble());
                 if (controller.isVueExterieur()) {
-                    if (mur.GetEstCoinGauche())
+                    if (mur.isEstCoinGauche())
                         rect = new Rectangle2D.Double(rect.x - ep, rect.y, rect.width + ep, rect.height);
-                    if (mur.GetEstCoinDroit())
+                    if (mur.isEstCoinDroit())
                         rect = new Rectangle2D.Double(rect.x, rect.y, rect.width + ep, rect.height);
                 }
                 if (controller.getErrorMessage().equals(""))

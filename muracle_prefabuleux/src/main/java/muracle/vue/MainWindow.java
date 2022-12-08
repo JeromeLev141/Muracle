@@ -684,7 +684,7 @@ public class MainWindow extends JFrame {
 								drawingPanel.press(e);
 								isRightClicDrag = true;
 							}
-							else  if (e.getButton() == 1) {//click gauche
+							else  if (e.getButton() == 1 && !controller.isVuePlanDecoupage()) {//click gauche
 								drawingPanel.pressItem(e);
 								isRightClicDrag = false;
 
@@ -1051,13 +1051,9 @@ public class MainWindow extends JFrame {
 							voirPlanButton.setRequestFocusEnabled(false);
 							voirPlanButton.setVisible(false);
 							voirPlanButton.addActionListener(e -> {
-								if (voirPlanButton.isSelected()){
-									JLabel plan = new JLabel("Ceci est un plan (demo)", JLabel.CENTER);
-									plan.setBackground(Color.WHITE);
-									plan.setOpaque(true);
-									splitPaneH.setLeftComponent(plan);
-								}
-								else splitPaneH.setLeftComponent(drawingPanel);
+								voirPlanButton.setSelected(voirPlanButton.isSelected());
+								controller.setIsVuePlanDecoupage(voirPlanButton.isSelected());
+								System.out.println(controller.isVuePlanDecoupage());
 							});
 							configurationPlanPanel.add(voirPlanButton, new GridBagConstraints(0, posY, 3, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.NONE,
