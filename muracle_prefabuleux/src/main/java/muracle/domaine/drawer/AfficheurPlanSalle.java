@@ -151,7 +151,7 @@ public class AfficheurPlanSalle extends Afficheur{
             if (!(mur.getPanneauExt().isPoidsValid() && mur.getPanneauInt().isPoidsValid())) {
                 double murPosX;
                 murPosX = 0;
-                if (!mur.GetEstCoinGauche())
+                if (!mur.isEstCoinGauche())
                     murPosX = cote.separateurs.get(indexMur - 1).toDouble();
                 rect = new Rectangle2D.Double(posX + murPosX, posY + h, mur.getLargeur().toDouble(), ep);
                 if (controller.getErrorMessage().equals(""))
@@ -180,7 +180,7 @@ public class AfficheurPlanSalle extends Afficheur{
             if (!(mur.getPanneauExt().isPoidsValid() && mur.getPanneauInt().isPoidsValid())) {
                 double murPosX;
                 murPosX = cote.largeur.toDouble() - mur.getLargeur().toDouble();
-                if (!mur.GetEstCoinGauche())
+                if (!mur.isEstCoinGauche())
                     murPosX = cote.largeur.toDouble() - cote.separateurs.get(indexMur - 1).toDouble() - mur.getLargeur().toDouble();
                 rect = new Rectangle2D.Double(posX + murPosX, posY - ep, mur.getLargeur().toDouble(), ep);
                 if (controller.getErrorMessage().equals(""))
@@ -209,7 +209,7 @@ public class AfficheurPlanSalle extends Afficheur{
             if (!(mur.getPanneauExt().isPoidsValid() && mur.getPanneauInt().isPoidsValid())) {
                 double murPosY;
                 murPosY = cote.largeur.toDouble() - mur.getLargeur().toDouble();
-                if (!mur.GetEstCoinGauche())
+                if (!mur.isEstCoinGauche())
                     murPosY = cote.largeur.toDouble() - cote.separateurs.get(indexMur - 1).toDouble() - mur.getLargeur().toDouble();
                 rect = new Rectangle2D.Double(posX + w, posY + murPosY, ep, mur.getLargeur().toDouble());
                 if (controller.getErrorMessage().equals(""))
@@ -238,7 +238,7 @@ public class AfficheurPlanSalle extends Afficheur{
             if (!(mur.getPanneauExt().isPoidsValid() && mur.getPanneauInt().isPoidsValid())) {
                 double murPosY;
                 murPosY = 0;
-                if (!mur.GetEstCoinGauche())
+                if (!mur.isEstCoinGauche())
                     murPosY = cote.separateurs.get(indexMur - 1).toDouble();
                 rect = new Rectangle2D.Double(posX - ep, posY + murPosY, ep, mur.getLargeur().toDouble());
                 if (controller.getErrorMessage().equals(""))

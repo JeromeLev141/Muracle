@@ -40,7 +40,7 @@ public class Mur implements java.io.Serializable{
         this.hauteur = hauteur;
     }
 
-    public boolean GetEstCoinDroit() {
+    public boolean isEstCoinDroit() {
         return estCoinDroit;
     }
 
@@ -48,7 +48,7 @@ public class Mur implements java.io.Serializable{
         this.estCoinDroit = estCoinDroit;
     }
 
-    public boolean GetEstCoinGauche() {
+    public boolean isEstCoinGauche() {
         return estCoinGauche;
     }
 
