@@ -893,7 +893,7 @@ public class MainWindow extends JFrame {
 							});
 
 							//---- posYAccesParam ----
-							addParams(parametresModifPanel, "Position Y de l'acessoire", posYAccesTextField, "po", posY++);
+							addParams(parametresModifPanel, "Position Y de l'accessoire", posYAccesTextField, "po", posY++);
 							posYAccesTextField.addActionListener(e -> {
 								if (controller.isAccessoireSelected()) {
 									controller.moveAccessoire(posXAccesTextField.getText(), posYAccesTextField.getText());
@@ -903,7 +903,7 @@ public class MainWindow extends JFrame {
 							});
 
 							//---- largAccesParam ----
-							addParams(parametresModifPanel, "Largeur de l'acessoire", largAccesTextField, "po", posY++);
+							addParams(parametresModifPanel, "Largeur de l'accessoire", largAccesTextField, "po", posY++);
 							largAccesTextField.addActionListener(e -> {
 								if (controller.isAccessoireSelected()) {
 									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
@@ -918,7 +918,7 @@ public class MainWindow extends JFrame {
 							});
 
 							//---- hAccesParam ----
-							addParams(parametresModifPanel, "Hauteur de l'acessoire", hAccesTextField, "po", posY++);
+							addParams(parametresModifPanel, "Hauteur de l'accessoire", hAccesTextField, "po", posY++);
 							hAccesTextField.addActionListener(e -> {
 								if (controller.isAccessoireSelected()) {
 									controller.setDimensionAccessoire(largAccesTextField.getText(), hAccesTextField.getText(), margeAccesTextField.getText());
