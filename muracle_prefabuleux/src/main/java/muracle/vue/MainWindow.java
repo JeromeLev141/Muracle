@@ -347,7 +347,10 @@ public class MainWindow extends JFrame {
 				} catch (Exception except) {
 					except.printStackTrace();
 				}
-				exportButton.addActionListener(e -> controller.exporterPlan(this));
+				exportButton.addActionListener(e -> {
+					controller.exporterPlan(this);
+					drawingPanel.repaint();
+				});
 				menuBar.add(exportButton);
 
 				//---- afficher grille ----

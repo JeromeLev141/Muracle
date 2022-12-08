@@ -64,7 +64,8 @@ public class AfficheurElevationCote extends Afficheur {
             g2d.setColor(lineColor);
             drawAccessoire(g2d, coteArea);
             g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0));
-            g2d.draw(rect);
+            g2d.draw(new Line2D.Double(rect.x, rect.y, rect.x, rect.y + rect.height));
+            g2d.draw(new Line2D.Double(rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + rect.height));
             g2d.setStroke(ligneStroke);
             g2d.draw(rectWithEp);
         }
