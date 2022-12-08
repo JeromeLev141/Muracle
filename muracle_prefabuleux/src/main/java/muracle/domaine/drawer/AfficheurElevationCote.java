@@ -108,6 +108,12 @@ public class AfficheurElevationCote extends Afficheur {
             if (!controller.isVueExterieur())
                 murPosX = cote.largeur.toDouble() - (murPosX + murSelected.Largeur.toDouble());
             Rectangle2D.Double rect = new Rectangle2D.Double(posX + murPosX, posY, murSelected.Largeur.toDouble(), murSelected.Hauteur.toDouble());
+            if (controller.isVueExterieur()) {
+                if (murSelected.EstCoinGauche)
+                    rect = new Rectangle2D.Double(rect.x - ep, rect.y, rect.width + ep, rect.height);
+                if (murSelected.EstCoinDroit)
+                    rect = new Rectangle2D.Double(rect.x, rect.y, rect.width + ep, rect.height);
+            }
             g2d.setColor(selectColor);
             g2d.setStroke(selectedStroke);
             g2d.draw(rect);
@@ -131,6 +137,12 @@ public class AfficheurElevationCote extends Afficheur {
                         murPosX = cote.largeur.toDouble() - (cote.separateurs.get(indexMur - 1).toDouble() + mur.getLargeur().toDouble());
                 }
                 rect = new Rectangle2D.Double(posX + murPosX, posY, mur.getLargeur().toDouble(), mur.getHauteur().toDouble());
+                if (controller.isVueExterieur()) {
+                    if (mur.GetEstCoinGauche())
+                        rect = new Rectangle2D.Double(rect.x - ep, rect.y, rect.width + ep, rect.height);
+                    if (mur.GetEstCoinDroit())
+                        rect = new Rectangle2D.Double(rect.x, rect.y, rect.width + ep, rect.height);
+                }
                 if (controller.getErrorMessage().equals(""))
                     controller.setErrorMessage("Les panneaux du mur " + (indexMur + 1) + " du côté selectionné excèdent le poids maximum");
             }

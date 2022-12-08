@@ -626,7 +626,7 @@ public class MainWindow extends JFrame {
 								drawingPanel.moved(e);
 							else {
 								if (controller.isResizing()) {
-									if (controller.isVueCote()) {
+									if (controller.isAccessoireSelected()) {
 										if (controller.getSelectedAccessoireReadOnly().type.equals("Porte"))
 											drawingPanel.setCursor(new Cursor(Cursor.NE_RESIZE_CURSOR));
 										else if (controller.getSelectedAccessoireReadOnly().type.equals("Retour d'air"))

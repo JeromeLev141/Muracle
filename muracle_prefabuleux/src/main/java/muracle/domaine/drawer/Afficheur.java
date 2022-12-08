@@ -95,10 +95,10 @@ public class Afficheur {
             int xPos = (initialDimension.width / 2) - (textWidth / 2);
             int yPos = initialDimension.height - 40;
             Rectangle2D.Double rect = new Rectangle2D.Double(xPos - 6, yPos - 20, textWidth + 12, 28);
+            g2d.setColor(lineColor);
+            g2d.fill(new Rectangle2D.Double(rect.x - 2, rect.y - 2, rect.width + 4, rect.height + 4));
             g2d.setColor(backErrorColor);
             g2d.fill(rect);
-            g2d.setColor(lineColor);
-            g2d.draw(rect);
             g2d.setColor(errorColor);
             g2d.drawString(controller.getErrorMessage(), xPos, yPos);
             controller.ackErrorMessage();
