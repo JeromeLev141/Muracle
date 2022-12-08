@@ -332,14 +332,14 @@ public class Cote implements java.io.Serializable{
 
                    if(accessoire.isInterieurOnly()){
                        panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
-                               accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
+                               accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,true,epaisseur,margeEp,longeurPlis);
                    }else
                    {
                     panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
-                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
+                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,true,epaisseur,margeEp,longeurPlis);
 
                     panneauExtGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
-                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
+                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,false,epaisseur,margeEp,longeurPlis);
 
                     }
             }

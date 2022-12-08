@@ -97,7 +97,7 @@ public class Panneau {
         return (this.poids <= 250);
     }
 
-    public void soustrairePoidsAccessoire(Pouce hauteur,Pouce largeur,Pouce marge,String type,Pouce epTrouRetourAir){
+    public void soustrairePoidsAccessoire(Pouce hauteur,Pouce largeur,Pouce marge,String type,Pouce epTrouRetourAir,boolean interieur,Pouce epaisseur,Pouce margeEp, Pouce longeurPlis){
         double poids = this.poids;
 
         switch (type){
@@ -111,6 +111,9 @@ public class Panneau {
             case "Prise électrique":
             case "Porte":
                 Pouce aireAccessoirePrise = hauteur.mul(largeur);
+                if(interieur){
+                    this.poids = poids - (largeur.mul(epaisseur.add(margeEp.add(longeurPlis))).toDouble() * poidsMatiere);
+                }
                 this.poids = poids - (aireAccessoirePrise.toDouble() * poidsMatiere);
                 break;
             case "Retour d'air":
