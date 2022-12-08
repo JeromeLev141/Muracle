@@ -13,6 +13,9 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.util.*;
+
 import java.util.Base64;
 import java.util.Objects;
 import java.util.Scanner;
@@ -226,7 +229,7 @@ public class MuracleController {
 
     public void fermerProjet(Component parent) {
         if (!undoPile.isEmpty()) {
-            int result = JOptionPane.showConfirmDialog(parent,"Voulez-vous sauvergarder votre travail?\n" +
+            int result = JOptionPane.showConfirmDialog(parent,"Voulez-vous sauvegarder votre travail?\n" +
                             "Toutes modifications non-sauvegardées seront perdues.", "Attention",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
@@ -698,7 +701,7 @@ public class MuracleController {
             if (!dist.contains("-"))
                 if (!dist.equals(distLigneGrille.toString()))
                     distLigneGrille = new Pouce(dist);
-            else setErrorMessage("La valeur entrée ne doit pas négative");
+            else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         }
@@ -754,7 +757,7 @@ public class MuracleController {
                     salle.setProfondeur(new Pouce(profondeur));
                     pushNewChange(save);
                 }
-            } else setErrorMessage("La valeur entrée ne doit pas négative");
+            } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (CoteError | SalleError | PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -850,7 +853,7 @@ public class MuracleController {
                     cote.moveAccessoire(acces, new CoordPouce(pouceX, pouceY));
                     pushNewChange(save);
                 }
-        } else setErrorMessage("La valeur entrée ne doit pas négative");
+        } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch(PouceError | FractionError | CoteError e){
             setErrorMessage(e.getMessage());
         } catch(IOException e){
@@ -919,7 +922,7 @@ public class MuracleController {
                     cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
                     pushNewChange(save);
                 }
-            } else setErrorMessage("La valeur entrée ne doit pas négative");
+            } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (PouceError | FractionError | CoteError e) {
             setErrorMessage(e.getMessage());
             acces.getPosition().setX(posXAcces);
@@ -978,7 +981,7 @@ public class MuracleController {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        } else setErrorMessage("La valeur entrée ne doit pas négative");
+        } else setErrorMessage("La valeur entrée ne doit pas être négative");
     }
 
     private void dragSeparateur(Pouce pos) {
@@ -1025,7 +1028,7 @@ public class MuracleController {
                     salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
                     pushNewChange(save);
                 }
-            } else setErrorMessage("La valeur entrée ne doit pas négative");
+            } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (SalleError | PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -1080,7 +1083,7 @@ public class MuracleController {
                     generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
                     pushNewChange(save);
                 }
-            } else setErrorMessage("La valeur entrée ne doit pas négative");
+            } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -1111,5 +1114,21 @@ public class MuracleController {
 
     public void ackErrorMessage() {
         errorMessage = "";
+    }
+
+    public boolean isSalleValid(){
+        for (int i = 0; i < salle.getTableauCote().length; i ++){
+            ArrayList<Mur> murs = salle.getTableauCote()[i].getMurs(salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+                    generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis());
+            for (Mur mur : murs) {
+                if (!(mur.getPanneauExt().isPoidsValid()) || !(mur.getPanneauInt().isPoidsValid())) {
+                    return false;
+                }
+            }
+            if (!(salle.getTableauCote()[i].isCoteAccessoireValid())){
+                return false;
+            }
+        }
+        return true;
     }
 }
