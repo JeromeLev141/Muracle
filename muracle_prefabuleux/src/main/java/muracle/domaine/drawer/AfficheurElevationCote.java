@@ -130,11 +130,11 @@ public class AfficheurElevationCote extends Afficheur {
                 double murPosX;
                 if (controller.isVueExterieur()) {
                     murPosX = 0;
-                    if (!mur.GetEstCoinGauche())
+                    if (!mur.isEstCoinGauche())
                         murPosX = cote.separateurs.get(indexMur - 1).toDouble();
                 } else {
                     murPosX = cote.largeur.toDouble() - mur.getLargeur().toDouble();
-                    if (!mur.GetEstCoinGauche())
+                    if (!mur.isEstCoinGauche())
                         murPosX = cote.largeur.toDouble() - (cote.separateurs.get(indexMur - 1).toDouble() + mur.getLargeur().toDouble());
                 }
                 rect = new Rectangle2D.Double(posX + murPosX, posY, mur.getLargeur().toDouble(), mur.getHauteur().toDouble());

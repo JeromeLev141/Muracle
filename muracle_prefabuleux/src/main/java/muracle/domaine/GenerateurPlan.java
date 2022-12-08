@@ -105,4 +105,19 @@ public class GenerateurPlan implements java.io.Serializable {
     public CoordPouce[][] genererCoordonees(Cote cote, int indexMur, Pouce epMurs) {
         return null;
     }
+    public CoordPouce[][] genererCoordoneesAll() {
+        return null;
+    }
+
+    public CoordPouce[][] genererCoordonees(Mur mur) {
+        if (mur.isEstCoinDroit()){
+            return null;
+        }
+        else if (mur.isEstCoinGauche())
+        {
+            return null;
+        }
+
+        return null;
+    }
 }
