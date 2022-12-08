@@ -17,8 +17,8 @@ public class MurDTO {
     public MurDTO(Mur mur){
         Largeur = mur.getLargeur();
         Hauteur = mur.getHauteur();
-        EstCoinDroit = mur.GetEstCoinDroit();
-        EstCoinGauche = mur.GetEstCoinGauche();
+        EstCoinDroit = mur.isEstCoinDroit();
+        EstCoinGauche = mur.isEstCoinGauche();
         PanneauExt = mur.getPanneauExt();
         PanneauInt = mur.getPanneauInt();
     }

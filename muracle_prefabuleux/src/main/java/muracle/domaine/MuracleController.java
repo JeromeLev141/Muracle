@@ -11,13 +11,15 @@ import muracle.utilitaire.PouceError;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
+
+import java.util.Base64;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.Stack;
 
 public class MuracleController {
 
@@ -164,61 +166,60 @@ public class MuracleController {
     public void exporterPlan(Component parent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Exporter les plans");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("*.svg", "SVG"));
+        fileChooser.setCurrentDirectory(new java.io.File("."));
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        //
+        // disable the "All files" option.
+        //
+        fileChooser.setAcceptAllFileFilterUsed(false);
         int returnValue = fileChooser.showSaveDialog(parent);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File fichier = fileChooser.getSelectedFile();
-            if (!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".svg"))
-                fichier = new File(fileChooser.getSelectedFile() + ".svg");
-            //a faire
-            try {
-                XMLOutputFactory factory = XMLOutputFactory.newInstance();
-                XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(fichier.toPath()));
-                writer.writeStartDocument();
-                generateurPlan.genererPlans(salle, writer);
-
-                /*writer.writeStartElement("svg");
-                writer.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
-                writer.writeAttribute("width", "600");
-                writer.writeAttribute("height", "400");
-
-                //example du plan d'un mur
-
-                //plan
-                writer.writeEmptyElement("path");
-                writer.writeAttribute("d", "M 400 100 L 400 300 L 500 300 L 500 100 z" +
-                        "M 100 100 L 100 300 L 200 300 L 200 100 z");
-                writer.writeAttribute("fill", "white");
-                writer.writeAttribute("stroke", "black");
-                writer.writeAttribute("stroke-width", "1");
-
-                //plis
-                writer.writeEmptyElement("path");
-                writer.writeAttribute("d", "M 410 100 L 410 90 L 490 90 L 490 100 z" +
-                        "M 410 300 L 410 310 L 490 310 L 490 300 z" +
-                        "M 100 110 L 90 110 L 90 290 L 100 290 z" +
-                        "M 200 110 L 210 110 L 210 290 L 200 290 z");
-                writer.writeAttribute("fill", "white");
-                writer.writeAttribute("stroke", "orange");
-                writer.writeAttribute("stroke-width", "1");
-
-                //replis
-                writer.writeEmptyElement("path");
-                writer.writeAttribute("d", "M 410 90 L 430 80 L 470 80 L 490 90 z" +
-                        "M 410 310 L 430 320 L 470 320 L 490 310 z" +
-                        "M 90 110 L 80 120 L 80 280 L 90 290 z" +
-                        "M 210 110 L 220 120 L 220 280 L 210 290 z");
-                writer.writeAttribute("fill", "white");
-                writer.writeAttribute("stroke", "blue");
-                writer.writeAttribute("stroke-width", "1");*/
-
-                writer.writeEndDocument();
-
-                writer.close();
-
-            } catch (IOException | XMLStreamException ex) {
-                throw new RuntimeException(ex);
+            File dossierPlans = new File(fileChooser.getCurrentDirectory().getAbsolutePath() + "/" + fileChooser.getSelectedFile().getName() + "/Plans");
+            int indexNumDossierMemeNom = 1;
+            boolean dossiersValide = true;
+            while (!dossierPlans.mkdir()) {
+                if (indexNumDossierMemeNom == 10) { // pour eviter boucle infini en cas de bug
+                    dossiersValide = false;
+                    break;
+                }
+                dossierPlans = new File(fileChooser.getCurrentDirectory().getAbsolutePath() + "/" + fileChooser.getSelectedFile().getName() +
+                        "/Plans (" + indexNumDossierMemeNom + ")");
+                indexNumDossierMemeNom++;
             }
+
+            File dossierN = new File(dossierPlans.getAbsolutePath() + "/North");
+            dossiersValide = dossiersValide && dossierN.mkdir();
+            File dossierS = new File(dossierPlans.getAbsolutePath() + "/South");
+            dossiersValide = dossiersValide && dossierS.mkdir();
+            File dossierE = new File(dossierPlans.getAbsolutePath() + "/East");
+            dossiersValide = dossiersValide && dossierE.mkdir();
+            File dossierW = new File(dossierPlans.getAbsolutePath() + "/West");
+            dossiersValide = dossiersValide && dossierW.mkdir();
+
+            if (dossiersValide) {
+                File[] dossiers = {dossierN, dossierS, dossierE, dossierW};
+                for (File dossierMur : dossiers) {
+                    int indexMur = 0;
+                    for (Mur mur : salle.getCote(dossierMur.getName().charAt(0)).getMurs(salle.getProfondeur(),
+                            generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+                            generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis())) {
+                        try {
+                            File fichierExt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Ext");
+                            fichierExt.createNewFile();
+                            File fichierInt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Int");
+                            fichierInt.createNewFile();
+                            //XMLOutputFactory factory = XMLOutputFactory.newInstance();
+                            //XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(fichier.toPath()));
+                            //writer.writeStartDocument("utf-8", "1.0");
+                            //generateurPlan.genererPlans(salle, writer);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        indexMur++;
+                    }
+                }
+            }
+            setErrorMessage("Il y a eu un problème dans la création des dossiers de destination");
         }
     }
 
