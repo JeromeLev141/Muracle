@@ -25,7 +25,14 @@ public class Cote implements java.io.Serializable{
         separateurs = new ArrayList<>();
         accessoires = new ArrayList<>();
     }
-
+    public boolean isCoteAccessoireValid(){
+        for(int i = 0; i< accessoires.size(); i++){
+            if (!(getAccessoire(i).isValid())){
+                return false;
+            }
+        }
+        return true;
+    }
     public char getOrientation() {
         return orientation;
     }

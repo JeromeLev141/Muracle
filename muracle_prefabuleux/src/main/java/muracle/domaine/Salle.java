@@ -42,7 +42,6 @@ public class Salle implements java.io.Serializable{
         }
         return null;
     }
-
     public Pouce getDistanceTrouRetourAir() {
         return distanceTrouRetourAir;
     }

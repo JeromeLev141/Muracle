@@ -17,10 +17,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Base64;
-import java.util.Objects;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class MuracleController {
 
@@ -1109,5 +1106,21 @@ public class MuracleController {
 
     public void ackErrorMessage() {
         errorMessage = "";
+    }
+
+    public boolean isSalleValid(){
+        for (int i = 0; i < salle.getTableauCote().length; i ++){
+            ArrayList<Mur> murs = salle.getTableauCote()[i].getMurs(salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+                    generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis());
+            for (Mur mur : murs) {
+                if (!(mur.getPanneauExt().isPoidsValid()) || !(mur.getPanneauInt().isPoidsValid())) {
+                    return false;
+                }
+            }
+            if (!(salle.getTableauCote()[i].isCoteAccessoireValid())){
+                return false;
+            }
+        }
+        return true;
     }
 }
