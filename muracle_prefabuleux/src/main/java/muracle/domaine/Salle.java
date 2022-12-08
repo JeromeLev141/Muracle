@@ -68,7 +68,7 @@ public class Salle implements java.io.Serializable{
     }
 
     public void setLargeur(Pouce largeur) throws CoteError, FractionError {
-        if (getCote('N').veriSetLargeurREFACTOR(largeur) && getCote('S').veriSetLargeurREFACTOR(largeur)){
+        if (getCote('N').veriSetLargeurAndResizeSeparateur(largeur) && getCote('S').veriSetLargeurAndResizeSeparateur(largeur)){
             getCote('N').setLargeur(largeur);
             getCote('S').setLargeur(largeur);
             this.largeur = largeur;
@@ -78,7 +78,7 @@ public class Salle implements java.io.Serializable{
         return longueur;
     }
     public void setLongueur(Pouce longueur) throws CoteError, FractionError {
-        if (getCote('E').veriSetLargeurREFACTOR(longueur) && getCote('W').veriSetLargeurREFACTOR(longueur)){
+        if (getCote('E').veriSetLargeurAndResizeSeparateur(longueur) && getCote('W').veriSetLargeurAndResizeSeparateur(longueur)){
             getCote('E').setLargeur(longueur);
             getCote('W').setLargeur(longueur);
             this.longueur = longueur;
