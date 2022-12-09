@@ -138,7 +138,7 @@ public class GenerateurPlan implements java.io.Serializable {
         plan[0] = interne;
         plan[1] = externe;
         List<Accessoire> porte = new ArrayList<Accessoire>(){};
-        Pouce ajoutY = this.longueurPlis.add(epMurs).add(this.margeLargeurReplis.mul(2));
+        Pouce ajoutY = this.longueurPlis.add(epMurs).add(this.margeEpaisseurMateriaux.mul(2));
         Pouce ajoutX = null;
         Pouce ajoutXInterne = null;
         Pouce hypothenus = null;
@@ -147,18 +147,18 @@ public class GenerateurPlan implements java.io.Serializable {
         }catch (PouceError ignored){}
         if (mur.isEstCoinGauche()){
             try {
-                ajoutX = this.longueurPlis.add(epMurs).addRef(hypothenus).addRef(this.margeLargeurReplis.mul(2));
+                ajoutX = this.longueurPlis.add(epMurs).addRef(hypothenus).addRef(this.margeEpaisseurMateriaux.mul(2));
                 ajoutXInterne = new Pouce("0");
             }catch (PouceError | FractionError ignored){}
         }
         else{
-            ajoutX = this.longueurPlis.add(epMurs).addRef(this.margeLargeurReplis.mul(2));
+            ajoutX = this.longueurPlis.add(epMurs).addRef(this.margeEpaisseurMateriaux.mul(2));
             try{
                 ajoutXInterne = new Pouce("0");
             }catch (FractionError | PouceError ignored){}
         }
         if (mur.isEstCoinDroit()){
-            ajoutXInterne = epMurs.sub(this.margeEpaisseurMateriaux);
+            ajoutXInterne = epMurs.sub(this.margeLargeurReplis);
         }
 
         for (Accessoire acce:accessoires) {
@@ -246,11 +246,11 @@ public class GenerateurPlan implements java.io.Serializable {
 
         plan.ajoutPointPolygone(coordActuel.copy());//1
 
-        coordActuel.getX().addRef(this.margeEpaisseurMateriaux);
+        coordActuel.getX().addRef(this.margeLargeurReplis);
         plan.ajoutPointPolygone(coordActuel.copy());//2
-        coordActuel.getY().subRef(this.margeLargeurReplis.div(2));
+        coordActuel.getY().subRef(this.margeEpaisseurMateriaux.div(2));
         plie1[0] = coordActuel.copy();
-        plie1[1] = new CoordPouce(mur.getLargeur().sub(this.margeEpaisseurMateriaux), plie1[0].getY().copy());
+        plie1[1] = new CoordPouce(mur.getLargeur().sub(this.margeLargeurReplis), plie1[0].getY().copy());
         plan.ajoutlignePlie(plie1);
 
         System.out.println(mur.isEstCoinGauche());
@@ -258,25 +258,25 @@ public class GenerateurPlan implements java.io.Serializable {
 
 
         if (mur.isEstCoinDroit()){
-            coordActuel.getY().subRef(this.margeLargeurReplis.div(2));
+            coordActuel.getY().subRef(this.margeEpaisseurMateriaux.div(2));
             plan.ajoutPointPolygone(coordActuel.copy());//2.5
 
             coordActuel.getX().subRef(epaisseurMur);
             coordActuel.getY().subRef(epaisseurMur);
             plan.ajoutPointPolygone(coordActuel.copy());//3
 
-            coordActuel.getY().subRef(this.margeLargeurReplis);
+            coordActuel.getY().subRef(this.margeEpaisseurMateriaux);
             plan.ajoutPointPolygone(coordActuel.copy());//3.5
             plie2[0] = coordActuel.copy();
-            plie2[0].getY().addRef(this.margeLargeurReplis.div(2));
+            plie2[0].getY().addRef(this.margeEpaisseurMateriaux.div(2));
 
         }
         else {
-            coordActuel.getY().subRef(epaisseurMur).subRef(this.margeLargeurReplis);
+            coordActuel.getY().subRef(epaisseurMur).subRef(this.margeEpaisseurMateriaux);
             plie2[0] = coordActuel.copy();
             //plie2[1] = new CoordPouce(plie1[1].getX().copy(), plie2[0].getY().copy());
 
-            coordActuel.getY().subRef(this.margeLargeurReplis.div(2));
+            coordActuel.getY().subRef(this.margeEpaisseurMateriaux.div(2));
             System.out.println("ok");
             plan.ajoutPointPolygone(coordActuel.copy());//3
         }
@@ -287,40 +287,40 @@ public class GenerateurPlan implements java.io.Serializable {
         coordActuel.getX().addRef(ajoutPlie);
         plan.ajoutPointPolygone(coordActuel.copy());//4
 
-        //coordActuel.setX(mur.getLargeur().sub(this.margeEpaisseurMateriaux).subRef(ajoutPlie));
+        //coordActuel.setX(mur.getLargeur().sub(this.margeLargeurReplis).subRef(ajoutPlie));
         //plan.ajoutPointPolygone(coordActuel.copy());//5
 
         if (mur.isEstCoinGauche()){
-            coordActuel.setX(mur.getLargeur().sub(this.margeEpaisseurMateriaux).subRef(ajoutPlie).addRef(epaisseurMur));
+            coordActuel.setX(mur.getLargeur().sub(this.margeLargeurReplis).subRef(ajoutPlie).addRef(epaisseurMur));
             plan.ajoutPointPolygone(coordActuel.copy());//5
 
             coordActuel.getY().addRef(this.longueurPlis);
             coordActuel.getX().addRef(ajoutPlie);
             plan.ajoutPointPolygone(coordActuel.copy());//5.5
 
-            coordActuel.getY().addRef(this.margeLargeurReplis.div(2));
+            coordActuel.getY().addRef(this.margeEpaisseurMateriaux.div(2));
             plie2[1] = coordActuel.copy();
-            coordActuel.getY().addRef(this.margeLargeurReplis.div(2));
+            coordActuel.getY().addRef(this.margeEpaisseurMateriaux.div(2));
             plan.ajoutPointPolygone(coordActuel.copy());//6
 
             coordActuel.getY().addRef(epaisseurMur);
             coordActuel.getX().subRef(epaisseurMur);
             plan.ajoutPointPolygone(coordActuel.copy());//6.5
 
-            coordActuel.getY().addRef(this.margeLargeurReplis);
+            coordActuel.getY().addRef(this.margeEpaisseurMateriaux);
             plan.ajoutPointPolygone(coordActuel.copy());//7
         }
         else {
-            coordActuel.setX(start.getX().copy().add(mur.getLargeur().sub(this.margeEpaisseurMateriaux).subRef(ajoutPlie)));
+            coordActuel.setX(start.getX().copy().add(mur.getLargeur().sub(this.margeLargeurReplis).subRef(ajoutPlie)));
             plan.ajoutPointPolygone(coordActuel.copy());//5
 
             coordActuel.getY().addRef(this.longueurPlis);
             coordActuel.getX().addRef(ajoutPlie);
             plan.ajoutPointPolygone(coordActuel.copy());//6
             plie2[1] = coordActuel.copy();
-            plie2[1].getY().addRef(this.margeLargeurReplis.div(2));
+            plie2[1].getY().addRef(this.margeEpaisseurMateriaux.div(2));
 
-            coordActuel.getY().addRef(epaisseurMur.add(this.margeLargeurReplis.mul(2)));
+            coordActuel.getY().addRef(epaisseurMur.add(this.margeEpaisseurMateriaux.mul(2)));
             plan.ajoutPointPolygone(coordActuel.copy());//7
         }
         plan.ajoutlignePlie(plie2);
@@ -332,7 +332,7 @@ public class GenerateurPlan implements java.io.Serializable {
         coordActuel.getY().addRef(mur.getHauteur());
         plan.ajoutPointPolygone(coordActuel.copy());//9
 
-        coordActuel.getX().subRef(this.margeEpaisseurMateriaux);
+        coordActuel.getX().subRef(this.margeLargeurReplis);
         plan.ajoutPointPolygone(coordActuel.copy());//10
 
 
@@ -343,29 +343,29 @@ public class GenerateurPlan implements java.io.Serializable {
 
 
         if (mur.isEstCoinGauche()){
-            coordActuel.getY().addRef(this.margeLargeurReplis);
+            coordActuel.getY().addRef(this.margeEpaisseurMateriaux);
             plan.ajoutPointPolygone(coordActuel.copy());//10.5
 
             posiPlie1_1 = coordActuel.copy();
-            posiPlie1_1.getX().subRef(this.margeLargeurReplis.div(2));
+            posiPlie1_1.getX().subRef(this.margeEpaisseurMateriaux.div(2));
 
             coordActuel.getX().addRef(epaisseurMur);
             coordActuel.getY().addRef(epaisseurMur);
             plan.ajoutPointPolygone(coordActuel.copy());//11
 
-            coordActuel.getY().addRef(this.margeLargeurReplis);
+            coordActuel.getY().addRef(this.margeEpaisseurMateriaux);
             plan.ajoutPointPolygone(coordActuel.copy());//11.5
 
             posiPlie2_1 = coordActuel.copy();
-            posiPlie2_1.getY().subRef(this.margeLargeurReplis.div(2));
+            posiPlie2_1.getY().subRef(this.margeEpaisseurMateriaux.div(2));
         }
         else{
             posiPlie1_1 = coordActuel.copy();
-            posiPlie1_1.getY().addRef(this.margeLargeurReplis.div(2));
+            posiPlie1_1.getY().addRef(this.margeEpaisseurMateriaux.div(2));
             posiPlie2_1 = posiPlie1_1.copy();
-            posiPlie2_1.getY().addRef(epaisseurMur).addRef(this.margeLargeurReplis);
+            posiPlie2_1.getY().addRef(epaisseurMur).addRef(this.margeEpaisseurMateriaux);
 
-            coordActuel.getY().addRef(epaisseurMur.add(this.margeLargeurReplis.mul(2)));
+            coordActuel.getY().addRef(epaisseurMur.add(this.margeEpaisseurMateriaux.mul(2)));
             plan.ajoutPointPolygone(coordActuel.copy());//11
         }
 
@@ -404,29 +404,29 @@ public class GenerateurPlan implements java.io.Serializable {
 
 
         if (mur.isEstCoinDroit()){
-            coordActuel.setX(start.getX().add(this.margeEpaisseurMateriaux).addRef(ajoutPlie).subRef(epaisseurMur));
+            coordActuel.setX(start.getX().add(this.margeLargeurReplis).addRef(ajoutPlie).subRef(epaisseurMur));
             plan.ajoutPointPolygone(coordActuel.copy());//13
 
             coordActuel.getX().subRef(ajoutPlie);
             coordActuel.getY().subRef(this.longueurPlis);
             plan.ajoutPointPolygone(coordActuel.copy());//13.5
 
-            coordActuel.getY().subRef(this.margeLargeurReplis);
+            coordActuel.getY().subRef(this.margeEpaisseurMateriaux);
             plan.ajoutPointPolygone(coordActuel.copy());//14
-            posiPlie2_2.setX(coordActuel.getX().add(this.margeLargeurReplis.div(2)));
+            posiPlie2_2.setX(coordActuel.getX().add(this.margeEpaisseurMateriaux.div(2)));
 
             coordActuel.getY().subRef(epaisseurMur);
             coordActuel.getX().addRef(epaisseurMur);
             plan.ajoutPointPolygone(coordActuel.copy());//14.5
 
-            posiPlie1_2.setX(coordActuel.getX().sub(this.margeLargeurReplis.div(2)));
+            posiPlie1_2.setX(coordActuel.getX().sub(this.margeEpaisseurMateriaux.div(2)));
 
-            coordActuel.getY().subRef(this.margeLargeurReplis);
+            coordActuel.getY().subRef(this.margeEpaisseurMateriaux);
             plan.ajoutPointPolygone(coordActuel.copy());//15
 
         }
         else{
-            coordActuel.setX(start.getX().add(this.margeEpaisseurMateriaux).addRef(ajoutPlie));
+            coordActuel.setX(start.getX().add(this.margeLargeurReplis).addRef(ajoutPlie));
             plan.ajoutPointPolygone(coordActuel.copy());//13
 
             coordActuel.getX().subRef(ajoutPlie);
@@ -437,15 +437,15 @@ public class GenerateurPlan implements java.io.Serializable {
             posiPlie2_2.setX(coordActuel.getX().copy());
 
             System.out.println(epaisseurMur);
-            System.out.println(epaisseurMur.add(this.margeLargeurReplis).add(this.margeLargeurReplis));
-            coordActuel.getY().subRef(this.margeLargeurReplis.mul(2).add(epaisseurMur));
+            System.out.println(epaisseurMur.add(this.margeEpaisseurMateriaux).add(this.margeEpaisseurMateriaux));
+            coordActuel.getY().subRef(this.margeEpaisseurMateriaux.mul(2).add(epaisseurMur));
             plan.ajoutPointPolygone(coordActuel.copy());//15
         }
 
         plan.ajoutlignePlie(new CoordPouce[]{posiPlie1_1.copy(),posiPlie1_2.copy()});
         plan.ajoutlignePlie(new CoordPouce[]{posiPlie2_1.copy(),posiPlie2_2.copy()});
 
-        coordActuel.getX().subRef(this.margeEpaisseurMateriaux);
+        coordActuel.getX().subRef(this.margeLargeurReplis);
         plan.ajoutPointPolygone(coordActuel.copy());//16
     }
 
@@ -467,15 +467,15 @@ public class GenerateurPlan implements java.io.Serializable {
             coordActuel.getX().addRef(mur.getLargeur()).addRef(epaisseurMur);
             plan.ajoutPointPolygone(coordActuel.copy());//2
 
-            coordActuel.getY().addRef(this.margeEpaisseurMateriaux);
+            coordActuel.getY().addRef(this.margeLargeurReplis);
             plan.ajoutPointPolygone(coordActuel.copy());//3
 
             CoordPouce plie1_1 = coordActuel.copy();
-            plie1_1.getX().addRef(this.margeLargeurReplis.div(2));
+            plie1_1.getX().addRef(this.margeEpaisseurMateriaux.div(2));
             CoordPouce plie2_1 = plie1_1.copy();
-            plie2_1.getX().addRef(hypo).addRef(this.margeLargeurReplis);
+            plie2_1.getX().addRef(hypo).addRef(this.margeEpaisseurMateriaux);
 
-            coordActuel.getX().addRef(hypo).addRef(this.margeLargeurReplis.mul(2));
+            coordActuel.getX().addRef(hypo).addRef(this.margeEpaisseurMateriaux.mul(2));
             plan.ajoutPointPolygone(coordActuel.copy());//4
 
             coordActuel.getX().addRef(longueurPlis);
@@ -483,7 +483,7 @@ public class GenerateurPlan implements java.io.Serializable {
             plan.ajoutPointPolygone(coordActuel.copy());//5
 
             coordActuel.setY(mur.getHauteur().copy());
-            coordActuel.getY().subRef(this.margeEpaisseurMateriaux).subRef(ajoutPlie);
+            coordActuel.getY().subRef(this.margeLargeurReplis).subRef(ajoutPlie);
             plan.ajoutPointPolygone(coordActuel.copy());//6
 
             coordActuel.getX().subRef(this.longueurPlis);
@@ -499,10 +499,10 @@ public class GenerateurPlan implements java.io.Serializable {
 
             coordActuel = start.copy();
             coordActuel.getX().addRef(mur.getLargeur()).addRef(epaisseurMur);
-            coordActuel.getY().addRef(mur.getHauteur()).subRef(this.margeEpaisseurMateriaux);
+            coordActuel.getY().addRef(mur.getHauteur()).subRef(this.margeLargeurReplis);
             plan.ajoutPointPolygone(coordActuel.copy());//8
 
-            coordActuel.getY().addRef(this.margeEpaisseurMateriaux);
+            coordActuel.getY().addRef(this.margeLargeurReplis);
             plan.ajoutPointPolygone(coordActuel.copy());//9
 
             coordActuel.getX().subRef(epaisseurMur);
@@ -511,15 +511,15 @@ public class GenerateurPlan implements java.io.Serializable {
             coordActuel.getX().addRef(mur.getLargeur());
             plan.ajoutPointPolygone(coordActuel.copy());//2
 
-            coordActuel.getY().addRef(this.margeEpaisseurMateriaux);
+            coordActuel.getY().addRef(this.margeLargeurReplis);
             plan.ajoutPointPolygone(coordActuel.copy());//3
 
             CoordPouce plie1_1 = coordActuel.copy();
-            plie1_1.getX().addRef(this.margeLargeurReplis.div(2));
+            plie1_1.getX().addRef(this.margeEpaisseurMateriaux.div(2));
             CoordPouce plie2_1 = plie1_1.copy();
-            plie2_1.getX().addRef(epaisseurMur).addRef(this.margeLargeurReplis);
+            plie2_1.getX().addRef(epaisseurMur).addRef(this.margeEpaisseurMateriaux);
 
-            coordActuel.getX().addRef(epaisseurMur).addRef(this.margeLargeurReplis.mul(2));
+            coordActuel.getX().addRef(epaisseurMur).addRef(this.margeEpaisseurMateriaux.mul(2));
             plan.ajoutPointPolygone(coordActuel.copy());//4
 
             coordActuel.getX().addRef(longueurPlis);
@@ -527,7 +527,7 @@ public class GenerateurPlan implements java.io.Serializable {
             plan.ajoutPointPolygone(coordActuel.copy());//5
 
             coordActuel.setY(mur.getHauteur().copy());
-            coordActuel.getY().subRef(this.margeEpaisseurMateriaux).subRef(ajoutPlie);
+            coordActuel.getY().subRef(this.margeLargeurReplis).subRef(ajoutPlie);
             plan.ajoutPointPolygone(coordActuel.copy());//6
 
             coordActuel.getX().subRef(this.longueurPlis);
@@ -543,10 +543,10 @@ public class GenerateurPlan implements java.io.Serializable {
 
             coordActuel = start.copy();
             coordActuel.getX().addRef(mur.getLargeur());
-            coordActuel.getY().addRef(mur.getHauteur()).subRef(this.margeEpaisseurMateriaux);
+            coordActuel.getY().addRef(mur.getHauteur()).subRef(this.margeLargeurReplis);
             plan.ajoutPointPolygone(coordActuel.copy());//8
 
-            coordActuel.getY().addRef(this.margeEpaisseurMateriaux);
+            coordActuel.getY().addRef(this.margeLargeurReplis);
             plan.ajoutPointPolygone(coordActuel.copy());//9
         }
 
@@ -571,15 +571,15 @@ public class GenerateurPlan implements java.io.Serializable {
             plan.getPolygone().get(0).getX().subRef(epaisseurMur);
             plan.ajoutPointPolygone(coordActuel.copy());//10
 
-            coordActuel.getY().subRef(margeEpaisseurMateriaux);
+            coordActuel.getY().subRef(margeLargeurReplis);
             plan.ajoutPointPolygone(coordActuel.copy());//11
 
             CoordPouce plie1_1 = coordActuel.copy();
-            plie1_1.getX().subRef(this.margeLargeurReplis.div(2));
+            plie1_1.getX().subRef(this.margeEpaisseurMateriaux.div(2));
             CoordPouce plie2_1 = plie1_1.copy();
-            plie2_1.getX().addRef(hypo).addRef(this.margeLargeurReplis);
+            plie2_1.getX().addRef(hypo).addRef(this.margeEpaisseurMateriaux);
 
-            coordActuel.getX().subRef(hypo).subRef(this.margeLargeurReplis.mul(2));
+            coordActuel.getX().subRef(hypo).subRef(this.margeEpaisseurMateriaux.mul(2));
             plan.ajoutPointPolygone(coordActuel.copy());//12
 
             coordActuel.getX().subRef(this.longueurPlis);
@@ -600,21 +600,21 @@ public class GenerateurPlan implements java.io.Serializable {
             coordActuel.getY().subRef(ajoutPlie);
             plan.ajoutPointPolygone(coordActuel.copy());//15
 
-            coordActuel.getX().addRef(hypo).addRef(this.margeLargeurReplis.mul(2));
+            coordActuel.getX().addRef(hypo).addRef(this.margeEpaisseurMateriaux.mul(2));
             plan.ajoutPointPolygone(coordActuel.copy());//16
         }
         else{
             plan.ajoutPointPolygone(coordActuel.copy());//10
 
-            coordActuel.getY().subRef(margeEpaisseurMateriaux);
+            coordActuel.getY().subRef(margeLargeurReplis);
             plan.ajoutPointPolygone(coordActuel.copy());//11
 
             CoordPouce plie1_1 = coordActuel.copy();
-            plie1_1.getX().subRef(this.margeLargeurReplis.div(2));
+            plie1_1.getX().subRef(this.margeEpaisseurMateriaux.div(2));
             CoordPouce plie2_1 = plie1_1.copy();
-            plie2_1.getX().addRef(epaisseurMur).addRef(this.margeLargeurReplis);
+            plie2_1.getX().addRef(epaisseurMur).addRef(this.margeEpaisseurMateriaux);
 
-            coordActuel.getX().subRef(epaisseurMur).subRef(this.margeLargeurReplis.mul(2));
+            coordActuel.getX().subRef(epaisseurMur).subRef(this.margeEpaisseurMateriaux.mul(2));
             plan.ajoutPointPolygone(coordActuel.copy());//12
 
             coordActuel.getX().subRef(this.longueurPlis);
@@ -635,7 +635,7 @@ public class GenerateurPlan implements java.io.Serializable {
             coordActuel.getY().subRef(ajoutPlie);
             plan.ajoutPointPolygone(coordActuel.copy());//15
 
-            coordActuel.getX().addRef(epaisseurMur).addRef(this.margeLargeurReplis.mul(2));
+            coordActuel.getX().addRef(epaisseurMur).addRef(this.margeEpaisseurMateriaux.mul(2));
             plan.ajoutPointPolygone(coordActuel.copy());//16
         }
     }
