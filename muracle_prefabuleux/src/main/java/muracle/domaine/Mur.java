@@ -1,5 +1,6 @@
 package muracle.domaine;
 
+import muracle.utilitaire.CoordPouce;
 import muracle.utilitaire.Pouce;
 
 public class Mur implements java.io.Serializable{
@@ -9,6 +10,7 @@ public class Mur implements java.io.Serializable{
     private boolean estCoinGauche;
     private Panneau panneauExt;
     private Panneau panneauInt;
+    private Pouce position;
 
 
 
@@ -17,11 +19,12 @@ public class Mur implements java.io.Serializable{
     public Mur(Pouce largeur, Pouce hauteur){
 
     }
-    public Mur(Pouce largeur, Pouce hauteur,Pouce epaisseur,Pouce margeEp, Pouce margeLargeurReplis,Pouce longeurPlis, Boolean isCoin,double angleReplis){
+    public Mur(Pouce largeur, Pouce hauteur,Pouce epaisseur,Pouce margeEp, Pouce margeLargeurReplis,Pouce longeurPlis, Boolean isCoin,double angleReplis, Pouce coord){
         this.largeur = largeur;
         this.hauteur = hauteur;
         this.panneauExt = new Panneau(hauteur,largeur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,'e',isCoin,angleReplis);
         this.panneauInt = new Panneau(hauteur,largeur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,'i',isCoin,angleReplis);
+        this.position = coord;
     }
 
     public Pouce getLargeur() {
@@ -70,4 +73,6 @@ public class Mur implements java.io.Serializable{
     public void setPanneauInt(Panneau panneauInt) {
         this.panneauInt = panneauInt;
     }
+
+    public Pouce getPosition(){return this.position;}
 }

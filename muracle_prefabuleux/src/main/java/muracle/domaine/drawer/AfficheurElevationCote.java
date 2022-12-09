@@ -138,9 +138,9 @@ public class AfficheurElevationCote extends Afficheur {
                 }
                 rect = new Rectangle2D.Double(posX + murPosX, posY, mur.getLargeur().toDouble(), mur.getHauteur().toDouble());
                 if (controller.isVueExterieur()) {
-                    if (mur.GetEstCoinGauche())
+                    if (mur.isEstCoinGauche())
                         rect = new Rectangle2D.Double(rect.x - ep, rect.y, rect.width + ep, rect.height);
-                    if (mur.GetEstCoinDroit())
+                    if (mur.isEstCoinDroit())
                         rect = new Rectangle2D.Double(rect.x, rect.y, rect.width + ep, rect.height);
                 }
                 if (controller.getErrorMessage().equals(""))

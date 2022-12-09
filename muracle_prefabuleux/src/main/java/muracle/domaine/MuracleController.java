@@ -17,10 +17,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Base64;
-import java.util.Objects;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class MuracleController {
 
@@ -616,8 +613,15 @@ public class MuracleController {
 
     public boolean isSeparateurSelected() { return separateurSelected != -1; }
 
-    private void selectMur(int index) {
+    private void selectMur(int index){
         murSelected = index;
+        /*
+        try {
+            GenerateurPlan genPlan = new GenerateurPlan();
+            PlanPanneau[] plan = genPlan.genererCoordonees(Objects.requireNonNull(getSelectedCote()).getAccessoires(), Objects.requireNonNull(getSelectedMur()),salle.getProfondeur(),salle.getEpaisseurTrouRetourAir());
+            System.out.println(Arrays.toString(plan));
+        }catch (PouceError | FractionError ignored){}
+        */
     }
 
     public MurDTO getSelectedMurReadOnly() { return new MurDTO(Objects.requireNonNull(getSelectedMur())); }

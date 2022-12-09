@@ -284,9 +284,10 @@ public class Cote implements java.io.Serializable{
         ArrayList<Mur> murs = new ArrayList<>();
 
         if(separateurs.size() == 0){
-            Mur murSimpleCoin = new Mur(this.largeur,this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
-            Mur murDoubleCoin = new Mur(this.largeur,this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
-            Mur murNonCoin = new Mur(this.largeur,this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis);
+            try{
+            Mur murSimpleCoin = new Mur(this.largeur,this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis,null);
+            Mur murDoubleCoin = new Mur(this.largeur,this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis,new Pouce(0,0,1));
+            Mur murNonCoin = new Mur(this.largeur,this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis,null);
             double diffPoidsInt = murSimpleCoin.getPanneauInt().getPoids() - murNonCoin.getPanneauInt().getPoids();
             double diffPoidsExt = murSimpleCoin.getPanneauExt().getPoids() - murNonCoin.getPanneauExt().getPoids();
 
@@ -299,24 +300,27 @@ public class Cote implements java.io.Serializable{
             murDoubleCoin.setEstCoinGauche(true);
             murDoubleCoin.setEstCoinDroit(true);
             murs.add(murDoubleCoin);
+            }catch (FractionError ignored){}
         }
         else {
             for (int i = 0 ; i < separateurs.size(); i++) {
                 if(i == 0){
-                    Mur m = new Mur(separateurs.get(i),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
-                    m.setEstCoinGauche(true);
-                    murs.add(m);
+                    try {
+                        Mur m = new Mur(separateurs.get(i), this.hauteur, epaisseur, margeEp, margeLargeurReplis, longeurPlis, true, angleReplis, new Pouce(0,0,1));
+                        m.setEstCoinGauche(true);
+                        murs.add(m);
+                    }catch (FractionError ignored){}
                 }
                 if(i + 1 == separateurs.size()){
                     if(separateurs.size() != 1 ){
-                        Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis);
+                        Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis,separateurs.get(i-1));
                         murs.add(m);
                     }
-                    Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis);
+                    Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis,separateurs.get(i-1));
                     m2.setEstCoinDroit(true);
                     murs.add(m2);
                 }else if (i != 0){
-                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis);
+                    Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis,separateurs.get(i-1));
                     murs.add(m);
                 }
             }

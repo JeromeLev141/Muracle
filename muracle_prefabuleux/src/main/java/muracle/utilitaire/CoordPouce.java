@@ -32,8 +32,12 @@ public class CoordPouce implements java.io.Serializable{
         return this;
     }
 
+    public CoordPouce copy(){
+        return new CoordPouce(this.x.copy(),this.y.copy());
+    }
+
     @Override
     public String toString(){
-        return "X : " + getX() + " | Y : " + getY();
+        return "(" +getX() + ", " + getY() + ")";
     }
 }
