@@ -11,7 +11,7 @@ import java.util.List;
 public class GenerateurPlan implements java.io.Serializable {
 
     private Pouce margeEpaisseurMateriaux = new Pouce("1/4");
-    private Pouce margeLargeurReplis = new Pouce("1");
+    private Pouce margeLargeurReplis = new Pouce("2");
     private double anglePlis = 45;
     private Pouce longueurPlis = new Pouce("1");
 
@@ -78,6 +78,20 @@ public class GenerateurPlan implements java.io.Serializable {
                 writer.writeAttribute("stroke", "black");
                 writer.writeAttribute("stroke-width", "1");
                 writer.writeAttribute("stroke-dasharray", "4");
+            }
+
+            //accessoires
+            for (List<CoordPouce> coordsAccessoire : plan.getPolygoneAccessoire()) {
+                StringBuilder contourAccessoire = new StringBuilder("M");
+                for (CoordPouce coord : coordsAccessoire) {
+                    contourAccessoire.append(" ").append(decal + coord.getX().toDouble() * 9.6).append(" ").append(decal + coord.getY().toDouble() * 9.6).append(" L");
+                }
+                contourAccessoire.setCharAt(contourAccessoire.length() - 1, 'z');
+                writer.writeEmptyElement("path");
+                writer.writeAttribute("d", contourAccessoire.toString());
+                writer.writeAttribute("fill", "white");
+                writer.writeAttribute("stroke", "black");
+                writer.writeAttribute("stroke-width", "1");
             }
 
             //example du plan d'un mur
