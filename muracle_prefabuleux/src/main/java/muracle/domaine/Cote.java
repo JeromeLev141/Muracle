@@ -18,6 +18,12 @@ public class Cote implements java.io.Serializable{
     public Cote(){
 
     }
+    /**
+     * @brief constructeur
+     * @param orientation:char
+     * @param largeur:Pouce
+     * @param hauteur:Pouce
+     */
     public Cote(char orientation, Pouce largeur, Pouce hauteur){
         this.orientation = orientation;
         this.largeur = largeur;
@@ -25,29 +31,46 @@ public class Cote implements java.io.Serializable{
         separateurs = new ArrayList<>();
         accessoires = new ArrayList<>();
     }
+    /**
+     * @brief vérifie si les accessoires du côté sont valides
+     * @return boolean
+     */
+    public boolean isCoteAccessoireValid(){
+        for(int i = 0; i< accessoires.size(); i++){
+            if (!(getAccessoire(i).isValid())){
+                return false;
+            }
+        }
+        return true;
+    }
 
+    /**
+     * @brief getter de l'orientation
+     * @return char
+     */
     public char getOrientation() {
         return orientation;
     }
-
+    /**
+     * @brief setter de l'orientation
+     * @param orientation:char
+     */
     public void setOrientation(char orientation) {
         this.orientation = orientation;
     }
-
+    /**
+     * @brief getter de la largeur
+     * @return char
+     */
     public Pouce getLargeur() {
         return largeur;
     }
-
-    public boolean verifSetLargeur(Pouce largeur) throws CoteError {
-        if(!doesLargeurFitWithSeparateurs(largeur)){
-            throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un séparateur.");
-        } else if (!doesLargeurFitWithAccessories(largeur)) {
-            throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
-        }else{
-            return true;
-        }
-    }
-    public boolean veriSetLargeurREFACTOR(Pouce largeur) throws CoteError, FractionError {
+    /**
+     * @brief vérifie si la nouvelle largeur va supprimer un accessoire et modifie les séparateurs selon la nouvelle largeur
+     * @param largeur:Pouce
+     * @return boolean
+     */
+    public boolean veriSetLargeurAndResizeSeparateur(Pouce largeur) throws CoteError, FractionError {
         if (!doesLargeurFitWithAccessories(largeur)){
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
         }else if(largeur.toDouble() < 0){
@@ -58,6 +81,10 @@ public class Cote implements java.io.Serializable{
             return true;
         }
     }
+    /**
+     * @brief modifie les séparateurs selon la nouvelle largeur
+     * @param largeur:Pouce
+     */
     private void resizeSeparateur(Pouce largeur) throws FractionError {
         // resize
         for (int i = 0; i < this.separateurs.size(); i++){
@@ -66,12 +93,19 @@ public class Cote implements java.io.Serializable{
             this.separateurs.set(i, newValue);
         }
     }
-
+    /**
+     * @brief setter de l'orientation
+     * @param largeur:Pouce
+     */
     public void setLargeur(Pouce largeur) {
         this.largeur = largeur;
         this.updateRetourAir();
     }
-
+    /**
+     * @brief setter de l'orientation
+     * @param largeur:Pouce
+     * @return boolean
+     */
     private boolean doesLargeurFitWithAccessories(Pouce largeur) {
         for(int i = 0; i < this.accessoires.size(); i++){
             Double oldLargeurDouble = this.largeur.toDouble();
@@ -94,20 +128,40 @@ public class Cote implements java.io.Serializable{
         }
         return true;
     }
-
+    /**
+     * @brief getter de la hauteur
+     * @return Pouce
+     */
     public Pouce getHauteur() {
         return hauteur;
     }
+    /**
+     * @brief getter d'un accessoire
+     * @param index:int
+     * @return Accessoire
+     */
     public Accessoire getAccessoire(int index){
         return accessoires.get(index);
     }
+    /**
+     * @brief getter des accessoires
+     * @return ArrayList<Accessoire>
+     */
     public ArrayList<Accessoire> getAccessoires() {
         return accessoires;
     }
+    /**
+     * @brief setter de la largeur
+     * @param accessoires:ArrayList<Accessoire>
+     */
     public void setAccessoires(ArrayList<Accessoire> accessoires){
         this.accessoires = accessoires;
     }
-
+    /**
+     * @brief ajouter un accessoire à la list d'accessoire et vérifie la validité pour tous les accessoires
+     * @param accessoire:Accessoire
+     * @throws CoteError: Si accessoire ne rentre pas dans le côté
+     */
     public void addAccessoire(Accessoire accessoire) throws FractionError, PouceError, CoteError {
 
         if(doesAccessoireFitInCote(accessoire)){
@@ -117,6 +171,12 @@ public class Cote implements java.io.Serializable{
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         }
     }
+    /**
+     * @brief Bouge la position d'un accessoire et vérifie la validité pour tous les accessoires
+     * @param accessoire:Accessoire
+     * @param positionPost:CoordPouce
+     * @throws CoteError: Si accessoire ne rentre pas dans le côté
+     */
     public void moveAccessoire(Accessoire accessoire, CoordPouce positionPost) throws FractionError, PouceError, CoteError {
         Accessoire dummyAccessoire = new Accessoire(accessoire);
         dummyAccessoire.setPosition(positionPost);
@@ -127,6 +187,14 @@ public class Cote implements java.io.Serializable{
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         }
     }
+    /**
+     * @brief Change les paramètres d'un accessoire et vérifie la validité pour tous les accessoires
+     * @param accessoire:Accessoire
+     * @param largeur:Pouce
+     * @param hauteur:Pouce
+     * @param marge:Pouce
+     * @throws CoteError: Si accessoire ne rentre pas dans le côté
+     */
     public void setAccessoire(Accessoire accessoire, Pouce largeur, Pouce hauteur, Pouce marge) throws FractionError, PouceError, CoteError {
         Pouce posX = accessoire.getPosition().getX();
         Pouce posY = accessoire.getPosition().getY();
@@ -160,15 +228,28 @@ public class Cote implements java.io.Serializable{
             throw new CoteError("Accessoire ne rentre pas dans le côté");
         }
     }
+    /**
+     * @brief Enlève un accessoire et vérifie la validité pour tous les accessoires
+     * @param accessoire:Accessoire
+     */
     public void removeAccessoire(Accessoire accessoire){
         accessoires.remove(accessoire);
         checkValidityForEveryAccessoire();
     }
+    /**
+     * @brief Vérifie la validité pour tous les accessoires avec doesAccessoireFitWithSeparateur() et doesAccessoireFitWithOtherAccessoires()
+     */
     private void checkValidityForEveryAccessoire() {
         for (int i = 0; i< accessoires.size(); i++){
             getAccessoire(i).setIsValid(doesAccessoireFitWithOtherAccessoires(getAccessoire(i)) && doesAccessoireFitWithSeparateur(getAccessoire(i)));
         }
     }
+
+    /**
+     * @brief Vérifie si les accessoires ne rentre pas en collision avec les séparateurs
+     * @param accessoire:Accessoire
+     * @return boolean
+     */
     public boolean doesAccessoireFitWithSeparateur(Accessoire accessoire){
        Double upperLeftPoint;
        Double upperRightPoint;
@@ -187,8 +268,12 @@ public class Cote implements java.io.Serializable{
         }
         return true;
     }
-    // Suit cet algorithme
-    // https://silentmatt.com/rectangle-intersection/
+    /**
+     * @brief Vérifie si les accessoires ne rentre pas en collision avec les autres accessoires
+     * Suit cet algorithme : <a href="https://silentmatt.com/rectangle-intersection/">Rectangle intersection algorithm</a>
+     * @param accessoire:Accessoire
+     * @return boolean
+     */
     public boolean doesAccessoireFitWithOtherAccessoires(Accessoire accessoire) {
         CoordPouce mainAccessoireUpperLeftPoint;
         CoordPouce mainAccessoireLowerRightPoint;
@@ -228,16 +313,17 @@ public class Cote implements java.io.Serializable{
         }
         return true;
     }
+    /**
+     * @brief Vérifie si les accessoires ne rentre pas en collision avec le côté
+     * @param accessoire:Accessoire
+     * @return boolean
+     */
     public boolean doesAccessoireFitInCote(Accessoire accessoire) throws FractionError, PouceError {
         CoordPouce cote1 = new CoordPouce(new Pouce("0"), new Pouce("0"));
         CoordPouce cote2 = new CoordPouce(largeur, hauteur);
         CoordPouce accessoireUpperLeftPoint;
         CoordPouce accessoireLowerRightPoint;
         if(Objects.equals(accessoire.getType(), "Fenêtre")){
-            //FIX ICI BAS point peut être 0 si la marge est zero
-            /*if(accessoire.getPosition().getX().compare(new Pouce("0")) == 0 || accessoire.getPosition().getY().compare(new Pouce("0")) == 0){
-                return false;
-            }*/
             accessoireUpperLeftPoint = new CoordPouce(accessoire.getPosition().getX().sub(accessoire.getMarge()), accessoire.getPosition().getY().sub(accessoire.getMarge()));
             accessoireLowerRightPoint =new CoordPouce((accessoire.getPosition().getX().add(accessoire.getLargeur()).add(accessoire.getMarge())), (accessoire.getPosition().getY().add(accessoire.getHauteur())).add(accessoire.getMarge()));
         }else{
@@ -252,7 +338,12 @@ public class Cote implements java.io.Serializable{
 
         return isRightValid && isLeftValid && isBotValid && isTopValid;
     }
-
+    /**
+     * @brief Vérifie si la nouvelle hauteur ne rentre pas en collision avec les accessoires
+     * @param hauteur:Pouce
+     * @throws CoteError: Si la modification supprime un accessoire.
+     * @return boolean
+     */
     public boolean verifSetHauteur(Pouce hauteur) throws CoteError {
         if(!doesHauteurfitWithAccessoires(hauteur)){
             throw new CoteError("On ne peut modifier la salle car l'opération va supprimer un accessoire.");
@@ -260,12 +351,19 @@ public class Cote implements java.io.Serializable{
             return true;
         }
     }
-
+    /**
+     * @brief setteur de hauteur
+     * @param hauteur:Pouce
+     */
     public void setHauteur(Pouce hauteur) {
         reposYAcces(this.hauteur, hauteur);
         this.hauteur = hauteur;
     }
-
+    /**
+     * @brief Vérifie si la nouvelle hauteur ne rentre pas en collision avec les accessoires
+     * @param hauteur:Pouce
+     * @return boolean
+     */
     private boolean doesHauteurfitWithAccessoires(Pouce hauteur){
         for(int i = 0; i < this.accessoires.size(); i++){
             if (!getAccessoire(i).getType().equals("Retour d'air")) {
@@ -279,7 +377,16 @@ public class Cote implements java.io.Serializable{
         }
         return true;
     }
-
+    /**
+     * @brief getteur de la liste de murs
+     * @param epaisseur:Pouce
+     * @param margeEp:Pouce
+     * @param margeLargeurReplis:Pouce
+     * @param longeurPlis:Pouce
+     * @param epTrouRetourAir:Pouce
+     * @param angleReplis:double
+     * @return ArrayList<Mur>
+     */
     public ArrayList<Mur> getMurs(Pouce epaisseur, Pouce margeEp, Pouce margeLargeurReplis,Pouce longeurPlis,Pouce epTrouRetourAir,double angleReplis) {
         ArrayList<Mur> murs = new ArrayList<>();
 
@@ -326,7 +433,6 @@ public class Cote implements java.io.Serializable{
             }
             for (Accessoire accessoire: accessoires) {
                 CoordPouce coinHautGauche =  accessoire.getPosition();
-                //CoordPouce coinHautDroit = new CoordPouce(coinHautGauche.getX().add(accessoire.getLargeur()),coinHautGauche.getY());
                 int x = 0;
                 for (Pouce separateur : separateurs) {
                     if (coinHautGauche.getX().compare(separateur) == 1)
@@ -335,54 +441,34 @@ public class Cote implements java.io.Serializable{
                 Panneau panneauIntGauche = murs.get(x).getPanneauInt();
                 Panneau panneauExtGauche = murs.get(x).getPanneauExt();
 
-                /*if(separateurs.get(i).compare(coinHautDroit.getX()) == -1) {
-                    Panneau panneauIntDroit = murs.get(i+1).getPanneauInt();
-                    Panneau panneauExtDroit = murs.get(i+1).getPanneauExt();
-
-                    Pouce largeurGauche = accessoire.getLargeur().sub(separateurs.get(i).sub(coinHautGauche.getX()));
-                    Pouce largeurDroite=  accessoire.getLargeur().sub(coinHautDroit.getX().sub(separateurs.get(i)));
-                    if(accessoire.isInterieurOnly()){
-                        panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurGauche,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-
-                        panneauIntDroit.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurDroite,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-                    }else
-                    {
-                        panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurGauche,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-
-                        panneauIntDroit.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurDroite,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-
-                        panneauExtGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurGauche,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-
-                        panneauExtDroit.soustrairePoidsAccessoire(accessoire.getHauteur(),largeurDroite,
-                                accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
-                    }
-                }
-                else {}*/
                    if(accessoire.isInterieurOnly()){
                        panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
-                               accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
+                               accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,true,epaisseur,margeEp,longeurPlis);
                    }else
                    {
                     panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
-                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
+                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,true,epaisseur,margeEp,longeurPlis);
 
                     panneauExtGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
-                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir);
+                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,false,epaisseur,margeEp,longeurPlis);
 
                     }
             }
         }
         return murs;
     }
-
+    /**
+     * @brief getteur de la liste des séparateurs
+     * @return ArrayList<Pouce>
+     */
     public ArrayList<Pouce> getSeparateurs() {
         return separateurs;
     }
+    /**
+     * @brief ajoute séparateur
+     * @param position:Pouce
+     * @throws CoteError: Si la position est en dehors du côté
+     */
     public void addSeparateur(Pouce position) throws CoteError {
         if(position.compare(largeur) == -1 && !separateurs.contains(position)){
             separateurs.add(position);
@@ -393,18 +479,35 @@ public class Cote implements java.io.Serializable{
             throw new CoteError("Position en dehors du côté");
         }
     }
+    /**
+     * @brief tri la liste de séparateur
+     */
     private void sortSeparateur(){
         separateurs.sort(Pouce::compare);
     }
+    /**
+     * @brief Enlève un séparateur et vérifie la validité pour tous les accessoires
+     * @param index:int
+     */
     public void deleteSeparateur(int index){
         this.separateurs.remove(index);
         checkValidityForEveryAccessoire();
         this.updateRetourAir();
     }
+    /**
+     * @brief getteur de séparateur
+     * @param index:int
+     */
     public Pouce getSeparateur(int index){
         return this.separateurs.get(index);
     }
-
+    /**
+     * @brief Modifie un séparateur et vérifie la validité pour tous les accessoires
+     * @param index:int
+     * @param position:Pouce
+     * @throws CoteError: Si séparateur dépasse la largeur du côté
+     * @throws CoteError: Si séparateur chevauche un séparateur
+     */
     public void setSeparateur(int index, Pouce position) throws CoteError, FractionError {
         if(!separateurs.contains(position)){
             if (position.compare(largeur) == -1 && position.compare(new Pouce(0, 0, 1)) == 1){
@@ -418,14 +521,23 @@ public class Cote implements java.io.Serializable{
         }else throw new CoteError("Le separateur ajouté chevauche un separateur. Il ne sera pas rajouté");
 
     }
-
+    /**
+     * @brief Repositionne la valeur Y de la posisition de chaque accessoire
+     * @param ancienneH:Pouce
+     * @param nouvelleH:Pouce
+     */
     private void reposYAcces(Pouce ancienneH, Pouce nouvelleH) {
         Pouce difH = nouvelleH.sub(ancienneH);
         for (Accessoire acces : accessoires) {
             acces.getPosition().setY(acces.getPosition().getY().add(difH));
         }
     }
-
+    /**
+     * @brief Centre le retour d'air
+     * @param x1:Pouce
+     * @param x2:Pouce
+     * @param access:Accessoire
+     */
     private void centrerRetourAir(Pouce x1, Pouce x2, Accessoire access){
         try {
             Pouce posiX = x1.add(x2.sub(x1).divRef(2));
@@ -434,7 +546,9 @@ public class Cote implements java.io.Serializable{
             access.setIsValid(doesAccessoireFitWithOtherAccessoires(access) && doesAccessoireFitWithSeparateur(access));
         } catch (PouceError ignored) {}
     }
-
+    /**
+     * @brief Centre le retour d'air
+     */
     private void updateRetourAir(){
         for (Accessoire acces:accessoires) {
             if (!acces.getType().equals("Retour d'air"))
@@ -483,7 +597,6 @@ public class Cote implements java.io.Serializable{
                         posiCentreX.compare(separateurs.get(x+1)) == -1){
                     centrerRetourAir(separateurs.get(x),separateurs.get(x+1),acces);
                 }
-
             }
         }
     }

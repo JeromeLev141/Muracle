@@ -11,13 +11,15 @@ import muracle.utilitaire.PouceError;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
+
+import java.util.Base64;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.Stack;
 
 public class MuracleController {
 
@@ -164,27 +166,66 @@ public class MuracleController {
     public void exporterPlan(Component parent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Exporter les plans");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("*.svg", "SVG"));
+        fileChooser.setCurrentDirectory(new java.io.File("."));
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        //
+        // disable the "All files" option.
+        //
+        fileChooser.setAcceptAllFileFilterUsed(false);
         int returnValue = fileChooser.showSaveDialog(parent);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File fichier = fileChooser.getSelectedFile();
-            if (!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".svg"))
-                fichier = new File(fileChooser.getSelectedFile() + ".svg");
-            //a faire
-            try {
-                XMLOutputFactory factory = XMLOutputFactory.newInstance();
-                XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(fichier.toPath()));
-                writer.writeStartDocument("utf-8", "1.0");
-                generateurPlan.genererPlans(salle, writer);
-            } catch (IOException | XMLStreamException ex) {
-                throw new RuntimeException(ex);
+            File dossierPlans = new File(fileChooser.getCurrentDirectory().getAbsolutePath() + "/" + fileChooser.getSelectedFile().getName() + "/Plans");
+            int indexNumDossierMemeNom = 1;
+            boolean dossiersValide = true;
+            while (!dossierPlans.mkdir()) {
+                if (indexNumDossierMemeNom == 10) { // pour eviter boucle infini en cas de bug
+                    dossiersValide = false;
+                    break;
+                }
+                dossierPlans = new File(fileChooser.getCurrentDirectory().getAbsolutePath() + "/" + fileChooser.getSelectedFile().getName() +
+                        "/Plans (" + indexNumDossierMemeNom + ")");
+                indexNumDossierMemeNom++;
             }
+
+            File dossierN = new File(dossierPlans.getAbsolutePath() + "/North");
+            dossiersValide = dossiersValide && dossierN.mkdir();
+            File dossierS = new File(dossierPlans.getAbsolutePath() + "/South");
+            dossiersValide = dossiersValide && dossierS.mkdir();
+            File dossierE = new File(dossierPlans.getAbsolutePath() + "/East");
+            dossiersValide = dossiersValide && dossierE.mkdir();
+            File dossierW = new File(dossierPlans.getAbsolutePath() + "/West");
+            dossiersValide = dossiersValide && dossierW.mkdir();
+
+            if (dossiersValide) {
+                File[] dossiers = {dossierN, dossierS, dossierE, dossierW};
+                for (File dossierMur : dossiers) {
+                    int indexMur = 0;
+                    for (Mur mur : salle.getCote(dossierMur.getName().charAt(0)).getMurs(salle.getProfondeur(),
+                            generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+                            generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis())) {
+                        try {
+                            File fichierExt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Ext");
+                            fichierExt.createNewFile();
+                            File fichierInt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Int");
+                            fichierInt.createNewFile();
+                            //XMLOutputFactory factory = XMLOutputFactory.newInstance();
+                            //XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(fichier.toPath()));
+                            //writer.writeStartDocument("utf-8", "1.0");
+                            //generateurPlan.genererPlans(salle, writer);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        indexMur++;
+                    }
+                }
+            }
+            setErrorMessage("Il y a eu un problème dans la création des dossiers de destination");
         }
     }
 
     public void fermerProjet(Component parent) {
         if (!undoPile.isEmpty()) {
-            int result = JOptionPane.showConfirmDialog(parent,"Voulez-vous sauvergarder votre travail?\n" +
+            int result = JOptionPane.showConfirmDialog(parent,"Voulez-vous sauvegarder votre travail?\n" +
                             "Toutes modifications non-sauvegardées seront perdues.", "Attention",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
@@ -660,7 +701,7 @@ public class MuracleController {
             if (!dist.contains("-"))
                 if (!dist.equals(distLigneGrille.toString()))
                     distLigneGrille = new Pouce(dist);
-            else setErrorMessage("La valeur entrée ne doit pas négative");
+            else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         }
@@ -716,7 +757,7 @@ public class MuracleController {
                     salle.setProfondeur(new Pouce(profondeur));
                     pushNewChange(save);
                 }
-            } else setErrorMessage("La valeur entrée ne doit pas négative");
+            } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (CoteError | SalleError | PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -812,7 +853,7 @@ public class MuracleController {
                     cote.moveAccessoire(acces, new CoordPouce(pouceX, pouceY));
                     pushNewChange(save);
                 }
-        } else setErrorMessage("La valeur entrée ne doit pas négative");
+        } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch(PouceError | FractionError | CoteError e){
             setErrorMessage(e.getMessage());
         } catch(IOException e){
@@ -881,7 +922,7 @@ public class MuracleController {
                     cote.setAccessoire(acces, new Pouce(largeur), new Pouce(hauteur), new Pouce(marge));
                     pushNewChange(save);
                 }
-            } else setErrorMessage("La valeur entrée ne doit pas négative");
+            } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (PouceError | FractionError | CoteError e) {
             setErrorMessage(e.getMessage());
             acces.getPosition().setX(posXAcces);
@@ -940,7 +981,7 @@ public class MuracleController {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        } else setErrorMessage("La valeur entrée ne doit pas négative");
+        } else setErrorMessage("La valeur entrée ne doit pas être négative");
     }
 
     private void dragSeparateur(Pouce pos) {
@@ -987,7 +1028,7 @@ public class MuracleController {
                     salle.setDistanceTrouRetourAir(new Pouce(distanceSol));
                     pushNewChange(save);
                 }
-            } else setErrorMessage("La valeur entrée ne doit pas négative");
+            } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (SalleError | PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -1042,7 +1083,7 @@ public class MuracleController {
                     generateurPlan.setLongueurPlis(new Pouce(longueurPlis));
                     pushNewChange(save);
                 }
-            } else setErrorMessage("La valeur entrée ne doit pas négative");
+            } else setErrorMessage("La valeur entrée ne doit pas être négative");
         } catch (PouceError | FractionError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -1073,5 +1114,21 @@ public class MuracleController {
 
     public void ackErrorMessage() {
         errorMessage = "";
+    }
+
+    public boolean isSalleValid(){
+        for (int i = 0; i < salle.getTableauCote().length; i ++){
+            ArrayList<Mur> murs = salle.getTableauCote()[i].getMurs(salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+                    generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis());
+            for (Mur mur : murs) {
+                if (!(mur.getPanneauExt().isPoidsValid()) || !(mur.getPanneauInt().isPoidsValid())) {
+                    return false;
+                }
+            }
+            if (!(salle.getTableauCote()[i].isCoteAccessoireValid())){
+                return false;
+            }
+        }
+        return true;
     }
 }
