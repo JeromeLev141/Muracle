@@ -11,15 +11,13 @@ import muracle.utilitaire.PouceError;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
-
-import java.util.Base64;
-import java.util.Objects;
-import java.util.Scanner;
-import java.util.Stack;
 
 public class MuracleController {
 
@@ -200,7 +198,7 @@ public class MuracleController {
             File dossierW = new File(dossierPlans.getAbsolutePath() + "/West");
             dossiersValide = dossiersValide && dossierW.mkdir();
 
-            if (dossiersValide) {
+            if (dossiersValide && isSalleValid()) {
                 File[] dossiers = {dossierN, dossierS, dossierE, dossierW};
                 for (File dossierMur : dossiers) {
                     int indexMur = 0;
@@ -208,22 +206,31 @@ public class MuracleController {
                             generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
                             generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis())) {
                         try {
-                            File fichierExt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Ext");
+                            File fichierExt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Ext.svg");
                             fichierExt.createNewFile();
-                            File fichierInt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Int");
+                            File fichierInt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Int.svg");
                             fichierInt.createNewFile();
-                            //XMLOutputFactory factory = XMLOutputFactory.newInstance();
-                            //XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(fichier.toPath()));
-                            //writer.writeStartDocument("utf-8", "1.0");
-                            //generateurPlan.genererPlans(salle, writer);
-                        } catch (IOException e) {
+
+                            PlanPanneau[] plans = generateurPlan.genererCoordonees(salle.getCote(dossierMur.getName().charAt(0)).getAccessoires(), mur,
+                                    salle.getProfondeur(),  salle.getEpaisseurTrouRetourAir());
+
+                            XMLOutputFactory factory = XMLOutputFactory.newInstance();
+                            XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(fichierExt.toPath()));
+                            writer.writeStartDocument("utf-8", "1.0");
+                            generateurPlan.genererPlans(plans[0], writer);
+
+                            writer = factory.createXMLStreamWriter(Files.newOutputStream(fichierInt.toPath()));
+                            writer.writeStartDocument("utf-8", "1.0");
+                            generateurPlan.genererPlans(plans[1], writer);
+                        } catch (IOException | XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
                         indexMur++;
                     }
                 }
             }
-            setErrorMessage("Il y a eu un problème dans la création des dossiers de destination");
+            else
+                setErrorMessage("Il y a eu un problème dans la création des dossiers de destination");
         }
     }
 

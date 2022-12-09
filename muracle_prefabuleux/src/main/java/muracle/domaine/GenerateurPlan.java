@@ -1,6 +1,5 @@
 package muracle.domaine;
 
-import muracle.domaine.accessoire.Porte;
 import muracle.utilitaire.*;
 
 import javax.xml.stream.XMLStreamException;
@@ -11,7 +10,7 @@ import java.util.List;
 
 public class GenerateurPlan implements java.io.Serializable {
 
-    private Pouce margeEpaisseurMateriaux = new Pouce("0 1/2");
+    private Pouce margeEpaisseurMateriaux = new Pouce("1/4");
     private Pouce margeLargeurReplis = new Pouce("1");
     private double anglePlis = 45;
     private Pouce longueurPlis = new Pouce("1");
@@ -51,14 +50,39 @@ public class GenerateurPlan implements java.io.Serializable {
         longueurPlis = longPlis;
     }
 
-    public void genererPlans(Salle salle, XMLStreamWriter writer) {
+    public void genererPlans(PlanPanneau plan, XMLStreamWriter writer) {
         try {
             writer.writeStartElement("svg");
             writer.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
+            double decal = 10;
+
+            //plan
+            StringBuilder contourPanneau = new StringBuilder("M");
+            for (CoordPouce coord : plan.getPolygone()) {
+                contourPanneau.append(" ").append(decal + coord.getX().toDouble() * 9.6).append(" ").append(decal + coord.getY().toDouble() * 9.6).append(" L");
+            }
+            contourPanneau.setCharAt(contourPanneau.length() - 1, 'z');
+            writer.writeEmptyElement("path");
+            writer.writeAttribute("d", contourPanneau.toString());
+            writer.writeAttribute("fill", "white");
+            writer.writeAttribute("stroke", "black");
+            writer.writeAttribute("stroke-width", "1");
+
+            // lignes de plis
+            for (CoordPouce[] coords : plan.getLignePlie()) {
+                writer.writeEmptyElement("line");
+                writer.writeAttribute("x1", String.valueOf(decal + coords[0].getX().toDouble() * 9.6));
+                writer.writeAttribute("y1", String.valueOf(decal + coords[0].getY().toDouble() * 9.6));
+                writer.writeAttribute("x2", String.valueOf(decal + coords[1].getX().toDouble() * 9.6));
+                writer.writeAttribute("y2", String.valueOf(decal + coords[1].getY().toDouble() * 9.6));
+                writer.writeAttribute("stroke", "black");
+                writer.writeAttribute("stroke-width", "1");
+                writer.writeAttribute("stroke-dasharray", "4");
+            }
 
             //example du plan d'un mur
 
-            writer.writeStartElement("text");
+            /*writer.writeStartElement("text");
             writer.writeAttribute("x", "20");
             writer.writeAttribute("y", "20");
             writer.writeAttribute("fill", "black");
@@ -93,7 +117,7 @@ public class GenerateurPlan implements java.io.Serializable {
                     "M 210 110 L 220 120 L 220 280 L 210 290 z");
             writer.writeAttribute("fill", "white");
             writer.writeAttribute("stroke", "blue");
-            writer.writeAttribute("stroke-width", "1");
+            writer.writeAttribute("stroke-width", "1");*/
 
             writer.writeEndDocument();
 
