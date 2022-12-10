@@ -157,7 +157,7 @@ public class MainWindow extends JFrame {
 				}
 				if (controller.isSeparateurSelected())
 					if (controller.isVueExterieur())
-						posSepTextField.setText(controller.getSelectedSeparateur().toString());
+						posSepTextField.setText(controller.getSelectedSeparateurCopy().toString());
 					else
 						posSepTextField.setText(controller.getSelectedSepInverse().toString());
 				if (controller.isAccessoireSelected()) {
@@ -443,7 +443,7 @@ public class MainWindow extends JFrame {
 					}
 					if (controller.isSeparateurSelected()) {
 						if (controller.isVueExterieur())
-							posSepTextField.setText(controller.getSelectedSeparateur().toString());
+							posSepTextField.setText(controller.getSelectedSeparateurCopy().toString());
 						else
 							posSepTextField.setText(controller.getSelectedSepInverse().toString());
 					}
@@ -565,6 +565,7 @@ public class MainWindow extends JFrame {
 						updater.updateParamsShown();
 						drawingPanel.updateParametre();
 						drawingPanel.repaint();
+						voirPlanButton.setSelected(controller.isVuePlanDecoupage());
 					} catch (IOException | ClassNotFoundException ex) {
 						throw new RuntimeException(ex);
 					}
@@ -591,6 +592,7 @@ public class MainWindow extends JFrame {
 						updater.updateParamsShown();
 						drawingPanel.updateParametre();
 						drawingPanel.repaint();
+						voirPlanButton.setSelected(controller.isVuePlanDecoupage());
 					} catch (IOException | ClassNotFoundException ex) {
 						throw new RuntimeException(ex);
 					}
@@ -645,7 +647,7 @@ public class MainWindow extends JFrame {
 									drawingPanel.repaint();
 									if (controller.isSeparateurSelected()) {
 										if (controller.isVueExterieur())
-											posSepTextField.setText(controller.getSelectedSeparateur().toString());
+											posSepTextField.setText(controller.getSelectedSeparateurCopy().toString());
 										else
 											posSepTextField.setText(controller.getSelectedSepInverse().toString());
 									}
@@ -866,7 +868,7 @@ public class MainWindow extends JFrame {
 								if (controller.isSeparateurSelected()) {
 									controller.moveSeparateur(posSepTextField.getText());
 									if (controller.isVueExterieur())
-										posSepTextField.setText(controller.getSelectedSeparateur().toString());
+										posSepTextField.setText(controller.getSelectedSeparateurCopy().toString());
 									else
 										posSepTextField.setText(controller.getSelectedSepInverse().toString());
 									drawingPanel.repaint();

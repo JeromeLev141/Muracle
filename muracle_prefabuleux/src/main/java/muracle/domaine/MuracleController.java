@@ -74,6 +74,9 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief construceter
+     */
     public MuracleController() throws FractionError, PouceError {
         creerProjet();
         distLigneGrille = new Pouce("12");
@@ -82,6 +85,9 @@ public class MuracleController {
         generateurPlan = new GenerateurPlan();
     }
 
+    /**
+     * @brief réinitialise la salle et la paramètres qui lui sont reliés
+     */
     public void creerProjet() {
         try {
             salle = new Salle(new Pouce("288"), new Pouce("108"),
@@ -112,6 +118,10 @@ public class MuracleController {
         redoPile = new Stack<>();
     }
 
+    /**
+     * @brief restaure la salle et ses états à partir d'un ficheir mrc (sauvegardé)
+     * @param parent : La fenêtre principal de l'application
+     */
     public void ouvrirProjet(Component parent) {
         fermerProjet(parent);
         JFileChooser fileChooser = new JFileChooser();
@@ -143,6 +153,10 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief sauvegarde la salle et ses états dans un fichier mrc
+     * @param parent : La fenêtre principal de l'application
+     */
     public void sauvegarderProjet(Component parent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Sauvegarde de Projet");
@@ -165,75 +179,91 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief exporte les plans de découpage des panneaux de chaque mur de la salle dans un dossier
+     * @param parent : La fenêtre principal de l'application
+     */
     public void exporterPlan(Component parent) {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Exporter les plans");
-        fileChooser.setCurrentDirectory(new java.io.File("."));
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        //
-        // disable the "All files" option.
-        //
-        fileChooser.setAcceptAllFileFilterUsed(false);
-        int returnValue = fileChooser.showSaveDialog(parent);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File dossierPlans = new File(fileChooser.getCurrentDirectory().getAbsolutePath() + "/" + fileChooser.getSelectedFile().getName() + "/Plans");
-            int indexNumDossierMemeNom = 1;
-            boolean dossiersValide = true;
-            while (!dossierPlans.mkdir()) {
-                if (indexNumDossierMemeNom == 10) { // pour eviter boucle infini en cas de bug
-                    dossiersValide = false;
-                    break;
+        if (isSalleValid()) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Exporter les plans");
+            fileChooser.setCurrentDirectory(new java.io.File("."));
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            //
+            // disable the "All files" option.
+            //
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            int returnValue = fileChooser.showSaveDialog(parent);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File dossierPlans = new File(fileChooser.getCurrentDirectory().getAbsolutePath() + "/" + fileChooser.getSelectedFile().getName() + "/Plans");
+                int indexNumDossierMemeNom = 1;
+                boolean dossiersValide = true;
+                while (!dossierPlans.mkdir()) {
+                    if (indexNumDossierMemeNom == 10) { // pour eviter boucle infini en cas de bug
+                        dossiersValide = false;
+                        break;
+                    }
+                    dossierPlans = new File(fileChooser.getCurrentDirectory().getAbsolutePath() + "/" + fileChooser.getSelectedFile().getName() +
+                            "/Plans (" + indexNumDossierMemeNom + ")");
+                    indexNumDossierMemeNom++;
                 }
-                dossierPlans = new File(fileChooser.getCurrentDirectory().getAbsolutePath() + "/" + fileChooser.getSelectedFile().getName() +
-                        "/Plans (" + indexNumDossierMemeNom + ")");
-                indexNumDossierMemeNom++;
-            }
 
-            File dossierN = new File(dossierPlans.getAbsolutePath() + "/North");
-            dossiersValide = dossiersValide && dossierN.mkdir();
-            File dossierS = new File(dossierPlans.getAbsolutePath() + "/South");
-            dossiersValide = dossiersValide && dossierS.mkdir();
-            File dossierE = new File(dossierPlans.getAbsolutePath() + "/East");
-            dossiersValide = dossiersValide && dossierE.mkdir();
-            File dossierW = new File(dossierPlans.getAbsolutePath() + "/West");
-            dossiersValide = dossiersValide && dossierW.mkdir();
+                File dossierN = new File(dossierPlans.getAbsolutePath() + "/North");
+                dossiersValide = dossiersValide && dossierN.mkdir();
+                File dossierS = new File(dossierPlans.getAbsolutePath() + "/South");
+                dossiersValide = dossiersValide && dossierS.mkdir();
+                File dossierE = new File(dossierPlans.getAbsolutePath() + "/East");
+                dossiersValide = dossiersValide && dossierE.mkdir();
+                File dossierW = new File(dossierPlans.getAbsolutePath() + "/West");
+                dossiersValide = dossiersValide && dossierW.mkdir();
 
-            if (dossiersValide && isSalleValid()) {
-                File[] dossiers = {dossierN, dossierS, dossierE, dossierW};
-                for (File dossierMur : dossiers) {
-                    int indexMur = 0;
-                    for (Mur mur : salle.getCote(dossierMur.getName().charAt(0)).getMurs(salle.getProfondeur(),
-                            generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
-                            generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis())) {
-                        try {
-                            File fichierExt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Ext.svg");
-                            fichierExt.createNewFile();
-                            File fichierInt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Int.svg");
-                            fichierInt.createNewFile();
+                if (dossiersValide) {
+                    File[] dossiers = {dossierN, dossierS, dossierE, dossierW};
+                    for (File dossierMur : dossiers) {
+                        int indexMur = 0;
+                        for (Mur mur : salle.getCote(dossierMur.getName().charAt(0)).getMurs(salle.getProfondeur(),
+                                generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
+                                generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis())) {
+                            try {
+                                File fichierExt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Ext.svg");
+                                dossiersValide= dossiersValide && fichierExt.createNewFile();
+                                File fichierInt = new File(dossierMur.getAbsolutePath() + "/" + dossierMur.getName().charAt(0) + indexMur + "Int.svg");
+                                dossiersValide= dossiersValide && fichierInt.createNewFile();
 
-                            PlanPanneau[] plans = generateurPlan.genererCoordonees(salle.getCote(dossierMur.getName().charAt(0)).getAccessoires(), mur,
-                                    salle.getProfondeur(),  salle.getEpaisseurTrouRetourAir());
+                                if (dossiersValide ) {
+                                    PlanPanneau[] plans = generateurPlan.genererCoordonees(salle.getCote(dossierMur.getName().charAt(0)).getAccessoires(), mur,
+                                            salle.getProfondeur(), salle.getEpaisseurTrouRetourAir());
 
-                            XMLOutputFactory factory = XMLOutputFactory.newInstance();
-                            XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(fichierExt.toPath()));
-                            writer.writeStartDocument("utf-8", "1.0");
-                            generateurPlan.genererPlans(plans[0], writer);
+                                    XMLOutputFactory factory = XMLOutputFactory.newInstance();
+                                    XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(fichierExt.toPath()));
+                                    writer.writeStartDocument("utf-8", "1.0");
+                                    generateurPlan.genererPlans(plans[0], writer);
 
-                            writer = factory.createXMLStreamWriter(Files.newOutputStream(fichierInt.toPath()));
-                            writer.writeStartDocument("utf-8", "1.0");
-                            generateurPlan.genererPlans(plans[1], writer);
-                        } catch (IOException | XMLStreamException e) {
-                            throw new RuntimeException(e);
+                                    writer = factory.createXMLStreamWriter(Files.newOutputStream(fichierInt.toPath()));
+                                    writer.writeStartDocument("utf-8", "1.0");
+                                    generateurPlan.genererPlans(plans[1], writer);
+                                }
+                                else
+                                    setErrorMessage("Il y a eu un problème dans la création des fichiers");
+                            } catch (IOException | XMLStreamException e) {
+                                throw new RuntimeException(e);
+                            }
+                            indexMur++;
                         }
-                        indexMur++;
                     }
                 }
+                else
+                    setErrorMessage("Il y a eu un problème dans la création des dossiers de destination");
             }
-            else
-                setErrorMessage("Il y a eu un problème dans la création des dossiers de destination");
         }
+        else
+            setErrorMessage("tous les poids des panneaux et les accessoires doivent être valides avant l'exportation");
     }
 
+    /**
+     * @brief demande à l'utilisateur s'il souhaite sauvegarder avant de quitter s'il la salle possède des modifications
+     * @param parent : La fenêtre principal de l'application
+     */
     public void fermerProjet(Component parent) {
         if (!undoPile.isEmpty()) {
             int result = JOptionPane.showConfirmDialog(parent,"Voulez-vous sauvegarder votre travail?\n" +
@@ -245,6 +275,10 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief sauvegarde la salle et ses états dans une string
+     * @return la salle sauvegardé sous format d'un string
+     */
     private String makeSaveString() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -254,6 +288,10 @@ public class MuracleController {
         return Base64.getEncoder().encodeToString(baos.toByteArray());
     }
 
+    /**
+     * @brief sauvegarde la salle et ses états dans une string et l'insère dans la pile fournis
+     * @param pile la pile dans laquelle on veut insérer la sauvegarde (soit undoPile soit redoPile)
+     */
     private void pushChange(Stack<String> pile) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -263,11 +301,19 @@ public class MuracleController {
         pile.push(Base64.getEncoder().encodeToString(baos.toByteArray()));
     }
 
+    /**
+     * @brief insère la sauvegare en string dans la pile undo et reinitialise la pile redo
+     * @param saveString la sauvegare de la salle et ses états en string
+     */
     private void pushNewChange(String saveString) throws IOException {
         undoPile.push(saveString);
         redoPile.clear();
     }
 
+    /**
+     * @brief insère la sauvegare en string dans la pile undo et reinitialise la pile redo
+     * @param saveString la sauvegare de la salle et ses états en string
+     */
     private void readChange(String saveString) throws IOException, ClassNotFoundException {
         byte [] bytes = Base64.getDecoder().decode(saveString);
         ObjectInputStream ois = new ObjectInputStream( new ByteArrayInputStream(bytes) );
@@ -284,28 +330,50 @@ public class MuracleController {
         ois.close();
     }
 
+    /**
+     * @brief restaure la salle et ses états à sa sauvegarde la plus récente de la pile undo (annule dernier changement)
+     */
     public void undoChange() throws IOException, ClassNotFoundException {
         if (undoPile.size() != 0) {
             pushChange(redoPile);
             readChange(undoPile.pop());
+            isVuePlanDecoupage = false;
         }
     }
 
+    /**
+     * @brief restaure la salle et ses états à sa sauvegarde la plus récente de la pile redo (rajoute dernier changement annulé)
+     */
     public void redoChange() throws IOException, ClassNotFoundException {
         if (redoPile.size() != 0) {
             pushChange(undoPile);
             readChange(redoPile.pop());
+            isVuePlanDecoupage = false;
         }
     }
 
+    /**
+     * @brief getter de la salle en read only
+     * @return la salle sous format read only
+     */
     public  SalleDTO getSalleReadOnly() { return new SalleDTO(getSalle()); }
-    
+
+    /**
+     * @brief getter de la salle
+     * @return la salle
+     */
     private Salle getSalle() {
         return salle;
     }
 
+    /**
+     * @brief intéragie avec l'élément qui est affiché (sélection - déselection - ajout)
+     * @param coordPouce position du clique de l'utilisateur par rapport au coin haut gauche de ce qui est affiché
+     * @param addSepMode indicateur de si on est en mode ajout de séparateur
+     * @param addAccesMode indicateur de si on est en mode ajout d'accessoire
+     * @param type type de l'accessoire que l'on souhaite ajouté si addAccesMode est vraie
+     */
     public void interactComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) {
-        // manque les deux autres vues
         try {
             currentStateSave = makeSaveString();
         } catch (IOException e) {
@@ -331,6 +399,11 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief intéragie avec la salle qui est affiché (sélection - déselection - ajout)
+     * @param coordPouce position du clique de l'utilisateur par rapport au coin haut gauche de ce qui est affiché
+     * @param addSepMode indicateur de si on est en mode ajout de séparateur
+     */
     private void interactSalleComponent(CoordPouce coordPouce, boolean addSepMode) throws FractionError, PouceError {
         coteSelected = ' ';
         Pouce posX = coordPouce.getX();
@@ -384,6 +457,13 @@ public class MuracleController {
             isResizing = true;
     }
 
+    /**
+     * @brief intéragie avec le côté selectionné qui est affiché (sélection - déselection - ajout)
+     * @param coordPouce position du clique de l'utilisateur par rapport au coin haut gauche de ce qui est affiché
+     * @param addSepMode indicateur de si on est en mode ajout de séparateur
+     * @param addAccesMode indicateur de si on est en mode ajout d'accessoire
+     * @param type type de l'accessoire que l'on souhaite ajouté si addAccesMode est vraie
+     */
     private void interactCoteComponent(CoordPouce coordPouce, boolean addSepMode, boolean addAccesMode, String type) throws FractionError, PouceError {
         Pouce jeu = new Pouce(1, 1, 2); // la largeur des lignes est de deux pouces (pixels) en zoom x1 + jeu de 1 sur 2
         // add interraction avec murs
@@ -452,6 +532,9 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief enclenche le drag (move - resize) de l'élément selectionné (salle - separateur - accessoire)
+     */
     public void startDragging() {
         if (isSeparateurSelected()) {
             try {
@@ -489,6 +572,10 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief move ou resize l'élément selectionné (salle - separateur - accessoire) par rapport au drag
+     * @param decalCoord la différence par rapport à la position du clic au début du drag
+     */
     public void dragging (CoordPouce decalCoord) {
         //salle resize
         if (isVueDessus && isResizing) {
@@ -606,6 +693,10 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief move ou resize l'élément selectionné (salle - separateur - accessoire) par rapport au drag puis termine le drag et sauvegarde la salla et ses états
+     * @param decalCoord la différence par rapport à la position du clic au début du drag
+     */
     public void endDraggging (CoordPouce decalCoord) {
         try {
             isResizing = false;
@@ -619,23 +710,44 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief sélectionne le côté de l'orientation
+     * @param orientation  orientation du côté (N - S - E - W)
+     */
     private void selectCote(char orientation) {
         coteSelected = orientation;
     }
 
+    /**
+     * @brief getter du côté selectionné en read only
+     * @return le côté selectionné sous format read only
+     */
     public CoteDTO getSelectedCoteReadOnly() { return new CoteDTO(Objects.requireNonNull(getSelectedCote()),
             salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
             generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis()); }
 
+    /**
+     * @brief getter du côté de l'orientation en read only
+     * @return le côté de l'orientation sous format read only
+     */
     public CoteDTO getCoteReadOnly(char orientation) { return new CoteDTO(salle.getCote(orientation),
             salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
             generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis()); }
+
+    /**
+     * @brief getter du côté selectionné
+     * @return le côté selectionné (null si aucun côté n'est selectionné)
+     */
     private Cote getSelectedCote() {
         if (coteSelected != ' ')
             return salle.getCote(coteSelected);
         return null;
     }
 
+    /**
+     * @brief setter de isVueDessus
+     * @param dessus indicateur si on veut être en vue dessus ou non
+     */
     public void setIsVueDessus(boolean dessus) {
         if (dessus) {
             coteSelected = ' ';
@@ -645,8 +757,17 @@ public class MuracleController {
         }
         isVueDessus = dessus;
     }
+
+    /**
+     * @brief getter de isVueDessus
+     * @return indicateur si on est en vue de dessus
+     */
     public boolean isVueDessus() {return isVueDessus; }
 
+    /**
+     * @brief setter de isVueExterieur
+     * @param exterieur indicateur si on veut être en vue exterieur ou non (interieur)
+     */
     public void setIsVueExterieur(boolean exterieur) {
         isVueExterieur = exterieur;
         if (isAccessoireSelected())
@@ -654,26 +775,65 @@ public class MuracleController {
                 accessoireSelected = -1;
     }
 
+    /**
+     * @brief getter de isVueExterieur
+     * @return indicateur si on est en vue exterieur ou interieur
+     */
     public boolean isVueExterieur() {return isVueExterieur;}
 
+    /**
+     * @brief setter de isVuePlanDecoupage
+     * @param vuePlanDecoupage indicateur si on veut être en vue de découpage de plan ou non
+     */
     public void setIsVuePlanDecoupage(boolean vuePlanDecoupage) {
         isVuePlanDecoupage = vuePlanDecoupage;
     }
 
+    /**
+     * @brief getter de isVuePlanDecoupage
+     * @return indicateur si on est en vue de découpage de plan ou non
+     */
     public boolean isVuePlanDecoupage() {return isVuePlanDecoupage;}
 
+    /**
+     * @brief retourne l'indicateur de si on est en vue de côté ou non
+     * @return indicateur si on est en vue de cote ou non (inverse de vue de dessus)
+     */
     public boolean isVueCote() { return !isVueDessus();}
 
+    /**
+     * @brief retourne l'indicateur de si un mur est selectionné
+     * @return indicateur si un mur est selectionné
+     */
     public boolean isMurSelected() { return murSelected != -1; }
 
+    /**
+     * @brief retourne l'indicateur de si un accessoire est selectionné
+     * @return indicateur si un accessoire est selectionné
+     */
     public boolean isAccessoireSelected() { return accessoireSelected != -1; }
 
+    /**
+     * @brief retourne l'indicateur de si un séparateur est selectionné
+     * @return indicateur si un séparateur est selectionné
+     */
     public boolean isSeparateurSelected() { return separateurSelected != -1; }
 
+    /**
+     * @brief setter de murSelected
+     */
     private void selectMur(int index) {murSelected = index;}
 
+    /**
+     * @brief getter du mur selectionné en read only
+     * @return le mur selectionné sous format read only
+     */
     public MurDTO getSelectedMurReadOnly() { return new MurDTO(Objects.requireNonNull(getSelectedMur())); }
 
+    /**
+     * @brief getter du mur selectionné
+     * @return le mur selectionné (null si aucun mur n'est selectionné)
+     */
     private Mur getSelectedMur() {
         if (murSelected != -1)
             return Objects.requireNonNull(getSelectedCote()).getMurs(salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
@@ -681,28 +841,51 @@ public class MuracleController {
         return null;
     }
 
+    /**
+     * @brief getter de murSelected
+     * @return murSelected
+     */
     public int getIndexOfSelectedMur() {
         return murSelected;
     }
 
+    /**
+     * @brief setter de accessoireSelected
+     */
     private void selectAccessoire(int index) {
         accessoireSelected = index;
     }
 
+    /**
+     * @brief getter de l'accessoire selectionné en read only
+     * @return l'accessoire selectionné sous format read only
+     */
     public AccessoireDTO getSelectedAccessoireReadOnly() {
         return new AccessoireDTO(Objects.requireNonNull(getSelectedAccessoire()));
     }
 
+    /**
+     * @brief getter de l'accessoire selectionné
+     * @return l'accessoire selectionné
+     */
     private Accessoire getSelectedAccessoire() {
         if (accessoireSelected != -1)
             return Objects.requireNonNull(getSelectedCote()).getAccessoire(accessoireSelected);
         return null;
     }
 
+    /**
+     * @brief getter de accessoireSelected
+     * @return accessoireSelected
+     */
     public int getIndexOfSelectedAccessoire() {
         return accessoireSelected;
     }
 
+    /**
+     * @brief setter de distLigneGrille
+     * @param dist distance des lignes de la grille sous format string "x y/z"
+     */
     public void setDistLigneGrille(String dist) {
         try {
             if (!dist.contains("-"))
@@ -714,18 +897,34 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief getter de distLigneGrille
+     * @return distLigneGrille
+     */
     public Pouce getDistLigneGrille() {
         return distLigneGrille;
     }
 
+    /**
+     * @brief getter de isGrilleShown
+     * @return isGrilleShown
+     */
     public boolean isGrilleShown() {
         return isGrilleShown;
     }
 
+    /**
+     * @brief reverse isGrilleShown
+     */
     public void reverseIsGrilleShown() {
         isGrilleShown = !isGrilleShown;
     }
 
+    /**
+     * @brief getter des dimensions de la salle
+     * @param indexConfig index de la dimension demandée
+     * @return la dimension correspondant à indexConfig (0=largeur, 1=longueur, 2=hauteur, 3=epaisseur des murs)
+     */
     public String getDimensionSalle(int indexConfig) {
         String configValue = "";
         switch (indexConfig) {
@@ -744,6 +943,14 @@ public class MuracleController {
         }
         return  configValue;
     }
+
+    /**
+     * @brief setter des dimensions de la salle
+     * @param largeur largeur de la salle en string "x y/z"
+     * @param longueur longueur de la salle en string "x y/z"
+     * @param hauteur hauteur de la salle en string "x y/z"
+     * @param profondeur épaisseur des murs de la salle en string "x y/z"
+     */
     public void setDimensionSalle(String largeur, String longueur, String hauteur, String profondeur) {
         try {
             String save = makeSaveString();
@@ -772,6 +979,11 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief ajoute un accessoire dans le côté selectionné
+     * @param type type de l'accessoire qu'on souhaite rajouter (Porte - Fenêtre - Retour d'air - Prise électrique)
+     * @param position position du centre de l'accessoire
+     */
     private void addAccessoire(String type, CoordPouce position) {
         try {
             Accessoire acces;
@@ -833,6 +1045,9 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief retire l'accessoire selectionné
+     */
     public void removeAccessoire() {
         try {
             String save = makeSaveString();
@@ -844,6 +1059,11 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief setter de la position de l'accessoire selectionné
+     * @param posX position en x de l'accessoire en string "x y/z"
+     * @param posY position en y de l'accessoire en string "x y/z"
+     */
     public void moveAccessoire(String posX, String posY) {
         try {
             String save = makeSaveString();
@@ -868,7 +1088,10 @@ public class MuracleController {
         }
     }
 
-
+    /**
+     * @brief drag de l'accessoire (move - resize)
+     * @param coord position ou dimension (selon le drag) de l'accessoire
+     */
     private void dragAccessoire(CoordPouce coord) {
         try {
             Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
@@ -905,6 +1128,12 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief setter des dimensions de l'accessoire selectionné
+     * @param largeur largeur de l'accessoire selectionné en string "x y/z"
+     * @param hauteur hauteur de l'accessoire selectionné en string "x y/z"
+     * @param marge marge de l'accessoire selectionné en string "x y/z"
+     */
     public void setDimensionAccessoire(String largeur, String hauteur, String marge) {
         Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
         Pouce posXAcces = acces.getPosition().getX();
@@ -938,16 +1167,36 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief setter de separateurSelected
+     * @param index index du séparateur selectionné
+     */
     private void selectSeparateur (int index) {
         separateurSelected = index;
     }
 
-    public Pouce getSelectedSeparateur() {
+    /**
+     * @brief getter du séparateur selectionné en copie (read only)
+     */
+    public Pouce getSelectedSeparateurCopy() {
+        if (separateurSelected != -1)
+            return getSelectedSeparateur().copy();
+        return null;
+    }
+
+    /**
+     * @brief getter du séparateur selectionné
+     */
+    private Pouce getSelectedSeparateur() {
         if (separateurSelected != -1)
             return Objects.requireNonNull(getSelectedCote()).getSeparateurs().get(separateurSelected);
         return null;
     }
 
+    /**
+     * @brief ajoute un séparateur dans le côté selectionné
+     * @param pos position du séparateur
+     */
     private void addSeparateur(Pouce pos) {
         try {
             Objects.requireNonNull(getSelectedCote()).addSeparateur(pos);
@@ -959,6 +1208,9 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief retire le séparateur selectionné
+     */
     public void removeSeparateur() {
         try {
             String save = makeSaveString();
@@ -970,6 +1222,10 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief setter de la position du separateur sélectionné
+     * @param position position du séparateur
+     */
     public void moveSeparateur(String position) {
         if (!position.contains("-")) {
             try {
@@ -991,6 +1247,10 @@ public class MuracleController {
         } else setErrorMessage("La valeur entrée ne doit pas être négative");
     }
 
+    /**
+     * @brief drag de la position du separateur sélectionné
+     * @param pos position du séparateur
+     */
     private void dragSeparateur(Pouce pos) {
         try {
             Cote cote = Objects.requireNonNull(getSelectedCote());
@@ -1003,6 +1263,11 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief getter des paramètres des retours d'air de la salle
+     * @param indexParam index du paramètre demandé
+     * @return la dimension correspondant à indexParam (0=hauteur, 1=épaisseur, 2=distance du sol)
+     */
     public String getParametreRetourAir(int indexParam) {
         String paramValue = "";
         switch (indexParam) {
@@ -1019,6 +1284,12 @@ public class MuracleController {
         return  paramValue;
     }
 
+    /**
+     * @brief setter des paramètres des retours d'air de la salle
+     * @param hauteur hauteur des retours d'air "x y/z"
+     * @param epaisseur épaisseur des retours d'air en string "x y/z"
+     * @param distanceSol distance du sol des retours d'air en string "x y/z"
+     */
     public void setParametreRetourAir(String hauteur, String epaisseur, String distanceSol) {
         try {
             String save = makeSaveString();
@@ -1043,6 +1314,11 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief getter des paramètres du générateur de plan
+     * @param indexParam index du paramètre demandé
+     * @return la valeur correspondant à indexParam (0=longueur des plis, 1=épaisseur des matériaux, 2=marge de la largeur des replis, 3=angle des plis)
+     */
     public String getParametrePlan(int indexParam) {
         String paramValue = "";
         switch (indexParam) {
@@ -1062,6 +1338,13 @@ public class MuracleController {
         return  paramValue;
     }
 
+    /**
+     * @brief setter des paramètres du générateur de plan
+     * @param margeEpaisseur marge de l'épaisseur des matériaux en string "x y/z"
+     * @param margeLargeur marge de la largeur des replis en string "x y/z"
+     * @param anglePlis angle des plis en string "x y/z"
+     * @param longueurPlis longueur des plis en string "x y/z"
+     */
     public void setParametrePlan(String margeEpaisseur, String margeLargeur, String anglePlis, String longueurPlis) {
         try {
             String save = makeSaveString();
@@ -1098,31 +1381,58 @@ public class MuracleController {
         }
     }
 
+    /**
+     * @brief getter de la position en x de l'accessoire sélectionné de la vue intérieur (inversée)
+     * @return position en x de l'accessoire sélectionné de la vue intérieur (inversée)
+     */
     public Pouce getSelectedAccesPosXInverse() {
         Accessoire acces = Objects.requireNonNull(getSelectedAccessoire());
         return Objects.requireNonNull(getSelectedCote()).getLargeur().sub(acces.getPosition().getX().add(acces.getLargeur()));
     }
 
+    /**
+     * @brief getter de la position du séparateur sélectionné sélectionné de la vue intérieur (inversée)
+     * @return position du séparateur sélectionné sélectionné de la vue intérieur (inversée)
+     */
     public Pouce getSelectedSepInverse() {
         return Objects.requireNonNull(getSelectedCote()).getLargeur().sub(getSelectedSeparateur());
     }
 
+    /**
+     * @brief getter de isResizing
+     * @return isResizing
+     */
     public boolean isResizing() {
         return isResizing;
     }
 
+    /**
+     * @brief setter de errorMessage
+     * @param errorMessage message d'erreur
+     */
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
+    /**
+     * @brief getter de errorMessage
+     * @return errorMessage
+     */
     public String getErrorMessage() {
         return errorMessage;
     }
 
+    /**
+     * @brief reinitialise le message d'erreur (acknowledge)
+     */
     public void ackErrorMessage() {
         errorMessage = "";
     }
 
+    /**
+     * @brief getter de la validité des éléments de la salle
+     * @return validité des éléments de la salle
+     */
     public boolean isSalleValid(){
         for (int i = 0; i < salle.getTableauCote().length; i ++){
             ArrayList<Mur> murs = salle.getTableauCote()[i].getMurs(salle.getProfondeur(), generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),

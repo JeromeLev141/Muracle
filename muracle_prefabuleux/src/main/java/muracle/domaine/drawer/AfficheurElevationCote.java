@@ -88,12 +88,14 @@ public class AfficheurElevationCote extends Afficheur {
                 ligne = new Line2D.Double(posX + w - cote.separateurs.get(i).toDouble(), posY,
                         posX + w - cote.separateurs.get(i).toDouble(), posY + h);
             }
-            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
-                g2d.setColor(selectColor);
-                g2d.setStroke(selectedStroke);
-                g2d.draw(new Line2D.Double(ligne.x1, ligne.y1 + 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 - 1.5 * ligneStroke.getLineWidth()));
-                g2d.setStroke(ligneStroke);
-                g2d.setColor(lineColor);
+            if (controller.getSelectedSeparateurCopy() != null) {
+                if (controller.getSelectedSeparateurCopy().equals(cote.separateurs.get(i))) {
+                    g2d.setColor(selectColor);
+                    g2d.setStroke(selectedStroke);
+                    g2d.draw(new Line2D.Double(ligne.x1, ligne.y1 + 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 - 1.5 * ligneStroke.getLineWidth()));
+                    g2d.setStroke(ligneStroke);
+                    g2d.setColor(lineColor);
+                }
             }
             g2d.draw(ligne);
         }

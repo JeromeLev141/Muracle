@@ -84,12 +84,14 @@ public class AfficheurPlanSalle extends Afficheur{
         for (int i = 0; i < cote.separateurs.size(); i++) {
             ligne = new Line2D.Double(posX + cote.separateurs.get(i).toDouble(), posY + h,
                     posX + cote.separateurs.get(i).toDouble(), posY + h + ep);
-            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
-                g.setColor(selectColor);
-                g.setStroke(selectedStroke);
-                g.draw(new Line2D.Double(ligne.x1, ligne.y1 + 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 - 1.5 * ligneStroke.getLineWidth()));
-                g.setStroke(ligneStroke);
-                g.setColor(lineColor);
+            if (controller.getSelectedSeparateurCopy() != null) {
+                if (controller.getSelectedSeparateurCopy().equals(cote.separateurs.get(i))) {
+                    g.setColor(selectColor);
+                    g.setStroke(selectedStroke);
+                    g.draw(new Line2D.Double(ligne.x1, ligne.y1 + 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 - 1.5 * ligneStroke.getLineWidth()));
+                    g.setStroke(ligneStroke);
+                    g.setColor(lineColor);
+                }
             }
             g.draw(ligne);
         }
@@ -99,12 +101,14 @@ public class AfficheurPlanSalle extends Afficheur{
         for (int i = 0; i < cote.separateurs.size(); i++) {
             ligne = new Line2D.Double(posX + w -cote.separateurs.get(i).toDouble(), posY,
                     posX + w - cote.separateurs.get(i).toDouble(), posY - ep);
-            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
-                g.setColor(selectColor);
-                g.setStroke(selectedStroke);
-                g.draw(new Line2D.Double(ligne.x1, ligne.y1 - 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 + 1.5 * ligneStroke.getLineWidth()));
-                g.setStroke(ligneStroke);
-                g.setColor(lineColor);
+            if (controller.getSelectedSeparateurCopy() != null) {
+                if (controller.getSelectedSeparateurCopy().equals(cote.separateurs.get(i))) {
+                    g.setColor(selectColor);
+                    g.setStroke(selectedStroke);
+                    g.draw(new Line2D.Double(ligne.x1, ligne.y1 - 1.5 * ligneStroke.getLineWidth(), ligne.x2, ligne.y2 + 1.5 * ligneStroke.getLineWidth()));
+                    g.setStroke(ligneStroke);
+                    g.setColor(lineColor);
+                }
             }
             g.draw(ligne);
         }
@@ -114,12 +118,14 @@ public class AfficheurPlanSalle extends Afficheur{
         for (int i = 0; i < cote.separateurs.size(); i++) {
             ligne = new Line2D.Double(posX + w, posY + h - cote.separateurs.get(i).toDouble(),
                     posX + w + ep, posY + h - cote.separateurs.get(i).toDouble());
-            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
-                g.setColor(selectColor);
-                g.setStroke(selectedStroke);
-                g.draw(new Line2D.Double(ligne.x1 + 1.5 * ligneStroke.getLineWidth(), ligne.y1, ligne.x2 - 1.5 * ligneStroke.getLineWidth(), ligne.y2));
-                g.setStroke(ligneStroke);
-                g.setColor(lineColor);
+            if (controller.getSelectedSeparateurCopy() != null) {
+                if (controller.getSelectedSeparateurCopy().equals(cote.separateurs.get(i))) {
+                    g.setColor(selectColor);
+                    g.setStroke(selectedStroke);
+                    g.draw(new Line2D.Double(ligne.x1 + 1.5 * ligneStroke.getLineWidth(), ligne.y1, ligne.x2 - 1.5 * ligneStroke.getLineWidth(), ligne.y2));
+                    g.setStroke(ligneStroke);
+                    g.setColor(lineColor);
+                }
             }
             g.draw(ligne);
         }
@@ -129,12 +135,14 @@ public class AfficheurPlanSalle extends Afficheur{
         for (int i = 0; i < cote.separateurs.size(); i++) {
             ligne = new Line2D.Double(posX, posY + cote.separateurs.get(i).toDouble(),
                     posX - ep, posY + cote.separateurs.get(i).toDouble());
-            if (controller.getSelectedSeparateur() == cote.separateurs.get(i)) {
-                g.setColor(selectColor);
-                g.setStroke(selectedStroke);
-                g.draw(new Line2D.Double(ligne.x1 - 1.5 * ligneStroke.getLineWidth(), ligne.y1, ligne.x2 + 1.5 * ligneStroke.getLineWidth(), ligne.y2));
-                g.setStroke(ligneStroke);
-                g.setColor(lineColor);
+            if (controller.getSelectedSeparateurCopy() != null) {
+                if (controller.getSelectedSeparateurCopy().equals(cote.separateurs.get(i))) {
+                    g.setColor(selectColor);
+                    g.setStroke(selectedStroke);
+                    g.draw(new Line2D.Double(ligne.x1 - 1.5 * ligneStroke.getLineWidth(), ligne.y1, ligne.x2 + 1.5 * ligneStroke.getLineWidth(), ligne.y2));
+                    g.setStroke(ligneStroke);
+                    g.setColor(lineColor);
+                }
             }
             g.draw(ligne);
         }
