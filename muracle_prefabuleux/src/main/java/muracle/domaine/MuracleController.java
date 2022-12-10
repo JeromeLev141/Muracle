@@ -220,7 +220,7 @@ public class MuracleController {
                 if (dossiersValide) {
                     File[] dossiers = {dossierN, dossierS, dossierE, dossierW};
                     for (File dossierMur : dossiers) {
-                        int indexMur = 0;
+                        int indexMur = 1;
                         for (Mur mur : salle.getCote(dossierMur.getName().charAt(0)).getMurs(salle.getProfondeur(),
                                 generateurPlan.getMargeEpaisseurMateriaux(), generateurPlan.getMargeLargeurReplis(),
                                 generateurPlan.getLongueurPlis(), salle.getEpaisseurTrouRetourAir(), generateurPlan.getAnglePlis())) {

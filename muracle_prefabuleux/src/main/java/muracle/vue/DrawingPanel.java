@@ -65,12 +65,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
                 drawer = new AfficheurElevationCote(mainWindow.controller, getSize());
             }
 
-            try {
-                drawer.draw(g,(double)zoomFactor.getDenum()/zoomFactor.getNum(),this.getSize(),posiCam,dimPlan);
-
-            } catch (FractionError e) {
-                e.printStackTrace();
-            }
+            drawer.draw(g,(double)zoomFactor.getDenum()/zoomFactor.getNum(),this.getSize(),posiCam,dimPlan);
         }
     }
 
