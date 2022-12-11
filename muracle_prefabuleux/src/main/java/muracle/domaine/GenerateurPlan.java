@@ -11,9 +11,9 @@ import java.util.List;
 public class GenerateurPlan implements java.io.Serializable {
 
     private Pouce margeEpaisseurMateriaux = new Pouce("1/4");
-    private Pouce margeLargeurReplis = new Pouce("2");
+    private Pouce margeLargeurReplis = new Pouce("1/2");
     private double anglePlis = 45;
-    private Pouce longueurPlis = new Pouce("1");
+    private Pouce longueurPlis = new Pouce("2");
 
     public GenerateurPlan() throws FractionError, PouceError {
     }

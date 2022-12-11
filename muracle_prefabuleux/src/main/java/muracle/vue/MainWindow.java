@@ -1017,6 +1017,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								longPlisTextField.setText(controller.getParametrePlan(0));
+								updater.updateTextFields();
 								drawingPanel.repaint();
 							});
 
@@ -1026,6 +1027,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								margeEpTextField.setText(controller.getParametrePlan(1));
+								updater.updateTextFields();
 								drawingPanel.repaint();
 							});
 
@@ -1035,6 +1037,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								margeLargTextField.setText(controller.getParametrePlan(2));
+								updater.updateTextFields();
 								drawingPanel.repaint();
 							});
 
@@ -1044,6 +1047,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								anglePlisTextField.setText(controller.getParametrePlan(3));
+								updater.updateTextFields();
 								drawingPanel.repaint();
 							});
 

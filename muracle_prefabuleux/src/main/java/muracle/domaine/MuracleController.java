@@ -90,7 +90,7 @@ public class MuracleController {
      */
     public void creerProjet() {
         try {
-            salle = new Salle(new Pouce("288"), new Pouce("108"),
+            salle = new Salle(new Pouce("288"), new Pouce("96"),
                     new Pouce("144"), new Pouce("8"));
             for (Cote cote : salle.getTableauCote()) {
                 cote.addSeparateur(new Pouce(36, 0, 1));
