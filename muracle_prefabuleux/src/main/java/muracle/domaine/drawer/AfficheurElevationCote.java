@@ -2,7 +2,6 @@ package muracle.domaine.drawer;
 
 import muracle.domaine.*;
 import muracle.utilitaire.CoordPouce;
-import muracle.utilitaire.FractionError;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -21,11 +20,24 @@ public class AfficheurElevationCote extends Afficheur {
 
     private double ep;
 
+    /**
+     * @brief constructeur
+     * @param controller controller du domaine
+     * @param initDim dimension du panel de dessin
+     */
     public AfficheurElevationCote (MuracleController controller, Dimension initDim) {
         super(controller, initDim);
     }
 
-    public void draw(Graphics g, double zoom,Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) throws FractionError {
+    /**
+     * @brief dessine les éléments à afficher
+     * @param g l'élément graphic du panel de dessin
+     * @param zoom facteur de zoom en double
+     * @param dim dimension du panel de dessin
+     * @param posiCam position de la caméra (point de vue)
+     * @param dimPlan dimension de ce qui est dessiné
+     */
+    public void draw(Graphics g, double zoom,Dimension dim, CoordPouce posiCam, CoordPouce dimPlan) {
         super.draw(g,zoom,dim,posiCam,dimPlan);
 
         CoteDTO cote = controller.getSelectedCoteReadOnly();
@@ -52,6 +64,10 @@ public class AfficheurElevationCote extends Afficheur {
         drawErrorMessage(g2d);
     }
 
+    /**
+     * @brief dessine le côté selectionné
+     * @param g2d l'élément graphic du panel de dessin en Graphics2D
+     */
     private void drawCote(Graphics2D g2d) {
         Rectangle2D.Double rect = new Rectangle2D.Double(posX, posY, w, h);
         if (controller.isVueExterieur()) {
@@ -76,6 +92,10 @@ public class AfficheurElevationCote extends Afficheur {
         }
     }
 
+    /**
+     * @brief dessine les séparateurs
+     * @param g2d l'élément graphic du panel de dessin en Graphics2D
+     */
     private void drawSeparateur(Graphics2D g2d) {
         CoteDTO cote = controller.getSelectedCoteReadOnly();
         for (int i = 0; i < cote.separateurs.size(); i++) {
@@ -101,6 +121,10 @@ public class AfficheurElevationCote extends Afficheur {
         }
     }
 
+    /**
+     * @brief dessine les murs en rouge si leurs panneaux excèdent la limite de poids
+     * @param g2d l'élément graphic du panel de dessin en Graphics2D
+     */
     private void drawMurs(Graphics2D g2d) {
         CoteDTO cote = controller.getSelectedCoteReadOnly();
         if (controller.isMurSelected()) {
@@ -165,6 +189,11 @@ public class AfficheurElevationCote extends Afficheur {
         }
     }
 
+    /**
+     * @brief dessine les accessoires du côté sélectionné (avec aura si sélectionné, en rouge si position invalide)
+     * @param g2d l'élément graphic du panel de dessin en Graphics2D
+     * @param coteArea area du côte sélectionné
+     */
     private void drawAccessoire(Graphics2D g2d, Area coteArea) {
         CoteDTO cote = controller.getSelectedCoteReadOnly();
         ArrayList<Rectangle2D.Double> rectangles = new ArrayList<>();
@@ -241,6 +270,10 @@ public class AfficheurElevationCote extends Afficheur {
         }
     }
 
+    /**
+     * @brief dessine l'indicateur de vue
+     * @param g l'élément graphic du panel de dessin
+     */
     private void drawVue(Graphics g) {
         try {
             Image image;

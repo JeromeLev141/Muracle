@@ -33,6 +33,9 @@ public class MainWindow extends JFrame {
 
 	private boolean isRightClicDrag;
 
+	/**
+	 * @brief constructeur
+	 */
 	public MainWindow() {
 		{
 			try {
@@ -44,6 +47,9 @@ public class MainWindow extends JFrame {
 		initComponents();
 	}
 
+	/**
+	 * @brief initiation de tous les éléments du panel et de leurs actions
+	 */
 	private void initComponents() {
 		//menu
 		JMenuBar menuBar = new JMenuBar();
@@ -1080,10 +1086,21 @@ public class MainWindow extends JFrame {
 		updater.updateTextFields();
 	}
 
+	/**
+	 * @brief ferme le projet
+	 */
 	private void closing() {
 		controller.fermerProjet(this);
 	}
 
+	/**
+	 * @brief crée un ensemble (Label(intro) textfield Label(end)) et l'insère dans la position en y fournis dans le panel fournis
+	 * @param panel panel dans ajouter les éléments
+	 * @param intro description du paramètre du textfield
+	 * @param textField le textfield du paramètre
+	 * @param end mesure du paramètre (po, deg, etc...)
+	 * @param posY position en y dans le gridbag du panel
+	 */
 	private void addParams(JPanel panel, String intro, JTextField textField, String end, int posY) {
 		JLabel introLabel = new JLabel(intro);
 		panel.add(introLabel, new GridBagConstraints(0, posY, 1, 1, 0.0, 0.0,
