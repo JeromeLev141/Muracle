@@ -15,9 +15,13 @@ public class Salle implements java.io.Serializable{
     private Pouce hauteurRetourAir;
     private Pouce epaisseurTrouRetourAir;
     private Pouce distanceTrouRetourAir;
+    /**
+     * @brief constructeur vide
+     */
+    public Salle(){}
 
     /**
-     * @brief constructeur
+     * @brief constructeur de Salle
      * @param largeur:Pouce
      * @param hauteur:Pouce
      * @param longueur:Pouce
