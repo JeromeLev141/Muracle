@@ -63,7 +63,7 @@ public class Panneau {
 
                 poidsSupplementaire = (rallongeMur + rallongeMurHyppo - aireRectangle.toDouble()) * poidsMatiere;
             }
-            this.poids = (surfaceExterieur.toDouble() - 2 * airCoinTriangle + poidsSupplementaire) * poidsMatiere;
+            this.poids = (surfaceExterieur.toDouble() - 2 * airCoinTriangle) * poidsMatiere + poidsSupplementaire;
         }
     }
 

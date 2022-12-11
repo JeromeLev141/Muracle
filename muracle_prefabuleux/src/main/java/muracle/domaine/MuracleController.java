@@ -93,6 +93,7 @@ public class MuracleController {
             salle = new Salle(new Pouce("288"), new Pouce("96"),
                     new Pouce("144"), new Pouce("8"));
             for (Cote cote : salle.getTableauCote()) {
+                cote.addSeparateur(new Pouce(12, 0, 1));
                 cote.addSeparateur(new Pouce(36, 0, 1));
                 cote.addSeparateur(new Pouce(72, 0, 1));
                 cote.addSeparateur(new Pouce(108, 0, 1));
@@ -101,7 +102,10 @@ public class MuracleController {
                     cote.addSeparateur(new Pouce(180, 0, 1));
                     cote.addSeparateur(new Pouce(216, 0, 1));
                     cote.addSeparateur(new Pouce(252, 0, 1));
+                    cote.addSeparateur(new Pouce(276, 0, 1));
                 }
+                else
+                    cote.addSeparateur(new Pouce(132, 0, 1));
             }
             generateurPlan = new GenerateurPlan();
         } catch (FractionError | PouceError | CoteError e) {
