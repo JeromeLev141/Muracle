@@ -59,56 +59,62 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
      * @param g2d l'élément graphic du panel de dessin en Graphics2D
      */
     private void drawPlan(Graphics2D g2d, PlanPanneau plan) {
+
         g2d.setStroke(ligneStroke);
         g2d.setColor(lineColor);
-        // draw plan
-        drawOutline(g2d, plan);
-        // draw lignes de plis
-        //g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0));
-        drawLignePlie(g2d, plan);
-        // draw accessoires
-        if(!plan.getPolygoneAccessoire().isEmpty()){
-            drawAccessoires(g2d, plan);
-        }
-    }
 
-    private void drawOutline(Graphics2D g2d, PlanPanneau plan) {
         Path2D pathPlan = new Path2D.Double();
         CoordPouce firstPoint = plan.getPolygone().get(0);
-        pathPlan.moveTo(posX - firstPoint.getX().toDouble(), posY - firstPoint.getY().toDouble());
+        pathPlan.moveTo(posX + firstPoint.getX().toDouble(), posY + firstPoint.getY().toDouble());
         for(CoordPouce coord : plan.getPolygone()){
-            System.out.println(coord.toString());
-            pathPlan.lineTo(posX - coord.getX().toDouble(), posY - coord.getY().toDouble());
+            pathPlan.lineTo(posX + coord.getX().toDouble(), posY + coord.getY().toDouble());
         }
-        pathPlan.closePath();
-        g2d.draw(pathPlan);
+        Area outlineArea = new Area(pathPlan);
+
+        if(!plan.getPolygoneAccessoire().isEmpty()){
+            removeAccessoiresFromArea(plan, outlineArea);
+        }
+        g2d.draw(outlineArea);
         g2d.setColor(fillColor);
-        g2d.fill(pathPlan);
+        g2d.fill(outlineArea);
+
+        drawLignePlie(g2d, plan);
     }
 
     private void drawLignePlie(Graphics2D g2d, PlanPanneau plan) {
+        g2d.setStroke(new BasicStroke(0.5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 10));
         g2d.setColor(lineColor);
-        Path2D pathLignes = new Path2D.Double();
+
+
         for(CoordPouce[] coord : plan.getLignePlie()){
-            pathLignes.moveTo(posX - coord[0].getX().toDouble(), posY - coord[0].getY().toDouble());
-            pathLignes.lineTo(posX - coord[1].getX().toDouble(), posY - coord[1].getY().toDouble());
+            //Path2D pathLignes = new Path2D.Double();
+            //pathLignes.moveTo(posX + coord[0].getX().toDouble(), posY + coord[0].getY().toDouble());
+            //pathLignes.lineTo(posX + coord[1].getX().toDouble(), posY + coord[1].getY().toDouble());
+            //pathLignes.closePath();
+            g2d.draw(new Line2D.Double(posX + coord[0].getX().toDouble(),
+                                    posY + coord[0].getY().toDouble(),
+                                    posX + coord[1].getX().toDouble(),
+                                    posY + coord[1].getY().toDouble()));
+            //g2d.draw(pathLignes);
+            //g2d.fill(pathLignes);
         }
-        pathLignes.closePath();
-        g2d.draw(pathLignes);
+
     }
 
-    private void drawAccessoires(Graphics2D g2d, PlanPanneau plan) {
-        g2d.setColor(lineColor);
+    private void removeAccessoiresFromArea(PlanPanneau plan, Area outlineArea) {
         for (List<CoordPouce> coordsAccessoire : plan.getPolygoneAccessoire()) {
             Path2D pathAccessoire = new Path2D.Double();
-            pathAccessoire.moveTo(posX - coordsAccessoire.get(0).getX().toDouble(),
-                    posY - coordsAccessoire.get(0).getY().toDouble());
+            pathAccessoire.moveTo(posX + coordsAccessoire.get(0).getX().toDouble(),
+                    posY + coordsAccessoire.get(0).getY().toDouble());
+
             for(int i = 1; i < coordsAccessoire.size(); i++){
-                pathAccessoire.lineTo(posX - coordsAccessoire.get(i).getX().toDouble(),
-                        posY - coordsAccessoire.get(i).getY().toDouble());
+                pathAccessoire.lineTo(posX + coordsAccessoire.get(i).getX().toDouble(),
+                        posY + coordsAccessoire.get(i).getY().toDouble());
             }
             pathAccessoire.closePath();
-            g2d.draw(pathAccessoire);
+            Area acessoireArea = new Area(pathAccessoire);
+            outlineArea.subtract(acessoireArea);
+            System.out.println(acessoireArea.toString());
         }
     }
 

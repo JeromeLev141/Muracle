@@ -46,7 +46,7 @@ public class AfficheurElevationCote extends Afficheur {
         w = cote.largeur.toDouble();
         h = cote.hauteur.toDouble();
         ep = controller.getSalleReadOnly().profondeur.toDouble();
-        
+
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setStroke(ligneStroke);
@@ -171,7 +171,7 @@ public class AfficheurElevationCote extends Afficheur {
                         rect = new Rectangle2D.Double(rect.x, rect.y, rect.width + ep, rect.height);
                 }
                 if (controller.getErrorMessage().equals(""))
-                    controller.setErrorMessage("Les panneaux du mur " + (indexMur + 1) + " du côté selectionné excèdent le poids maximum");
+                    controller.setErrorMessage("Les panneaux du mur " + (indexMur + 1) + " du côté sélectionné excèdent le poids maximum");
             }
             if (rect != null) {
                 g2d.setColor(errorColor);
