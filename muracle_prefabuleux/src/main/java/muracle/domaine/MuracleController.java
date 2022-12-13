@@ -1455,8 +1455,9 @@ public class MuracleController {
         return true;
     }
 
-    public PlanPanneau[] genererPlanSelectedMur() {
-        return generateurPlan.genererCoordonees(Objects.requireNonNull(getSelectedCote()).getAccessoires(), getSelectedMur(),
+    public PlanPanneau genererPlanSelectedMur() {
+        PlanPanneau[] plans = generateurPlan.genererCoordonees(Objects.requireNonNull(getSelectedCote()).getAccessoires(), getSelectedMur(),
                 salle.getProfondeur(), salle.getEpaisseurTrouRetourAir());
+        return isVueExterieur ? plans[0] : plans[1];
     }
 }
