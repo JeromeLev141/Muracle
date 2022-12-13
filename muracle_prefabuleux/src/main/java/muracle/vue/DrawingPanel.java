@@ -88,7 +88,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      * @brief update zoomFactor, dimPlan et posiCam
      */
     public void updateParametre(){
-        resetZoomFactor();
+        //resetZoomFactor();
         if (mainWindow.controller.isVueDessus())
             try {
                 this.dimPlan = mainWindow.controller.getSalleReadOnly().getDimension();

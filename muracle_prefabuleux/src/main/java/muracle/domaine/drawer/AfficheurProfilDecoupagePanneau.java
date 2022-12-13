@@ -1,6 +1,5 @@
 package muracle.domaine.drawer;
 
-import muracle.domaine.MurDTO;
 import muracle.domaine.MuracleController;
 import muracle.domaine.PlanPanneau;
 import muracle.utilitaire.CoordPouce;
@@ -10,7 +9,6 @@ import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +50,7 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
         reset(g2d,zoom, dim, posiCam, dimPlan);
 
         drawVue(g);
+        drawErrorMessage(g2d);
     }
     /**
      * @brief dessine le panneau extérieur ou intérieur du mur sélectionné
@@ -62,20 +61,22 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
         g2d.setStroke(ligneStroke);
         g2d.setColor(lineColor);
 
-        Path2D pathPlan = new Path2D.Double();
+        Path2D.Double pathPlan = new Path2D.Double();
         CoordPouce firstPoint = plan.getPolygone().get(0);
         pathPlan.moveTo(posX + firstPoint.getX().toDouble(), posY + firstPoint.getY().toDouble());
         for(CoordPouce coord : plan.getPolygone()){
             pathPlan.lineTo(posX + coord.getX().toDouble(), posY + coord.getY().toDouble());
         }
+        pathPlan.closePath();
         Area outlineArea = new Area(pathPlan);
 
         if(!plan.getPolygoneAccessoire().isEmpty()){
             removeAccessoiresFromArea(plan, outlineArea);
         }
-        g2d.draw(outlineArea);
         g2d.setColor(fillColor);
         g2d.fill(outlineArea);
+        g2d.setColor(lineColor);
+        g2d.draw(outlineArea);
 
         drawLignePlie(g2d, plan);
     }
@@ -85,7 +86,7 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
      * @param plan l'objet planPanneau qui contient l'ensemble des points nécessaires pour représenter le panneau
      */
     private void drawLignePlie(Graphics2D g2d, PlanPanneau plan) {
-        g2d.setStroke(new BasicStroke(0.5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 10));
+        g2d.setStroke(new BasicStroke(0.5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0));
         g2d.setColor(lineColor);
 
         for(CoordPouce[] coord : plan.getLignePlie()){
@@ -102,7 +103,7 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
      */
     private void removeAccessoiresFromArea(PlanPanneau plan, Area outlineArea) {
         for (List<CoordPouce> coordsAccessoire : plan.getPolygoneAccessoire()) {
-            Path2D pathAccessoire = new Path2D.Double();
+            Path2D.Double pathAccessoire = new Path2D.Double();
             pathAccessoire.moveTo(posX + coordsAccessoire.get(0).getX().toDouble(),
                     posY + coordsAccessoire.get(0).getY().toDouble());
 
@@ -113,7 +114,6 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
             pathAccessoire.closePath();
             Area acessoireArea = new Area(pathAccessoire);
             outlineArea.subtract(acessoireArea);
-            System.out.println(acessoireArea.toString());
         }
     }
     /**
