@@ -3,6 +3,7 @@ package muracle.vue;
 import muracle.domaine.drawer.Afficheur;
 import muracle.domaine.drawer.AfficheurElevationCote;
 import muracle.domaine.drawer.AfficheurPlanSalle;
+import muracle.domaine.drawer.AfficheurProfilDecoupagePanneau;
 import muracle.utilitaire.*;
 
 import javax.swing.*;
@@ -58,7 +59,10 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
             else setBackground(Color.WHITE);
             Afficheur drawer;//= new Afficheur(mainWindow.controller, getSize());
             this.update();
-            if (mainWindow.controller.isVueDessus()) {
+            if (mainWindow.controller.isVuePlanDecoupage()) {
+                drawer = new AfficheurProfilDecoupagePanneau(mainWindow.controller, getSize());
+            }
+            else if (mainWindow.controller.isVueDessus()) {
                 drawer = new AfficheurPlanSalle(mainWindow.controller, getSize());
             }
             else {

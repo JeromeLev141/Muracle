@@ -52,46 +52,68 @@ public class GenerateurPlan implements java.io.Serializable {
 
     public void genererPlans(PlanPanneau plan, XMLStreamWriter writer) {
         try {
+            Pouce largeurMin = plan.getPolygone().get(0).getX().copy();
+            Pouce largeurMax = plan.getPolygone().get(0).getX().copy();
+            Pouce hauteurMin = plan.getPolygone().get(0).getY().copy();
+            Pouce hauteurMax = plan.getPolygone().get(0).getY().copy();
+            for (CoordPouce coord : plan.getPolygone()) {
+                if (coord.getX().compare(largeurMin) == -1)
+                    largeurMin = coord.getX().copy();
+                else if (coord.getX().compare(largeurMax) == 1)
+                    largeurMax = coord.getX().copy();
+                if (coord.getY().compare(hauteurMin) == -1)
+                    hauteurMin = coord.getY().copy();
+                else if (coord.getY().compare(hauteurMax) == 1)
+                    hauteurMax = coord.getY().copy();
+            }
+            Pouce largeur = largeurMax.sub(largeurMin);
+            Pouce hauteur = hauteurMax.sub(hauteurMin);
+            System.out.println("l " + largeur);
+            System.out.println("h " + hauteur);
+
             writer.writeStartElement("svg");
+            writer.writeAttribute("width", largeur.toDouble() + 2 + "in");
+            writer.writeAttribute("height", hauteur.toDouble() + 2 + "in");
+            writer.writeAttribute("viewBox", "0 0 " + (largeur.toDouble() + 2) + " " + (hauteur.toDouble() + 2));
             writer.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
-            double decal = 10;
+            double decal = 1;
 
             //plan
             StringBuilder contourPanneau = new StringBuilder("M");
             for (CoordPouce coord : plan.getPolygone()) {
-                contourPanneau.append(" ").append(decal + coord.getX().toDouble() * 9.6).append(" ").append(decal + coord.getY().toDouble() * 9.6).append(" L");
+                contourPanneau.append(" ").append(decal + coord.getX().toDouble()).append(" ").append(decal + coord.getY().toDouble()).append(" L");
             }
             contourPanneau.setCharAt(contourPanneau.length() - 1, 'z');
             writer.writeEmptyElement("path");
             writer.writeAttribute("d", contourPanneau.toString());
             writer.writeAttribute("fill", "white");
             writer.writeAttribute("stroke", "black");
-            writer.writeAttribute("stroke-width", "1");
+            writer.writeAttribute("stroke-width", String.valueOf(1d/32d));
 
             // lignes de plis
             for (CoordPouce[] coords : plan.getLignePlie()) {
                 writer.writeEmptyElement("line");
-                writer.writeAttribute("x1", String.valueOf(decal + coords[0].getX().toDouble() * 9.6));
-                writer.writeAttribute("y1", String.valueOf(decal + coords[0].getY().toDouble() * 9.6));
-                writer.writeAttribute("x2", String.valueOf(decal + coords[1].getX().toDouble() * 9.6));
-                writer.writeAttribute("y2", String.valueOf(decal + coords[1].getY().toDouble() * 9.6));
+                writer.writeAttribute("x1", String.valueOf(decal + coords[0].getX().toDouble()));
+                writer.writeAttribute("y1", String.valueOf(decal + coords[0].getY().toDouble()));
+                writer.writeAttribute("x2", String.valueOf(decal + coords[1].getX().toDouble()));
+                writer.writeAttribute("y2", String.valueOf(decal + coords[1].getY().toDouble()));
                 writer.writeAttribute("stroke", "black");
-                writer.writeAttribute("stroke-width", "1");
-                writer.writeAttribute("stroke-dasharray", "4");
+                writer.writeAttribute("stroke-width", String.valueOf(1d/32d));
+                writer.writeAttribute("stroke-dasharray", String.valueOf(1d/8d));
             }
 
             //accessoires
             for (List<CoordPouce> coordsAccessoire : plan.getPolygoneAccessoire()) {
                 StringBuilder contourAccessoire = new StringBuilder("M");
                 for (CoordPouce coord : coordsAccessoire) {
-                    contourAccessoire.append(" ").append(decal + coord.getX().toDouble() * 9.6).append(" ").append(decal + coord.getY().toDouble() * 9.6).append(" L");
+                    contourAccessoire.append(" ").append(decal + coord.getX().toDouble()).append(" ").append(decal + coord.getY().toDouble()).append(" L");
                 }
                 contourAccessoire.setCharAt(contourAccessoire.length() - 1, 'z');
                 writer.writeEmptyElement("path");
                 writer.writeAttribute("d", contourAccessoire.toString());
                 writer.writeAttribute("fill", "white");
                 writer.writeAttribute("stroke", "black");
-                writer.writeAttribute("stroke-width", "1");
+                writer.writeAttribute("stroke-width", String.valueOf(1d/64d));
             }
 
             writer.writeEndDocument();

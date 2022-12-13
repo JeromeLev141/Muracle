@@ -565,11 +565,17 @@ public class MainWindow extends JFrame {
 				}
 				undoButton.addActionListener(e -> {
 					try {
+						boolean etat1 = controller.isVueDessus();
+						boolean etat2 = controller.isVueExterieur();
+
 						controller.undoChange();
 						updater.updateTextFields();
 						updater.updateButtons();
 						updater.updateParamsShown();
-						drawingPanel.updateParametre();
+
+						if (etat1 != controller.isVueDessus() || etat2 != controller.isVueExterieur())
+							drawingPanel.updateParametre();
+
 						drawingPanel.repaint();
 						voirPlanButton.setSelected(controller.isVuePlanDecoupage());
 					} catch (IOException | ClassNotFoundException ex) {
@@ -592,11 +598,17 @@ public class MainWindow extends JFrame {
 				}
 				redoButton.addActionListener(e -> {
 					try {
+						boolean etat1 = controller.isVueDessus();
+						boolean etat2 = controller.isVueExterieur();
+
 						controller.redoChange();
 						updater.updateTextFields();
 						updater.updateButtons();
 						updater.updateParamsShown();
-						drawingPanel.updateParametre();
+
+						if (etat1 != controller.isVueDessus() || etat2 != controller.isVueExterieur())
+							drawingPanel.updateParametre();
+
 						drawingPanel.repaint();
 						voirPlanButton.setSelected(controller.isVuePlanDecoupage());
 					} catch (IOException | ClassNotFoundException ex) {
@@ -1065,7 +1077,8 @@ public class MainWindow extends JFrame {
 							voirPlanButton.addActionListener(e -> {
 								voirPlanButton.setSelected(voirPlanButton.isSelected());
 								controller.setIsVuePlanDecoupage(voirPlanButton.isSelected());
-								System.out.println(controller.isVuePlanDecoupage());
+								drawingPanel.updateParametre();
+								drawingPanel.repaint();
 							});
 							configurationPlanPanel.add(voirPlanButton, new GridBagConstraints(0, posY, 3, 1, 0.0, 0.0,
 									GridBagConstraints.CENTER, GridBagConstraints.NONE,
