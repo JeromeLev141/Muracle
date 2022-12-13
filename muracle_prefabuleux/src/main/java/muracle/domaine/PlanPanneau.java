@@ -43,7 +43,6 @@ public class PlanPanneau {
      * @param accessoire: list<CoordPouce>
      */
     public void ajoutAccessoire(List<CoordPouce> accessoire){
-        System.out.println(accessoire);
         polygoneAccessoire.add(accessoire);
     }
 
