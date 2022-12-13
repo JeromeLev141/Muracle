@@ -91,7 +91,7 @@ public class MuracleController {
     public void creerProjet() {
         try {
             salle = new Salle(new Pouce("288"), new Pouce("96"),
-                    new Pouce("144"), new Pouce("8"));
+                    new Pouce("144"), new Pouce("9"));
             for (Cote cote : salle.getTableauCote()) {
                 cote.addSeparateur(new Pouce(12, 0, 1));
                 cote.addSeparateur(new Pouce(36, 0, 1));
@@ -330,7 +330,6 @@ public class MuracleController {
         separateurSelected = save.saveSeparateurSelected;
         isVueDessus = save.saveIsVueDessus;
         isVueExterieur = save.saveIsVueExterieur;
-        isVuePlanDecoupage = isVuePlanDecoupage;
         ois.close();
     }
 
@@ -709,6 +708,7 @@ public class MuracleController {
             CoordPouce coord = new CoordPouce(dragRef.getX().sub(decalCoord.getX()), dragRef.getY().sub(decalCoord.getY()));
             if (!coord.getX().equals(dragRef.getX()) || !coord.getY().equals(dragRef.getY()))
                 pushNewChange(currentStateSave);
+            dragRef = null;
         } catch (IOException | FractionError e) {
             throw new RuntimeException(e);
         }
@@ -1042,6 +1042,7 @@ public class MuracleController {
             cote.addAccessoire(acces);
             selectAccessoire(getSelectedCote().getAccessoires().size() - 1);
             pushNewChange(currentStateSave);
+            currentStateSave = makeSaveString(); // pour le drag pendant l'ajout
         } catch (FractionError | PouceError | CoteError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -1205,6 +1206,7 @@ public class MuracleController {
         try {
             Objects.requireNonNull(getSelectedCote()).addSeparateur(pos);
             pushNewChange(currentStateSave);
+            currentStateSave = makeSaveString(); // pour le drag pendant l'ajout
         } catch (CoteError e) {
             setErrorMessage(e.getMessage());
         } catch (IOException e) {
@@ -1451,5 +1453,11 @@ public class MuracleController {
             }
         }
         return true;
+    }
+
+    public PlanPanneau genererPlanSelectedMur() {
+        PlanPanneau[] plans = generateurPlan.genererCoordonees(Objects.requireNonNull(getSelectedCote()).getAccessoires(), getSelectedMur(),
+                salle.getProfondeur(), salle.getEpaisseurTrouRetourAir());
+        return isVueExterieur ? plans[0] : plans[1];
     }
 }

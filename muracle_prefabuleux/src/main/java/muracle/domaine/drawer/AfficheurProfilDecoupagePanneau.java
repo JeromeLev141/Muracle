@@ -58,6 +58,9 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
         try {
             Image image;
             String path = "/images/vues/vuePlan";
+            if (controller.isVueExterieur())
+                path += "Ext.png";
+            else path += "Int.png";
             image = ImageIO.read(Objects.requireNonNull(getClass().getResource(path)));
             image = image.getScaledInstance( 64, 64,  Image.SCALE_SMOOTH ) ;
             g.drawImage(image, initialDimension.width - 80, 16, null);
