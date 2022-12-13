@@ -11,9 +11,9 @@ import java.util.List;
 public class GenerateurPlan implements java.io.Serializable {
 
     private Pouce margeEpaisseurMateriaux = new Pouce("1/4");
-    private Pouce margeLargeurReplis = new Pouce("1/4");
+    private Pouce margeLargeurReplis = new Pouce("1/2");
     private double anglePlis = 45;
-    private Pouce longueurPlis = new Pouce("1");
+    private Pouce longueurPlis = new Pouce("2");
 
     /**
      * @brief constructeur de la classe GenerateurPlan
@@ -137,47 +137,7 @@ public class GenerateurPlan implements java.io.Serializable {
                 writer.writeAttribute("stroke-width", "1");
             }
 
-            //example du plan d'un mur
-
-            /*writer.writeStartElement("text");
-            writer.writeAttribute("x", "20");
-            writer.writeAttribute("y", "20");
-            writer.writeAttribute("fill", "black");
-            writer.writeCharacters("N1");
-            writer.writeEndElement();
-
-            //nom
-
-            //plan
-            writer.writeEmptyElement("path");
-            writer.writeAttribute("d", "M 400 100 L 400 300 L 500 300 L 500 100 z" +
-                    "M 100 100 L 100 300 L 200 300 L 200 100 z");
-            writer.writeAttribute("fill", "white");
-            writer.writeAttribute("stroke", "black");
-            writer.writeAttribute("stroke-width", "1");
-
-            //plis
-            writer.writeEmptyElement("path");
-            writer.writeAttribute("d", "M 410 100 L 410 90 L 490 90 L 490 100 z" +
-                    "M 410 300 L 410 310 L 490 310 L 490 300 z" +
-                    "M 100 110 L 90 110 L 90 290 L 100 290 z" +
-                    "M 200 110 L 210 110 L 210 290 L 200 290 z");
-            writer.writeAttribute("fill", "white");
-            writer.writeAttribute("stroke", "orange");
-            writer.writeAttribute("stroke-width", "1");
-
-            //replis
-            writer.writeEmptyElement("path");
-            writer.writeAttribute("d", "M 410 90 L 430 80 L 470 80 L 490 90 z" +
-                    "M 410 310 L 430 320 L 470 320 L 490 310 z" +
-                    "M 90 110 L 80 120 L 80 280 L 90 290 z" +
-                    "M 210 110 L 220 120 L 220 280 L 210 290 z");
-            writer.writeAttribute("fill", "white");
-            writer.writeAttribute("stroke", "blue");
-            writer.writeAttribute("stroke-width", "1");*/
-
             writer.writeEndDocument();
-
             writer.close();
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
@@ -194,9 +154,6 @@ public class GenerateurPlan implements java.io.Serializable {
      *                       [1] panneau interne
      */
     public PlanPanneau[] genererCoordonees(ArrayList<Accessoire> accessoires, Mur mur, Pouce epMurs, Pouce epRetourAir) {
-        /*
-        Ajouter ven de ventilation pour retour aire
-         */
         PlanPanneau[] plan = new PlanPanneau[2];
         PlanPanneau interne = new PlanPanneau();
         PlanPanneau externe = new PlanPanneau();

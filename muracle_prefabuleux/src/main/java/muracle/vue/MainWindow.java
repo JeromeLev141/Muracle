@@ -33,6 +33,9 @@ public class MainWindow extends JFrame {
 
 	private boolean isRightClicDrag;
 
+	/**
+	 * @brief constructeur
+	 */
 	public MainWindow() {
 		{
 			try {
@@ -44,6 +47,9 @@ public class MainWindow extends JFrame {
 		initComponents();
 	}
 
+	/**
+	 * @brief initiation de tous les éléments du panel et de leurs actions
+	 */
 	private void initComponents() {
 		//menu
 		JMenuBar menuBar = new JMenuBar();
@@ -157,7 +163,7 @@ public class MainWindow extends JFrame {
 				}
 				if (controller.isSeparateurSelected())
 					if (controller.isVueExterieur())
-						posSepTextField.setText(controller.getSelectedSeparateur().toString());
+						posSepTextField.setText(controller.getSelectedSeparateurCopy().toString());
 					else
 						posSepTextField.setText(controller.getSelectedSepInverse().toString());
 				if (controller.isAccessoireSelected()) {
@@ -443,7 +449,7 @@ public class MainWindow extends JFrame {
 					}
 					if (controller.isSeparateurSelected()) {
 						if (controller.isVueExterieur())
-							posSepTextField.setText(controller.getSelectedSeparateur().toString());
+							posSepTextField.setText(controller.getSelectedSeparateurCopy().toString());
 						else
 							posSepTextField.setText(controller.getSelectedSepInverse().toString());
 					}
@@ -565,6 +571,7 @@ public class MainWindow extends JFrame {
 						updater.updateParamsShown();
 						drawingPanel.updateParametre();
 						drawingPanel.repaint();
+						voirPlanButton.setSelected(controller.isVuePlanDecoupage());
 					} catch (IOException | ClassNotFoundException ex) {
 						throw new RuntimeException(ex);
 					}
@@ -591,6 +598,7 @@ public class MainWindow extends JFrame {
 						updater.updateParamsShown();
 						drawingPanel.updateParametre();
 						drawingPanel.repaint();
+						voirPlanButton.setSelected(controller.isVuePlanDecoupage());
 					} catch (IOException | ClassNotFoundException ex) {
 						throw new RuntimeException(ex);
 					}
@@ -645,7 +653,7 @@ public class MainWindow extends JFrame {
 									drawingPanel.repaint();
 									if (controller.isSeparateurSelected()) {
 										if (controller.isVueExterieur())
-											posSepTextField.setText(controller.getSelectedSeparateur().toString());
+											posSepTextField.setText(controller.getSelectedSeparateurCopy().toString());
 										else
 											posSepTextField.setText(controller.getSelectedSepInverse().toString());
 									}
@@ -866,7 +874,7 @@ public class MainWindow extends JFrame {
 								if (controller.isSeparateurSelected()) {
 									controller.moveSeparateur(posSepTextField.getText());
 									if (controller.isVueExterieur())
-										posSepTextField.setText(controller.getSelectedSeparateur().toString());
+										posSepTextField.setText(controller.getSelectedSeparateurCopy().toString());
 									else
 										posSepTextField.setText(controller.getSelectedSepInverse().toString());
 									drawingPanel.repaint();
@@ -1009,6 +1017,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								longPlisTextField.setText(controller.getParametrePlan(0));
+								updater.updateTextFields();
 								drawingPanel.repaint();
 							});
 
@@ -1018,6 +1027,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								margeEpTextField.setText(controller.getParametrePlan(1));
+								updater.updateTextFields();
 								drawingPanel.repaint();
 							});
 
@@ -1027,6 +1037,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								margeLargTextField.setText(controller.getParametrePlan(2));
+								updater.updateTextFields();
 								drawingPanel.repaint();
 							});
 
@@ -1036,6 +1047,7 @@ public class MainWindow extends JFrame {
 								controller.setParametrePlan(margeEpTextField.getText(), margeLargTextField.getText(),
 										anglePlisTextField.getText(), longPlisTextField.getText());
 								anglePlisTextField.setText(controller.getParametrePlan(3));
+								updater.updateTextFields();
 								drawingPanel.repaint();
 							});
 
@@ -1078,10 +1090,21 @@ public class MainWindow extends JFrame {
 		updater.updateTextFields();
 	}
 
+	/**
+	 * @brief ferme le projet
+	 */
 	private void closing() {
 		controller.fermerProjet(this);
 	}
 
+	/**
+	 * @brief crée un ensemble (Label(intro) textfield Label(end)) et l'insère dans la position en y fournis dans le panel fournis
+	 * @param panel panel dans ajouter les éléments
+	 * @param intro description du paramètre du textfield
+	 * @param textField le textfield du paramètre
+	 * @param end mesure du paramètre (po, deg, etc...)
+	 * @param posY position en y dans le gridbag du panel
+	 */
 	private void addParams(JPanel panel, String intro, JTextField textField, String end, int posY) {
 		JLabel introLabel = new JLabel(intro);
 		panel.add(introLabel, new GridBagConstraints(0, posY, 1, 1, 0.0, 0.0,
