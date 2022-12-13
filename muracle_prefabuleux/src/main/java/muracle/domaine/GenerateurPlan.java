@@ -94,29 +94,10 @@ public class GenerateurPlan implements java.io.Serializable {
      */
     public void genererPlans(PlanPanneau plan, XMLStreamWriter writer) {
         try {
-            Pouce largeurMin = plan.getPolygone().get(0).getX().copy();
-            Pouce largeurMax = plan.getPolygone().get(0).getX().copy();
-            Pouce hauteurMin = plan.getPolygone().get(0).getY().copy();
-            Pouce hauteurMax = plan.getPolygone().get(0).getY().copy();
-            for (CoordPouce coord : plan.getPolygone()) {
-                if (coord.getX().compare(largeurMin) == -1)
-                    largeurMin = coord.getX().copy();
-                else if (coord.getX().compare(largeurMax) == 1)
-                    largeurMax = coord.getX().copy();
-                if (coord.getY().compare(hauteurMin) == -1)
-                    hauteurMin = coord.getY().copy();
-                else if (coord.getY().compare(hauteurMax) == 1)
-                    hauteurMax = coord.getY().copy();
-            }
-            Pouce largeur = largeurMax.sub(largeurMin);
-            Pouce hauteur = hauteurMax.sub(hauteurMin);
-            System.out.println("l " + largeur);
-            System.out.println("h " + hauteur);
-
             writer.writeStartElement("svg");
-            writer.writeAttribute("width", largeur.toDouble() + 2 + "in");
-            writer.writeAttribute("height", hauteur.toDouble() + 2 + "in");
-            writer.writeAttribute("viewBox", "0 0 " + (largeur.toDouble() + 2) + " " + (hauteur.toDouble() + 2));
+            writer.writeAttribute("width", plan.getLargeur().toDouble() + 2 + "in");
+            writer.writeAttribute("height", plan.getHauteur().toDouble() + 2 + "in");
+            writer.writeAttribute("viewBox", "0 0 " + (plan.getLargeur().toDouble() + 2) + " " + (plan.getHauteur().toDouble() + 2));
             writer.writeAttribute("xmlns", "http://www.w3.org/2000/svg");
             double decal = 1;
 
