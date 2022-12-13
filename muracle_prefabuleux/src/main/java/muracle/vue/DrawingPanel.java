@@ -19,8 +19,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     private CoordPouce posiCam;
     private CoordPouce posiCamTempo;
     private CoordPouce dimPlan;
-    private CoordPouce min;
-    private CoordPouce max;
     private final Color backgroundColor;
     private Point mouse_pt;
     private boolean clip;
@@ -38,8 +36,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         }catch (Exception ignored){}
         posiCam = null;
         posiCamTempo = null;
-        min = new CoordPouce(null,null);
-        max = new CoordPouce(null,null);
         backgroundColor = new Color(89, 100, 124);
         addMouseWheelListener(this);
         mouse_pt = null;
@@ -73,14 +69,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         }
     }
 
-    private void updateMaxMin(){
-        try{
-            this.min.setX(this.dimPlan.getX().div(2).subRef(new Fraction(this.getWidth()*5,2)));
-            this.min.setY(this.dimPlan.getY().div(2).subRef(new Fraction(this.getHeight()*5,2)));
-            this.max.setX(this.dimPlan.getX().div(2).addRef(new Fraction(this.getWidth()*5,2)));
-            this.max.setY(this.dimPlan.getY().div(2).addRef(new Fraction(this.getHeight()*5,2)));
-        }catch (PouceError | FractionError ignored){}
-    }
 
     /**
      * @brief update dimPlan
@@ -94,7 +82,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         else if (mainWindow.controller.isVueCote())
             this.dimPlan = mainWindow.controller.getSelectedCoteReadOnly().getDimension();
 
-        updateMaxMin();
     }
 
     /**
@@ -115,7 +102,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         }catch (Exception ex){
             throw new Error("Erreur dans l'opdate des paramètre");
         }
-        updateMaxMin();
     }
 
     /**
@@ -196,14 +182,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      * @brief diminue le zoomFacteur par zoomInc
      */
     private void addZoomFactor() {
-        /*
-        if (zoomFactor.toDouble() <= 0.1){
-            this.zoomFactor.setNum(1);
-            this.zoomFactor.setDenum(10);
-        }else {
-            zoomFactor.subRef(zoomInc);
-        }
-*/      if(!zoomFactor.equals(zoomInc))
+        if(!zoomFactor.equals(zoomInc))
             zoomFactor.subRef(zoomInc);
 
     }
@@ -212,21 +191,13 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      * @brief augmente le zoomFacteur par zoomInc
      */
     private void subZoomFactor(){
-        /*
-        if (zoomFactor.toDouble() >= 5) {
-            this.zoomFactor.setNum(5);
-            this.zoomFactor.setDenum(1);
-        } else {
+        if (zoomFactor.toDouble() < 20000)
             zoomFactor.addRef(zoomInc);
+        else
+        {
+            this.zoomFactor.setNum(20000);
+            this.zoomFactor.setDenum(1);
         }
-        */
-    if (zoomFactor.toDouble() < 20000)
-        zoomFactor.addRef(zoomInc);
-    else
-    {
-        this.zoomFactor.setNum(20000);
-        this.zoomFactor.setDenum(1);
-    }
     }
 
     /**
@@ -252,9 +223,6 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
      */
     private void calculZoomInc(){
         try {
-
-            //zoomInc = zoomFactor.mul(zoomFactor).mulRef(new Fraction(1, 10)).addRef(new Fraction(1,100)).round(1024);
-            //zoomInc = zoomFactor.mul(zoomFactor).mulRef(new Fraction(1, 10)).round(262144).addRef(new Fraction(1,262144));
             zoomInc = zoomFactor.mul(new Fraction(1,10)).round(1048576);
             if(zoomInc.toDouble() == 0)
                 zoomInc = new Fraction(1,2097152);
@@ -262,64 +230,54 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
         }catch (FractionError ignored){}
     }
 
-
     /**
      * @brief mouse drag fonction
      * @param e:MouseMotionEvent
      */
     public void moved(MouseEvent e){
         if (clip) {
-            Fraction zoom = zoomFactor.copy();
-            Fraction dx = zoom.mul(mouse_pt.x-e.getX());
-            Fraction dy = zoom.mul(mouse_pt.y-e.getY());
+            Fraction dx = zoomFactor.mul(mouse_pt.x-e.getX());
+            Fraction dy = zoomFactor.mul(mouse_pt.y-e.getY());
             posiCam.setX(posiCamTempo.getX().add(dx));
             posiCam.setY(posiCamTempo.getY().add(dy));
-            ajustCam();
             this.repaint();
         }
     }
 
-
+    /**
+     * @brief déplacement en CoordPouce depuis le dernier clip
+     * @param e (MouseEvent): l'évenement de la sourie
+     * @return CoordPouce
+     */
     public CoordPouce movedItem(MouseEvent e) {
-        Fraction zoom = zoomFactor.copy();
-        Fraction dx = zoom.mul(mouse_pt.x-e.getX());
-        Fraction dy = zoom.mul(mouse_pt.y-e.getY());
+        Fraction dx = zoomFactor.mul(mouse_pt.x-e.getX());
+        Fraction dy = zoomFactor.mul(mouse_pt.y-e.getY());
         return new CoordPouce(new Pouce(0, dx), new Pouce(0, dy));
     }
-    private void ajustCam(){
-        /*
-        try {
-            Fraction largeur = zoomFactor.mul(this.getWidth()).divRef(2);
-            Fraction hauteur = zoomFactor.mul(this.getHeight()).divRef(2);
 
-            if (posiCam.getX().sub(largeur).compare(this.min.getX()) == -1) {
-                posiCam.setX(this.min.getX().add(largeur));
-            }
-            if (posiCam.getX().add(largeur).compare(this.max.getX()) == 1) {
-                posiCam.setX(this.max.getX().sub(largeur));
-            }
-            if (posiCam.getY().sub(hauteur).compare(this.min.getY()) == -1) {
-                posiCam.setY(this.min.getY().add(hauteur));
-            }
-            if (posiCam.getY().add(hauteur).compare(this.max.getY()) == 1) {
-                posiCam.setY(this.max.getY().sub(hauteur));
-            }
-        }catch (FractionError ignored){}
-         */
-
-    }
-
+    /**
+     * @brief clip pour le déplacement de l'image avec souris
+     * @param e (MouseEvent): L'évènement de la souris
+     */
     public void press(MouseEvent e){
         clip = true;
         mouse_pt = e.getPoint();
         posiCamTempo = new CoordPouce(posiCam.getX().copy(), posiCam.getY().copy());
     }
 
+    /**
+     * @brief clip pour le déplacement d'un objet
+     * @param e (MouseEvent): L'évènement de la souris
+     */
     public void pressItem(MouseEvent e){
         clip = true;
         mouse_pt = e.getPoint();
     }
 
+    /**
+     * @brief unclip pour le déplacement de l'image avec souris
+     * @param e (MouseEvent): L'évènement de la souris
+     */
     public void release(MouseEvent e){
         moved(e);
         clip = false;
@@ -328,6 +286,9 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
 
     }
 
+    /**
+     * @brief unclip pour le déplacement d'un objet
+     */
     public void releaseItem(){
         clip = false;
         mouse_pt = null;
@@ -340,6 +301,7 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         if(e.getWheelRotation() < 0) {
+            //zoomIn
             calculZoomInc();
             addZoomFactor();
 
@@ -359,22 +321,13 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
                     this.posiCam.getY().addRef(y);
                 }
             }catch (FractionError | PouceError ignored){}
-            ajustCam();
             this.repaint();
 
         }
         else{
-            //Dezoom
+            //zoomOut
             calculZoomInc();
             subZoomFactor();
-            /*
-            if (zoomFactor.toDouble() >= 3)
-                try {
-                    this.posiCam = new CoordPouce(this.dimPlan.getX().div(2), this.dimPlan.getY().div(2));
-                }catch (PouceError ignored){}
-
-             */
-            ajustCam();
             this.repaint();
         }
     }

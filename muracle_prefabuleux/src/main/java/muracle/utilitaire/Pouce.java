@@ -376,6 +376,11 @@ public class Pouce implements java.io.Serializable{
         return this.copy().divRef(fraction);
     }
 
+    /**
+     * @brief racine carré modifiant l'objet actuel
+     * @return Pouce
+     * @throws PouceError, erreur si pouce est negatif
+     */
     public Pouce sqrtRef() throws PouceError {
         if (this.entier < 0)
             throw new PouceError("une racine carré ne peut avoir des chiffre negatife");
@@ -390,10 +395,16 @@ public class Pouce implements java.io.Serializable{
         return this;
     }
 
+    /**
+     * @brief racine carré créant un nouvel objet
+     * @return Pouce
+     * @throws PouceError, erreur si la valeur de pouce est negatif
+     */
     public Pouce sqrt() throws PouceError
     {
         return this.copy().sqrtRef();
     }
+
     /**
      * @brief operation ==
      * @param pouce:Pouce
@@ -466,6 +477,9 @@ public class Pouce implements java.io.Serializable{
         return fract;
     }
 
+    /**
+     * @brief tranceforme les pouce sous forme de fraction
+     */
     public void formatToFraction(){
         this.fraction = pouce2Fraction();
         this.entier = 0;

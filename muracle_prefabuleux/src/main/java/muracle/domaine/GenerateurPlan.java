@@ -15,41 +15,83 @@ public class GenerateurPlan implements java.io.Serializable {
     private double anglePlis = 45;
     private Pouce longueurPlis = new Pouce("2");
 
+    /**
+     * @brief constructeur de la classe GenerateurPlan
+     * @throws FractionError n'occure jamais
+     * @throws PouceError n'occure jamais
+     */
     public GenerateurPlan() throws FractionError, PouceError {
     }
 
+    /**
+     * @brief getteur de la la constante MargeEpaisseurMateriaux
+     * @return Pouce
+     */
     public Pouce getMargeEpaisseurMateriaux() {
         return margeEpaisseurMateriaux;
     }
 
+    /**
+     * @brief setteur de la constante MargeEpaisseurMateriaux
+     * @param margeEpMat (Pouce)
+     */
     public void setMargeEpaisseurMateriaux(Pouce margeEpMat) {
         margeEpaisseurMateriaux = margeEpMat;
     }
 
+    /**
+     * @brief getteur de la constante margeLargeurReplis
+     * @return (Pouce)
+     */
     public Pouce getMargeLargeurReplis() {
         return margeLargeurReplis;
     }
 
+    /**
+     * @brief setteur de la constante MargeLargeurReplis
+     * @param margeLargRep (Pouce)
+     */
     public void setMargeLargeurReplis(Pouce margeLargRep) {
         margeLargeurReplis = margeLargRep;
     }
 
+    /**
+     * @brief getteur de la constante anglePlis
+     * @return (double)
+     */
     public double getAnglePlis() {
         return anglePlis;
     }
 
+    /**
+     * @brief setteur de la constante anglePlis
+     * @param angle (double)
+     */
     public void setAnglePlis(double angle) {
         anglePlis = angle;
     }
 
+    /**
+     * @brief getteur de la constante longueurPlis
+     * @return (Pouce)
+     */
     public Pouce getLongueurPlis() {
         return longueurPlis;
     }
 
+    /**
+     * @brief setteur de la constante longueurPlis
+     * @param longPlis (Pouce): longueur des plis
+     */
     public void setLongueurPlis(Pouce longPlis) {
         longueurPlis = longPlis;
     }
 
+    /**
+     * @brief Export le plan fourni en svg
+     * @param plan (planPanneau): le panneau a export
+     * @param writer (XMLStreamWriter): xmls writer
+     */
     public void genererPlans(PlanPanneau plan, XMLStreamWriter writer) {
         try {
             Pouce largeurMin = plan.getPolygone().get(0).getX().copy();
@@ -123,16 +165,21 @@ public class GenerateurPlan implements java.io.Serializable {
         }
     }
 
-
+    /**
+     * @brief création des objet PlanPanneau qui sont les dessin des panneaus intérieur et extérieur d'un mur
+     * @param accessoires (List<Accessoir>) : liste d'accessoire du coté du mur
+     * @param mur (Mur) : mur à dessiner
+     * @param epMurs (Pouce) : epaisseur des mur
+     * @param epRetourAir (Pouce) : epaisseir des retours d'aire
+     * @return PlanPanneau : [0] panneau externe
+     *                       [1] panneau interne
+     */
     public PlanPanneau[] genererCoordonees(ArrayList<Accessoire> accessoires, Mur mur, Pouce epMurs, Pouce epRetourAir) {
-        /*
-        Ajouter ven de ventilation pour retour aire
-         */
         PlanPanneau[] plan = new PlanPanneau[2];
         PlanPanneau interne = new PlanPanneau();
         PlanPanneau externe = new PlanPanneau();
-        plan[0] = interne;
-        plan[1] = externe;
+        plan[0] = externe;
+        plan[1] = interne;
         List<Accessoire> porte = new ArrayList<Accessoire>(){};
         Pouce ajoutY = this.longueurPlis.add(epMurs).add(this.margeEpaisseurMateriaux.mul(2));
         Pouce ajoutX = null;
@@ -166,9 +213,7 @@ public class GenerateurPlan implements java.io.Serializable {
                 }
 
                 List<CoordPouce> polygoneAccesInterne = new ArrayList<>();
-                /*
-                 (largeurMur - (positionAcces +- marge - positionMur)) + ajout
-                 */
+
                 polygoneAccesInterne.add(new CoordPouce(mur.getLargeur().sub(acce.getPosition().getX().sub(acce.getMarge()).sub(mur.getPosition())).add(ajoutXInterne),
                                                  acce.getPosition().getY().sub(acce.getMarge()).add(ajoutY)));
                 polygoneAccesInterne.add(new CoordPouce(mur.getLargeur().sub(acce.getLargeur().add(acce.getPosition().getX()).add(acce.getMarge()).subRef(mur.getPosition())).add(ajoutXInterne),
@@ -178,19 +223,19 @@ public class GenerateurPlan implements java.io.Serializable {
                 polygoneAccesInterne.add(new CoordPouce(mur.getLargeur().sub(acce.getPosition().getX().sub(acce.getMarge()).sub(mur.getPosition())).add(ajoutXInterne),
                                                  acce.getHauteur().add(acce.getPosition().getY()).add(acce.getMarge()).add(ajoutY)));
 
-                //System.out.println(polygoneAccesInterne);
                 interne.ajoutAccessoire(polygoneAccesInterne);
                 if(acce.getType().equals("Fenêtre")){
 
                     List<CoordPouce> polygoneAccesExterne = new ArrayList<>();
-                    polygoneAccesExterne.add(new CoordPouce(acce.getPosition().getX().sub(acce.getMarge().add(ajoutX)),
-                            acce.getPosition().getY().sub(acce.getMarge())));
-                    polygoneAccesExterne.add(new CoordPouce(acce.getLargeur().add(acce.getPosition().getX()).add(acce.getMarge()),
-                            acce.getPosition().getY().sub(acce.getMarge())));
-                    polygoneAccesExterne.add(new CoordPouce(acce.getLargeur().add(acce.getPosition().getX()).add(acce.getMarge()),
-                            acce.getHauteur().add(acce.getPosition().getY()).add(acce.getMarge())));
-                    polygoneAccesExterne.add(new CoordPouce(acce.getPosition().getX().sub(acce.getMarge()),
-                            acce.getHauteur().add(acce.getPosition().getY()).add(acce.getMarge())));
+                    CoordPouce coord = new CoordPouce(acce.getPosition().getX().sub(acce.getMarge()).sub(mur.getPosition()).add(ajoutX),
+                            acce.getPosition().getY().sub(acce.getMarge()));
+                    polygoneAccesExterne.add(coord.copy());
+                    coord.getX().addRef(acce.getLargeur()).addRef(acce.getMarge().mul(2));
+                    polygoneAccesExterne.add(coord.copy());
+                    coord.getY().addRef(acce.getHauteur()).addRef(acce.getMarge().mul(2));
+                    polygoneAccesExterne.add(coord.copy());
+                    coord.getX().subRef(acce.getLargeur()).subRef(acce.getMarge().mul(2));
+                    polygoneAccesExterne.add(coord.copy());
 
                     externe.ajoutAccessoire(polygoneAccesExterne);
                 }
@@ -205,7 +250,7 @@ public class GenerateurPlan implements java.io.Serializable {
                         polygoneAccesInterne2.add(coord.copy());
                         coord.getY().addRef(epRetourAir);
                         polygoneAccesInterne2.add(coord.copy());
-                        coord.getX().addRef(acce.getLargeur());
+                        coord.getX().subRef(acce.getLargeur());
                         polygoneAccesInterne2.add(coord.copy());
                         interne.ajoutAccessoire(polygoneAccesInterne2);
 
@@ -217,7 +262,6 @@ public class GenerateurPlan implements java.io.Serializable {
             porte.sort((porte1,porte2)->(porte1.getPosition().getX().compare(porte2.getPosition().getX())));
             CoordPouce startInterne = new CoordPouce(ajoutXInterne, ajoutY);
             CoordPouce startExterne = new CoordPouce(ajoutX, new Pouce("0"));
-            System.out.println(interne);
             dessinPanneauInterne(mur, interne, porte, epMurs, startInterne);
             Collections.reverse(porte);
             dessinPanneauExterne(mur, externe, porte, epMurs, startExterne,hypothenus);
@@ -226,6 +270,16 @@ public class GenerateurPlan implements java.io.Serializable {
         return plan;
     }
 
+    /**
+     * @brief dessine dans la variable plan le polygone version intérieur
+     * @param mur (Mur) : mur à dessiner
+     * @param plan (PlanPanneau) : plan qui est modifier, ajout dans la liste polygone
+     * @param porte (List<Accessoire>) : que les portes dans le mur
+     * @param epaisseurMur (Pouce) : epaisseur des murs de la salle
+     * @param start (CoordPouce) : possition du premier point
+     * @throws PouceError si une erreur avec les Pouces
+     * @throws FractionError si une erreur avec les Fractions
+     */
     private void dessinPanneauInterne(Mur mur, PlanPanneau plan, List<Accessoire> porte, Pouce epaisseurMur,CoordPouce start) throws PouceError, FractionError {
         CoordPouce[] plie1 = new CoordPouce[2];
         CoordPouce[] plie2 = new CoordPouce[2];
@@ -249,10 +303,6 @@ public class GenerateurPlan implements java.io.Serializable {
         plie1[1] = new CoordPouce(mur.getLargeur().sub(this.margeLargeurReplis), plie1[0].getY().copy());
         plan.ajoutlignePlie(plie1);
 
-        System.out.println(mur.isEstCoinGauche());
-        System.out.println(mur.isEstCoinDroit());
-
-
         if (mur.isEstCoinDroit()){
             coordActuel.getY().subRef(this.margeEpaisseurMateriaux.div(2));
             plan.ajoutPointPolygone(coordActuel.copy());//2.5
@@ -270,10 +320,8 @@ public class GenerateurPlan implements java.io.Serializable {
         else {
             coordActuel.getY().subRef(epaisseurMur).subRef(this.margeEpaisseurMateriaux);
             plie2[0] = coordActuel.copy();
-            //plie2[1] = new CoordPouce(plie1[1].getX().copy(), plie2[0].getY().copy());
 
             coordActuel.getY().subRef(this.margeEpaisseurMateriaux.div(2));
-            System.out.println("ok");
             plan.ajoutPointPolygone(coordActuel.copy());//3
         }
 
@@ -282,9 +330,6 @@ public class GenerateurPlan implements java.io.Serializable {
         coordActuel.getY().subRef(this.longueurPlis);
         coordActuel.getX().addRef(ajoutPlie);
         plan.ajoutPointPolygone(coordActuel.copy());//4
-
-        //coordActuel.setX(mur.getLargeur().sub(this.margeLargeurReplis).subRef(ajoutPlie));
-        //plan.ajoutPointPolygone(coordActuel.copy());//5
 
         if (mur.isEstCoinGauche()){
             coordActuel.setX(mur.getLargeur().sub(this.margeLargeurReplis).subRef(ajoutPlie).addRef(epaisseurMur));
@@ -332,10 +377,10 @@ public class GenerateurPlan implements java.io.Serializable {
         plan.ajoutPointPolygone(coordActuel.copy());//10
 
 
-        CoordPouce posiPlie1_1 = null;
-        CoordPouce posiPlie2_1 = null;
-        CoordPouce posiPlie1_2 = null;
-        CoordPouce posiPlie2_2 = null;
+        CoordPouce posiPlie1_1;
+        CoordPouce posiPlie2_1;
+        CoordPouce posiPlie1_2;
+        CoordPouce posiPlie2_2;
 
 
         if (mur.isEstCoinGauche()){
@@ -374,9 +419,8 @@ public class GenerateurPlan implements java.io.Serializable {
 
         if (porte.size() != 0)
             for (Accessoire access:porte) {
-                Pouce x = mur.getLargeur().sub(access.getPosition().getX());
+                coordActuel.setX(start.getX().add(mur.getLargeur().sub(access.getPosition().getX().sub(mur.getPosition()))));
 
-                coordActuel.getX().subRef(x);
                 plan.ajoutPointPolygone(coordActuel.copy());//en-bas a droite
 
                 coordActuel.getY().subRef(access.getHauteur());
@@ -432,8 +476,6 @@ public class GenerateurPlan implements java.io.Serializable {
             posiPlie1_2.setX(coordActuel.getX().copy());
             posiPlie2_2.setX(coordActuel.getX().copy());
 
-            System.out.println(epaisseurMur);
-            System.out.println(epaisseurMur.add(this.margeEpaisseurMateriaux).add(this.margeEpaisseurMateriaux));
             coordActuel.getY().subRef(this.margeEpaisseurMateriaux.mul(2).add(epaisseurMur));
             plan.ajoutPointPolygone(coordActuel.copy());//15
         }
@@ -445,10 +487,20 @@ public class GenerateurPlan implements java.io.Serializable {
         plan.ajoutPointPolygone(coordActuel.copy());//16
     }
 
+    /**
+     * @brief dessine dans la variable plan le polygone version extérieur
+     * @param mur (Mur) : mur à dessiner
+     * @param plan (PlanPanneau) : plan qui est modifier, ajout dans la liste polygone
+     * @param porte (List<Accessoire>) : que les portes dans le mur
+     * @param epaisseurMur (Pouce) : epaisseur des murs de la salle
+     * @param start (CoordPouce) : possition du premier point
+     * @param hypo (Pouce) : hypothénus du coin
+     * @throws PouceError si une erreur avec les Pouces
+     * @throws FractionError si une erreur avec les Fractions
+     */
     private void dessinPanneauExterne(Mur mur, PlanPanneau plan, List<Accessoire> porte, Pouce epaisseurMur,CoordPouce start, Pouce hypo) throws PouceError, FractionError {
         CoordPouce coordActuel = start.copy();
         plan.ajoutPointPolygone(coordActuel.copy());//1
-        //System.out.println(hypo);
 
         Pouce ajoutPlie = this.longueurPlis.copy();
         ajoutPlie.formatToFraction();
@@ -547,7 +599,7 @@ public class GenerateurPlan implements java.io.Serializable {
         }
 
         for (Accessoire access:porte) {
-            coordActuel.getX().subRef(access.getPosition().getX()).addRef(access.getLargeur());
+            coordActuel.setX(start.getX().add(access.getPosition().getX().sub(mur.getPosition()).addRef(access.getLargeur())));
             plan.ajoutPointPolygone(coordActuel.copy());//en-bas à droite
 
             coordActuel.getY().subRef(access.getHauteur());
@@ -573,7 +625,7 @@ public class GenerateurPlan implements java.io.Serializable {
             CoordPouce plie1_1 = coordActuel.copy();
             plie1_1.getX().subRef(this.margeEpaisseurMateriaux.div(2));
             CoordPouce plie2_1 = plie1_1.copy();
-            plie2_1.getX().addRef(hypo).addRef(this.margeEpaisseurMateriaux);
+            plie2_1.getX().subRef(hypo).subRef(this.margeEpaisseurMateriaux);
 
             coordActuel.getX().subRef(hypo).subRef(this.margeEpaisseurMateriaux.mul(2));
             plan.ajoutPointPolygone(coordActuel.copy());//12
@@ -608,7 +660,7 @@ public class GenerateurPlan implements java.io.Serializable {
             CoordPouce plie1_1 = coordActuel.copy();
             plie1_1.getX().subRef(this.margeEpaisseurMateriaux.div(2));
             CoordPouce plie2_1 = plie1_1.copy();
-            plie2_1.getX().addRef(epaisseurMur).addRef(this.margeEpaisseurMateriaux);
+            plie2_1.getX().subRef(epaisseurMur).subRef(this.margeEpaisseurMateriaux);
 
             coordActuel.getX().subRef(epaisseurMur).subRef(this.margeEpaisseurMateriaux.mul(2));
             plan.ajoutPointPolygone(coordActuel.copy());//12
