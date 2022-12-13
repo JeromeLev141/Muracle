@@ -53,13 +53,12 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
 
         drawVue(g);
     }
-
     /**
      * @brief dessine le panneau extérieur ou intérieur du mur sélectionné
      * @param g2d l'élément graphic du panel de dessin en Graphics2D
+     * @param plan l'objet planPanneau qui contient l'ensemble des points nécessaires pour représenter le panneau
      */
     private void drawPlan(Graphics2D g2d, PlanPanneau plan) {
-
         g2d.setStroke(ligneStroke);
         g2d.setColor(lineColor);
 
@@ -80,27 +79,27 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
 
         drawLignePlie(g2d, plan);
     }
-
+    /**
+     * @brief dessine les lignes de plie
+     * @param g2d l'élément graphic du panel de dessin en Graphics2D
+     * @param plan l'objet planPanneau qui contient l'ensemble des points nécessaires pour représenter le panneau
+     */
     private void drawLignePlie(Graphics2D g2d, PlanPanneau plan) {
         g2d.setStroke(new BasicStroke(0.5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 10));
         g2d.setColor(lineColor);
 
-
         for(CoordPouce[] coord : plan.getLignePlie()){
-            //Path2D pathLignes = new Path2D.Double();
-            //pathLignes.moveTo(posX + coord[0].getX().toDouble(), posY + coord[0].getY().toDouble());
-            //pathLignes.lineTo(posX + coord[1].getX().toDouble(), posY + coord[1].getY().toDouble());
-            //pathLignes.closePath();
             g2d.draw(new Line2D.Double(posX + coord[0].getX().toDouble(),
                                     posY + coord[0].getY().toDouble(),
                                     posX + coord[1].getX().toDouble(),
                                     posY + coord[1].getY().toDouble()));
-            //g2d.draw(pathLignes);
-            //g2d.fill(pathLignes);
         }
-
     }
-
+    /**
+     * @brief Enlève les accessoires de l'aire de l'outline
+     * @param plan l'objet planPanneau qui contient l'ensemble des points nécessaires pour représenter le panneau
+     * @param outlineArea l'aire de l'outline du panneau
+     */
     private void removeAccessoiresFromArea(PlanPanneau plan, Area outlineArea) {
         for (List<CoordPouce> coordsAccessoire : plan.getPolygoneAccessoire()) {
             Path2D pathAccessoire = new Path2D.Double();
@@ -117,7 +116,6 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
             System.out.println(acessoireArea.toString());
         }
     }
-
     /**
      * @brief dessine l'indicateur de vue
      * @param g l'élément graphic du panel de dessin
