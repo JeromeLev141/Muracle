@@ -113,7 +113,6 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
             pathAccessoire.closePath();
             Area acessoireArea = new Area(pathAccessoire);
             outlineArea.subtract(acessoireArea);
-            System.out.println(acessoireArea.toString());
         }
     }
     /**
