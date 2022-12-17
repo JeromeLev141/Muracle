@@ -13,7 +13,7 @@ public class PriseElec extends Accessoire {
         this.setInterieurOnly(Boolean.TRUE);
     }
     /**
-     * @brief constructeur de PriseElec, avec comme type Prise électrique et l'attribue interieur seulement à faux
+     * @brief constructeur de PriseElec, avec comme type Prise électrique et l'attribue interieur seulement à true
      * @param largeur:Pouce
      * @param hauteur:Pouce
      * @param position:CoordPouce
