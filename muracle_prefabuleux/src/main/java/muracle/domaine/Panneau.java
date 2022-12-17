@@ -11,9 +11,24 @@ public class Panneau {
     private double  poids;
     public UUID id;
     private static final double poidsMatiere = 6.3 / 144;
+    /**
+     * @brief constructeur vide
+     */
     public Panneau() {
 
     }
+    /**
+     * @brief constructeur de Panneau
+     * @param largeur: Pouce
+     * @param hauteur: Pouce
+     * @param epaisseur: Pouce
+     * @param margeEp: Pouce
+     * @param margeLargeurReplis: Pouce
+     * @param longeurPlis: Pouce
+     * @param type: Char
+     * @param isCoin: Pouce
+     * @param angleReplis: Pouce
+     */
 
     public Panneau(Pouce hauteur,Pouce largeur, Pouce epaisseur,Pouce margeEp, Pouce margeLargeurReplis,Pouce longeurPlis, char type,boolean isCoin,double angleReplis){
         Pouce margeLarReplis = margeLargeurReplis.mul(2);
@@ -66,35 +81,67 @@ public class Panneau {
             this.poids = (surfaceExterieur.toDouble() - 2 * airCoinTriangle) * poidsMatiere + poidsSupplementaire;
         }
     }
-
+    /**
+     * @brief getter de largeur
+     * @return Pouce
+     */
     public Pouce getLargeur() {
         return largeur;
     }
-
+    /**
+     * @brief setter de largeur
+     * @param largeur: Pouce
+     */
     public void setLargeur(Pouce largeur) {
         this.largeur = largeur;
     }
-
+    /**
+     * @brief getter de hauteur
+     * @return Pouce
+     */
     public Pouce getHauteur() {
         return hauteur;
     }
-
+    /**
+     * @brief setter de hauteur
+     * @param hauteur: Pouce
+     */
     public void setHauteur(Pouce hauteur) {
         this.hauteur = hauteur;
     }
-
+    /**
+     * @brief getter Poids
+     * @return double
+     */
     public double getPoids() {
         return poids;
     }
-
+    /**
+     * @brief setter de hauteur
+     * @param poids: double
+     */
     public void setPoids(double poids) {
         this.poids = poids;
     }
-
+    /**
+     * @brief Optient si le poids est valid, vrai si inferieur à 250 sinon faux
+     * @return boolean
+     */
     public boolean isPoidsValid(){
         return (this.poids <= 250);
     }
-
+    /**
+     * @brief Soustrait le poids d'un trou d'accesoire, en fonction du type et du poids du panneau avant le retrait
+     * @param largeur: Pouce
+     * @param hauteur: Pouce
+     * @param marge: Pouce
+     * @param type: String
+     * @param epTrouRetourAir: Pouce
+     * @param interieur: boolean
+     * @param epaisseur:Pouce
+     * @param margeEp:Pouce
+     * @param longeurPlis:Pouce
+     */
     public void soustrairePoidsAccessoire(Pouce hauteur,Pouce largeur,Pouce marge,String type,Pouce epTrouRetourAir,boolean interieur,Pouce epaisseur,Pouce margeEp, Pouce longeurPlis){
         double poids = this.poids;
 
