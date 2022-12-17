@@ -44,7 +44,7 @@ public class Panneau {
         Pouce surfaceEnPouceCarre = largeur.mul(hauteur);
         if(type == 'i'){
             Pouce largeurReplisInt = largeur.sub(margeLarReplis);
-            Pouce surfaceReplisInt = largeurReplisInt.mul(epaisseur);
+            Pouce surfaceReplisInt = largeurReplisInt.mul(epaisseur.add(longeurPlis));
             Pouce surfaceInterieur = surfaceEnPouceCarre.add(surfaceReplisInt.mul(2));
             if(isCoin){
                 Pouce aireRectangle = longeurPlis.mul(largeur.add(epaisseur.sub(margeLarReplis)));
@@ -56,7 +56,6 @@ public class Panneau {
             else{
                 Pouce aireRectangle = longeurPlis.mul(largeur.sub(margeLarReplis));
 
-                surfaceInterieur.addRef(aireRectangle.mul(2));
                 surfaceInterieurDouble = surfaceInterieur.toDouble() - 2 * airCoinTriangle;
             }
 
@@ -64,11 +63,8 @@ public class Panneau {
         } else if (type == 'e') {
 
             Pouce hauteurReplisExt = hauteur.sub(margeLarReplis);
-            Pouce surfaceReplisExt = hauteurReplisExt.mul(epaisseur);
+            Pouce surfaceReplisExt = hauteurReplisExt.mul(epaisseur.add(longeurPlis));
             Pouce surfaceExterieur = surfaceEnPouceCarre.add(surfaceReplisExt.mul(2));
-            Pouce aireRectangle = longeurPlis.mul(hauteurReplisExt);
-            
-            surfaceExterieur.addRef(aireRectangle.mul(2));
 
             double poidsSupplementaire = 0;
             if(isCoin){
@@ -76,9 +72,9 @@ public class Panneau {
                 double hypothenuse = epaisseur.toDouble()/Math.cos(Math.toRadians(45));
                 double rallongeMurHyppo = hypothenuse * hauteurReplisExt.toDouble();
 
-                poidsSupplementaire = (rallongeMur + rallongeMurHyppo - aireRectangle.toDouble()) * poidsMatiere;
+                poidsSupplementaire = (rallongeMur + rallongeMurHyppo - surfaceReplisExt.toDouble()) * poidsMatiere;
             }
-            this.poids = (surfaceExterieur.toDouble() - 2 * airCoinTriangle) * poidsMatiere + poidsSupplementaire;
+            this.poids = (surfaceExterieur.toDouble() - (2 * airCoinTriangle)) * poidsMatiere + poidsSupplementaire;
         }
     }
     /**

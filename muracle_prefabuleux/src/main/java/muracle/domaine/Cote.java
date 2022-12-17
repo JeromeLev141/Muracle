@@ -423,7 +423,7 @@ public class Cote implements java.io.Serializable{
                         Mur m = new Mur(separateurs.get(i).sub(separateurs.get(i-1)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,false,angleReplis,separateurs.get(i-1));
                         murs.add(m);
                     }
-                    Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis,separateurs.get(i-1));
+                    Mur m2 = new Mur(largeur.sub(separateurs.get(i)),this.hauteur,epaisseur,margeEp,margeLargeurReplis,longeurPlis,true,angleReplis,separateurs.get(i));
                     m2.setEstCoinDroit(true);
                     murs.add(m2);
                 }else if (i != 0){
@@ -431,28 +431,30 @@ public class Cote implements java.io.Serializable{
                     murs.add(m);
                 }
             }
-            for (Accessoire accessoire: accessoires) {
-                CoordPouce coinHautGauche =  accessoire.getPosition();
-                int x = 0;
+        }
+        for (Accessoire accessoire: accessoires) {
+            CoordPouce coinHautGauche =  accessoire.getPosition();
+            int x = 0;
+            if(separateurs.size() != 0){
                 for (Pouce separateur : separateurs) {
                     if (coinHautGauche.getX().compare(separateur) == 1)
                         x++;
                 }
-                Panneau panneauIntGauche = murs.get(x).getPanneauInt();
-                Panneau panneauExtGauche = murs.get(x).getPanneauExt();
+            }
+            Panneau panneauIntGauche = murs.get(x).getPanneauInt();
+            Panneau panneauExtGauche = murs.get(x).getPanneauExt();
 
-                   if(accessoire.isInterieurOnly()){
-                       panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
-                               accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,true,epaisseur,margeEp,longeurPlis);
-                   }else
-                   {
-                    panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
-                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,true,epaisseur,margeEp,longeurPlis);
+            if(accessoire.isInterieurOnly()){
+                panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
+                        accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,true,epaisseur,margeEp,longeurPlis);
+            }else
+            {
+                panneauIntGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
+                        accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,true,epaisseur,margeEp,longeurPlis);
 
-                    panneauExtGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
-                            accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,false,epaisseur,margeEp,longeurPlis);
+                panneauExtGauche.soustrairePoidsAccessoire(accessoire.getHauteur(),accessoire.getLargeur(),
+                        accessoire.getMarge(),accessoire.getType(),epTrouRetourAir,false,epaisseur,margeEp,longeurPlis);
 
-                    }
             }
         }
         return murs;
