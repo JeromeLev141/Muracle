@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PlanPanneau {
     private List<CoordPouce> polygone;
-    private List<CoordPouce[]> lignePlie;
+    private List<CoordPouce[]> lignePlis;
     private List<List<CoordPouce>> polygoneAccessoire;
     private boolean poidsValide;
 
@@ -19,7 +19,7 @@ public class PlanPanneau {
      */
     PlanPanneau(){
         this.polygone = new ArrayList<>();
-        this.lignePlie = new ArrayList<>();
+        this.lignePlis = new ArrayList<>();
         this.polygoneAccessoire = new ArrayList<>();
         this.poidsValide = false;
     }
@@ -37,7 +37,7 @@ public class PlanPanneau {
      * @param coordPouces paire de 2 coordPouce pour une ligne de plie
      */
     void ajoutlignePlie(CoordPouce[] coordPouces){
-        lignePlie.add(coordPouces);
+        lignePlis.add(coordPouces);
     }
 
     /**
@@ -60,8 +60,8 @@ public class PlanPanneau {
      * @brief getteur de l'attribut lignePlie
      * @return polygone: List<CoordPouce[]>
      */
-    public List<CoordPouce[]> getLignePlie(){
-        return lignePlie;
+    public List<CoordPouce[]> getLignePlis(){
+        return lignePlis;
     }
 
     /**

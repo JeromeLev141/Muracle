@@ -578,7 +578,6 @@ public class Cote implements java.io.Serializable{
 
             for (int x = 0; x < separateurs.size();x++){
                 if (x==0){
-                    //System.out.println("first");
                     if(posiCentreX.compare(separateurs.get(x)) == -1)
                         try{
                             centrerRetourAir(new Pouce(0,0,1),separateurs.get(x),acces);
