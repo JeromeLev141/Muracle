@@ -17,7 +17,7 @@ public class PlanPanneau {
     /**
      * @brief constructeur de la class PlanPanneau
      */
-    public PlanPanneau(){
+    PlanPanneau(){
         this.polygone = new ArrayList<>();
         this.lignePlie = new ArrayList<>();
         this.polygoneAccessoire = new ArrayList<>();
@@ -28,15 +28,15 @@ public class PlanPanneau {
      * @brief ajout un points dans la liste polygone
      * @param coordPouce: coordonnée du point
      */
-    public void ajoutPointPolygone(CoordPouce coordPouce){
+    void ajoutPointPolygone(CoordPouce coordPouce){
         polygone.add(coordPouce);
     }
 
     /**
      * @brief ajout un tableau de 2 coordPouce qui représente une ligne de plie
-     * @param coordPouces
+     * @param coordPouces paire de 2 coordPouce pour une ligne de plie
      */
-    public void ajoutlignePlie(CoordPouce[] coordPouces){
+    void ajoutlignePlie(CoordPouce[] coordPouces){
         lignePlie.add(coordPouces);
     }
 
@@ -44,7 +44,7 @@ public class PlanPanneau {
      * @brief ajout une list de CoordPouce qui représente un accessoir
      * @param accessoire: list<CoordPouce>
      */
-    public void ajoutAccessoire(List<CoordPouce> accessoire){
+    void ajoutAccessoire(List<CoordPouce> accessoire){
         polygoneAccessoire.add(accessoire);
     }
 
@@ -100,7 +100,7 @@ public class PlanPanneau {
      * @brief set le bool de la variable poidsValide
      * @param valide (bool): validité du panneau
      */
-    public void setPoidsValide(boolean valide){
+    void setPoidsValide(boolean valide){
         this.poidsValide = valide;
     }
 
