@@ -114,7 +114,7 @@ public class GenerateurPlan implements java.io.Serializable {
             writer.writeAttribute("stroke-width", String.valueOf(1d/32d));
 
             // lignes de plis
-            for (CoordPouce[] coords : plan.getLignePlie()) {
+            for (CoordPouce[] coords : plan.getLignePlis()) {
                 writer.writeEmptyElement("line");
                 writer.writeAttribute("x1", String.valueOf(decal + coords[0].getX().toDouble()));
                 writer.writeAttribute("y1", String.valueOf(decal + coords[0].getY().toDouble()));

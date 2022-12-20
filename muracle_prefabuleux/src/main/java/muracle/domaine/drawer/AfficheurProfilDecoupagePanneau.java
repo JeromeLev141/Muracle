@@ -89,7 +89,7 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
         g2d.setStroke(new BasicStroke(0.5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0));
         g2d.setColor(lineColor);
 
-        for(CoordPouce[] coord : plan.getLignePlie()){
+        for(CoordPouce[] coord : plan.getLignePlis()){
             g2d.draw(new Line2D.Double(posX + coord[0].getX().toDouble(),
                                     posY + coord[0].getY().toDouble(),
                                     posX + coord[1].getX().toDouble(),
