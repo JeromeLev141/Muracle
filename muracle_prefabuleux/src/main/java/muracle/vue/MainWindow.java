@@ -724,9 +724,9 @@ public class MainWindow extends JFrame {
 								drawingPanel.repaint();
 
 								controller.startDragging();
+								if (controller.isAccessoireSelected() || controller.isSeparateurSelected())
+									drawingPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 							}
-							if (controller.isAccessoireSelected() || controller.isSeparateurSelected())
-								drawingPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 						}
 
 						@Override
