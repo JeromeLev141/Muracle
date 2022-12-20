@@ -72,7 +72,7 @@ public class MainWindow extends JFrame {
 
 		//Panneau de dessin
 		DrawingPanel drawingPanel = new DrawingPanel(this);
-		drawingPanel.updateParametre();
+		drawingPanel.updateParametre(true);
 
 		//seulement pour demo
 		JButton coteButton = new JButton();
@@ -295,7 +295,7 @@ public class MainWindow extends JFrame {
 					updater.updateTextFields();
 					updater.updateButtons();
 					updater.updateParamsShown();
-					drawingPanel.updateParametre();
+					drawingPanel.updateParametre(true);
 					drawingPanel.repaint();
 				});
 				menuBar.add(newProjectButton);
@@ -319,7 +319,7 @@ public class MainWindow extends JFrame {
 					updater.updateTextFields();
 					updater.updateButtons();
 					updater.updateParamsShown();
-					drawingPanel.updateParametre();
+					drawingPanel.updateParametre(true);
 					drawingPanel.repaint();
 				});
 				menuBar.add(openProjectButton);
@@ -473,25 +473,29 @@ public class MainWindow extends JFrame {
 					except.printStackTrace();
 				}
 				retourVueHautButton.addActionListener(e -> {
-					if (changeVueButton.isSelected())
-						changeVueButton.doClick();
-					addAccessoireButton.setVisible(false);
-					retourVueHautButton.setVisible(false);
-					changeVueButton.setVisible(false);
-					murButton.setVisible(false);
-					accessoireButton.setVisible(false);
-
-
-					if (voirPlanButton.isSelected())
+					if (controller.isVuePlanDecoupage())
 						voirPlanButton.doClick();
-					if (addAccessoireButton.isSelected())
-						addAccessoireButton.doClick();
+					else {
+						if (changeVueButton.isSelected())
+							changeVueButton.doClick();
+						addAccessoireButton.setVisible(false);
+						retourVueHautButton.setVisible(false);
+						changeVueButton.setVisible(false);
+						murButton.setVisible(false);
+						accessoireButton.setVisible(false);
 
-					coteButton.setVisible(true);
-					controller.setIsVueDessus(true);
-					updater.updateParamsShown();
-					drawingPanel.updateParametre();
-					drawingPanel.repaint();
+
+						if (voirPlanButton.isSelected())
+							voirPlanButton.doClick();
+						if (addAccessoireButton.isSelected())
+							addAccessoireButton.doClick();
+
+						coteButton.setVisible(true);
+						controller.setIsVueDessus(true);
+						updater.updateParamsShown();
+						drawingPanel.updateParametre(false);
+						drawingPanel.repaint();
+					}
 				});
 				menuBar.add(retourVueHautButton);
 
@@ -575,7 +579,7 @@ public class MainWindow extends JFrame {
 						updater.updateParamsShown();
 
 						if (etat1 != controller.isVueDessus() || etat2 != controller.isVueExterieur())
-							drawingPanel.updateParametre();
+							drawingPanel.updateParametre(false);
 
 						drawingPanel.repaint();
 						voirPlanButton.setSelected(controller.isVuePlanDecoupage());
@@ -608,7 +612,7 @@ public class MainWindow extends JFrame {
 						updater.updateParamsShown();
 
 						if (etat1 != controller.isVueDessus() || etat2 != controller.isVueExterieur())
-							drawingPanel.updateParametre();
+							drawingPanel.updateParametre(false);
 
 						drawingPanel.repaint();
 						voirPlanButton.setSelected(controller.isVuePlanDecoupage());
@@ -716,7 +720,7 @@ public class MainWindow extends JFrame {
 								updater.updateButtons();
 								updater.updateTextFields();
 								if (token != controller.isVueDessus())
-									drawingPanel.updateParametre();
+									drawingPanel.updateParametre(false);
 								drawingPanel.repaint();
 
 								controller.startDragging();
@@ -734,7 +738,7 @@ public class MainWindow extends JFrame {
 							else {
 								if (controller.isSeparateurSelected() || controller.isAccessoireSelected() || controller.isResizing()) {
 									if (controller.isVueDessus() && controller.isResizing()) {
-										drawingPanel.updateParametre();
+										drawingPanel.updateParametre(false);
 										drawingPanel.repaint();
 									}
 									controller.endDraggging(drawingPanel.movedItem(e));
@@ -795,7 +799,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								largSalleTextField.setText(controller.getDimensionSalle(0));
-								drawingPanel.updateParametre();
+								drawingPanel.updateParametre(false);
 								drawingPanel.repaint();
 							});
 
@@ -805,7 +809,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								longSalleTextField.setText(controller.getDimensionSalle(1));
-								drawingPanel.updateParametre();
+								drawingPanel.updateParametre(false);
 								drawingPanel.repaint();
 							});
 
@@ -815,7 +819,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								hSalleTextField.setText(controller.getDimensionSalle(2));
-								drawingPanel.updateParametre();
+								drawingPanel.updateParametre(false);
 								drawingPanel.repaint();
 							});
 
@@ -825,7 +829,7 @@ public class MainWindow extends JFrame {
 								controller.setDimensionSalle(largSalleTextField.getText(), longSalleTextField.getText(),
 										hSalleTextField.getText(), epMursTextField.getText());
 								epMursTextField.setText(controller.getDimensionSalle(3));
-								drawingPanel.updateParametre();
+								drawingPanel.updateParametre(false);
 								drawingPanel.repaint();
 							});
 
@@ -838,15 +842,15 @@ public class MainWindow extends JFrame {
 							hCoteTextField.setEnabled(false);
 
 							//---- largMurParam ----
-							addParams(parametresModifPanel, "Largeur du Mur", largMurTextField, "po", posY++);
+							addParams(parametresModifPanel, "Largeur du mur", largMurTextField, "po", posY++);
 							largMurTextField.setEnabled(false);
 
 							//---- hMurParam ----
-							addParams(parametresModifPanel, "Hauteur du Mur", hMurTextField, "po", posY++);
+							addParams(parametresModifPanel, "Hauteur du mur", hMurTextField, "po", posY++);
 							hMurTextField.setEnabled(false);
 
 							//---- poidsMurParam ----
-							addParams(parametresModifPanel, "Poids du Mur", poidsMurTextField, "lb", posY++);
+							addParams(parametresModifPanel, "Poids du panneau", poidsMurTextField, "lb", posY++);
 							poidsMurTextField.setEnabled(false);
 
 							//separateur
@@ -1077,8 +1081,11 @@ public class MainWindow extends JFrame {
 							voirPlanButton.setVisible(false);
 							voirPlanButton.addActionListener(e -> {
 								voirPlanButton.setSelected(voirPlanButton.isSelected());
+								boolean token = voirPlanButton.isSelected();
 								controller.setIsVuePlanDecoupage(voirPlanButton.isSelected());
-								drawingPanel.updateParametre();
+								voirPlanButton.setSelected(controller.isVuePlanDecoupage());
+								if (token == voirPlanButton.isSelected())
+									drawingPanel.updateParametre(false);
 								drawingPanel.repaint();
 							});
 							configurationPlanPanel.add(voirPlanButton, new GridBagConstraints(0, posY, 3, 1, 0.0, 0.0,

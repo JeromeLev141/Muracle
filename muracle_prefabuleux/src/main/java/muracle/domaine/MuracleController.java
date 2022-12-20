@@ -790,7 +790,9 @@ public class MuracleController {
      * @param vuePlanDecoupage indicateur si on veut être en vue de découpage de plan ou non
      */
     public void setIsVuePlanDecoupage(boolean vuePlanDecoupage) {
-        isVuePlanDecoupage = vuePlanDecoupage;
+        if (Objects.requireNonNull(getSelectedCote()).isCoteAccessoireValid())
+            isVuePlanDecoupage = vuePlanDecoupage;
+        else setErrorMessage("Tous les accessoires doivent être en position valide pour visualiser le plan");
     }
 
     /**
@@ -1455,6 +1457,10 @@ public class MuracleController {
         return true;
     }
 
+    /**
+     * @brief génère le plan du panneau extérieur ou intérieur du mur sélectionné
+     * @return plan du panneau extérieur ou intérieur du mur sélectionné
+     */
     public PlanPanneau genererPlanSelectedMur() {
         PlanPanneau[] plans = generateurPlan.genererCoordonees(Objects.requireNonNull(getSelectedCote()).getAccessoires(), getSelectedMur(),
                 salle.getProfondeur(), salle.getEpaisseurTrouRetourAir());

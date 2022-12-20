@@ -52,17 +52,17 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
             super.paintComponent(g);
             if (mainWindow.isDarkMode)
                 setBackground(backgroundColor);
-            else setBackground(Color.WHITE);
+            else setBackground(new Color(223, 237, 255));
             Afficheur drawer;//= new Afficheur(mainWindow.controller, getSize());
             this.update();
             if (mainWindow.controller.isVuePlanDecoupage()) {
-                drawer = new AfficheurProfilDecoupagePanneau(mainWindow.controller, getSize());
+                drawer = new AfficheurProfilDecoupagePanneau(mainWindow.controller, getSize(), mainWindow.isDarkMode);
             }
             else if (mainWindow.controller.isVueDessus()) {
-                drawer = new AfficheurPlanSalle(mainWindow.controller, getSize());
+                drawer = new AfficheurPlanSalle(mainWindow.controller, getSize(), mainWindow.isDarkMode);
             }
             else {
-                drawer = new AfficheurElevationCote(mainWindow.controller, getSize());
+                drawer = new AfficheurElevationCote(mainWindow.controller, getSize(), mainWindow.isDarkMode);
             }
 
             drawer.draw(g,(double)zoomFactor.getDenum()/zoomFactor.getNum(),this.getSize(),posiCam,dimPlan);
@@ -87,8 +87,9 @@ public class DrawingPanel extends JPanel implements MouseWheelListener {
     /**
      * @brief update zoomFactor, dimPlan et posiCam
      */
-    public void updateParametre(){
-        //resetZoomFactor();
+    public void updateParametre(boolean doResetZoom){
+        if (doResetZoom)
+            resetZoomFactor();
         if (mainWindow.controller.isVueDessus())
             try {
                 this.dimPlan = mainWindow.controller.getSalleReadOnly().getDimension();

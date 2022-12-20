@@ -14,6 +14,8 @@ public class Afficheur {
     protected final MuracleController controller;
     protected Dimension initialDimension;
 
+    private boolean isDarkMode;
+
     protected BasicStroke ligneStroke;
 
     protected BasicStroke selectedStroke;
@@ -29,9 +31,10 @@ public class Afficheur {
      * @param controller controller du domaine
      * @param initDim dimension du panel de dessin
      */
-    public Afficheur(MuracleController controller, Dimension initDim) {
+    public Afficheur(MuracleController controller, Dimension initDim, boolean isDarkMode) {
         this.controller = controller;
         initialDimension = initDim;
+        this.isDarkMode = isDarkMode;
         lineColor = Color.black;
         fillColor = Color.white;
         grilleColor = new Color(150, 173, 233);
@@ -119,9 +122,13 @@ public class Afficheur {
             Rectangle2D.Double rect = new Rectangle2D.Double(xPos - 6, yPos - 20, textWidth + 12, 28);
             g2d.setColor(lineColor);
             g2d.fill(new Rectangle2D.Double(rect.x - 2, rect.y - 2, rect.width + 4, rect.height + 4));
-            g2d.setColor(backErrorColor);
+            g2d.setColor(fillColor);
+            if (isDarkMode)
+                g2d.setColor(backErrorColor);
             g2d.fill(rect);
-            g2d.setColor(errorColor);
+            g2d.setColor(errorColor.darker());
+            if (isDarkMode)
+                g2d.setColor(errorColor);
             g2d.drawString(controller.getErrorMessage(), xPos, yPos);
             controller.ackErrorMessage();
         }

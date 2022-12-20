@@ -22,7 +22,7 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
      * @param controller controller du domaine
      * @param initDim dimension du panel de dessin
      */
-    public AfficheurProfilDecoupagePanneau(MuracleController controller, Dimension initDim) {super(controller, initDim);}
+    public AfficheurProfilDecoupagePanneau(MuracleController controller, Dimension initDim, boolean isDarkMode) {super(controller, initDim, isDarkMode);}
 
     /**
      * @brief dessine les éléments à afficher

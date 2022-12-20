@@ -237,7 +237,6 @@ public class GenerateurPlan implements java.io.Serializable {
                         interne.ajoutAccessoire(polygoneAccesInterne2);
 
                     }catch (PouceError ignored){
-                        System.out.println("planter");
                     }
                 }
             }

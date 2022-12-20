@@ -14,7 +14,7 @@ public class PlanPanneau {
 
 
     /**
-     * @biref constructeur de la class PlanPanneau
+     * @brief constructeur de la class PlanPanneau
      */
     public PlanPanneau(){
         this.polygone = new ArrayList<>();

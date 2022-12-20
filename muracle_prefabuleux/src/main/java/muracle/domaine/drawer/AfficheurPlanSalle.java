@@ -24,8 +24,8 @@ public class AfficheurPlanSalle extends Afficheur{
      * @param controller controller du domaine
      * @param initDim dimension du panel de dessin
      */
-    public AfficheurPlanSalle(MuracleController controller, Dimension initDim) {
-        super(controller, initDim);
+    public AfficheurPlanSalle(MuracleController controller, Dimension initDim, boolean isDarkMode) {
+        super(controller, initDim, isDarkMode);
     }
 
     /**
