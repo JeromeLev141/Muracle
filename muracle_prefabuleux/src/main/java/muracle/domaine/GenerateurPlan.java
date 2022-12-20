@@ -226,8 +226,6 @@ public class GenerateurPlan implements java.io.Serializable {
                     try {
                         CoordPouce coord = new CoordPouce(mur.getLargeur().sub(acce.getPosition().getX().sub(acce.getMarge()).sub(mur.getPosition())).add(ajoutXInterne),
                                 ajoutY.sub(epRetourAir).sub(epMurs.sub(epRetourAir).div(2)));
-                        System.out.println("Posi access" + acce.getPosition().getX());
-                        System.out.println();
 
                         polygoneAccesInterne2.add(coord.copy());
                         coord.getX().subRef(acce.getLargeur());
