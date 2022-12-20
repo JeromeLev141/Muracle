@@ -1,6 +1,6 @@
 package muracle.vue;
 
-import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.intellijthemes.FlatArcIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
 import muracle.domaine.MuracleController;
 import muracle.utilitaire.FractionError;
@@ -519,7 +519,7 @@ public class MainWindow extends JFrame {
 						String rev = "Rev";
 						String mode = "moon";
 						if (!isDarkMode) {
-							UIManager.setLookAndFeel(new FlatIntelliJLaf());
+							UIManager.setLookAndFeel(new FlatArcIJTheme());
 							rev = "";
 							mode = "sun";
 						}

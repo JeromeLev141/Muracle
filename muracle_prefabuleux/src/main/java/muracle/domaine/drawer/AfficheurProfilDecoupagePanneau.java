@@ -73,10 +73,24 @@ public class AfficheurProfilDecoupagePanneau extends Afficheur {
         if(!plan.getPolygoneAccessoire().isEmpty()){
             removeAccessoiresFromArea(plan, outlineArea);
         }
+
         g2d.setColor(fillColor);
         g2d.fill(outlineArea);
         g2d.setColor(lineColor);
         g2d.draw(outlineArea);
+
+        if (!plan.isPoidsValide()) {
+            g2d.setColor(errorColor);
+            Composite compoInit = g2d.getComposite();
+            AlphaComposite alcom = AlphaComposite.getInstance(
+                    AlphaComposite.SRC_OVER, 0.5f);
+            g2d.setComposite(alcom);
+            g2d.fill(outlineArea);
+            g2d.setComposite(compoInit);
+            g2d.setColor(backErrorColor);
+            g2d.draw(outlineArea);
+            g2d.setColor(lineColor);
+        }
 
         drawLignePlie(g2d, plan);
     }
