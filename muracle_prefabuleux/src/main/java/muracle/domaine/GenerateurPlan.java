@@ -158,7 +158,9 @@ public class GenerateurPlan implements java.io.Serializable {
     public PlanPanneau[] genererCoordonees(ArrayList<Accessoire> accessoires, Mur mur, Pouce epMurs, Pouce epRetourAir) {
         PlanPanneau[] plan = new PlanPanneau[2];
         PlanPanneau interne = new PlanPanneau();
+        interne.setPoidsValide(mur.getPanneauInt().isPoidsValid());
         PlanPanneau externe = new PlanPanneau();
+        externe.setPoidsValide(mur.getPanneauExt().isPoidsValid());
         plan[0] = externe;
         plan[1] = interne;
         List<Accessoire> porte = new ArrayList<Accessoire>(){};

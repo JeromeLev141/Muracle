@@ -11,6 +11,7 @@ public class PlanPanneau {
     private List<CoordPouce> polygone;
     private List<CoordPouce[]> lignePlie;
     private List<List<CoordPouce>> polygoneAccessoire;
+    private boolean poidsValide;
 
 
     /**
@@ -20,6 +21,7 @@ public class PlanPanneau {
         this.polygone = new ArrayList<>();
         this.lignePlie = new ArrayList<>();
         this.polygoneAccessoire = new ArrayList<>();
+        this.poidsValide = false;
     }
 
     /**
@@ -85,6 +87,23 @@ public class PlanPanneau {
     public Pouce getHauteur(){
         return polygone.stream().max(Comparator.comparing(i -> i.getY().toDouble())).get().getY();
     }
+
+    /**
+     * @brief retourne le boolean de la constante poidsValide
+     * @return Bool
+     */
+    public Boolean isPoidsValide(){
+        return this.poidsValide;
+    }
+
+    /**
+     * @brief set le bool de la variable poidsValide
+     * @param valide (bool): validité du panneau
+     */
+    public void setPoidsValide(boolean valide){
+        this.poidsValide = valide;
+    }
+
 
 
     @Override
