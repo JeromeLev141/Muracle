@@ -542,7 +542,7 @@ public class MuracleController {
         if (isSeparateurSelected()) {
             try {
                 if (isVueExterieur)
-                    dragRef = new CoordPouce(getSelectedSeparateur().copy(), new Pouce(0, 0 ,1));
+                    dragRef = new CoordPouce(Objects.requireNonNull(getSelectedSeparateur()).copy(), new Pouce(0, 0 ,1));
                 else
                     dragRef = new CoordPouce(Objects.requireNonNull(getSelectedCote()).getLargeur().sub(getSelectedSeparateur()), new Pouce(0, 0, 1));
             } catch (FractionError e) {
@@ -1187,7 +1187,7 @@ public class MuracleController {
      */
     public Pouce getSelectedSeparateurCopy() {
         if (separateurSelected != -1)
-            return getSelectedSeparateur().copy();
+            return Objects.requireNonNull(getSelectedSeparateur()).copy();
         return null;
     }
 
@@ -1462,7 +1462,7 @@ public class MuracleController {
      * @return plan du panneau extérieur ou intérieur du mur sélectionné
      */
     public PlanPanneau genererPlanSelectedMur() {
-        PlanPanneau[] plans = generateurPlan.genererCoordonees(Objects.requireNonNull(getSelectedCote()).getAccessoires(), getSelectedMur(),
+        PlanPanneau[] plans = generateurPlan.genererCoordonees(Objects.requireNonNull(getSelectedCote()).getAccessoires(), Objects.requireNonNull(getSelectedMur()),
                 salle.getProfondeur(), salle.getEpaisseurTrouRetourAir());
         return isVueExterieur ? plans[0] : plans[1];
     }
